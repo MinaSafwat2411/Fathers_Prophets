@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "fathers-prophets-458809",
+  "private_key_id": "577830d3f74d96bd1b6d264239ccbe62f4a81070",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCtdnilCW8NieBt\nobZZBfjEaU+8TmNKOkFicWVyjrGDir+HvJBfbMerfZbKIk89o8K5xUks/B0kST61\nuO+mkkCHZ/B8XuYHkmUrU+fxK++U+aZyUlD5Rn6FEpijXq9gtKjJyzmrjWJ15c4O\nHEWfasmDLo7OcpU2dOkZFWF7JbJj8f3s0B7p163uemAcDDhY1ORAnXTVl9HZGNbk\n68jJ4agcMymgIprcBPxc0B/K1ad8Vkblslpjggr50F8S1r8UWCWvdwWLDERRUSJd\nGSw4n4oAri6PEa8CvhvMNGL13tSfLRFBLDXTJcW7RMvdMsJwx/IMhfu4EDCW60dE\nfeoUw+U/AgMBAAECggEALxZ2eKKfdWbkuA4KgI8Y8UR/QyhqVqeKwUz0E419za4Y\nASJkdKsEZt6wVM3MgfiW7zQJgb8ssAF8FvuNfsO75aYHB9QBELQiZ4ke8P6Synec\nwfLrjUegJ8KdEdgttoxEN4dF7/Zw8H1CGt183uIvsr8sQAmlzMMe1dLShAn/K5b+\nJW9CzqWHA8krNxDsYj6J9Wj4OmyE2Bg2VHgobWEXhM+huFBVTYoOcIFSUAlV36Og\nuHf5V4ygSjdTvkuVKkrJC25MU0Eim/QNvnJ8lyM7pH3a+Hp6Djtj3xUeRvUokMD8\nEw9y8jnsfK/At8Tll9gBACEbmtV6tDsmo11e8+2NDQKBgQDkdKaQcIOP/F0MiZPO\nrQH5gnu+Wx1onWaclaRYAjVWG/+wBomygeYBpE5nO2r/bZYgnj5JK20tU06rlMzp\n2jiMmwTT9uKV/JvNd1qYG1uJJ5g/+uxf0vVRXxnrkriK38Ep7g/5eTi57YOUACau\noe9bH2iMhsFiNaYmtARFE5b1bQKBgQDCYHMOP6Zb5z9okDdkxOJ5/Fi61wz+v20J\nNZumi+trrjwzsDtFq8yKhCGzebqtzKp1hZXXtdVlKRdtND5KiKCNuwB/N7d8e9ML\nJJwX1ftJweO2YdGKB8RxjG/maPMU/Tl8DHw8jrHjEJzxcnfbtM52IVOSfcuK8mC8\nWNguKbYV2wKBgCXEKuzhzL32yCMUczzNWPA4Y+B6C4iJzLbB/iMWal7Lzh75VbYO\nx0kqMlPafLuxEApgXoeWCDxf8zdmJ+HY01RbJBcuTxLgaZkzy+QtUZqA0yhwgLbu\nluNWx2AsJxm+F56o3jctlPUXkJLc24gu+PSlYpEojbuAhvEK/VG2BVSZAoGAZCce\nIXFaXnBAk7f7Usi/iOslLOAxqfEoVV5x3NarbshP7LIZWES1F4oNc1R9g5+5FOTH\n2GWwlncdwv7wOac8UsrP7rzeph2HGG68nut6lv54PjkYpm5qIbei0K2y0lXHkMs+\nGFXOAplExIOejm4TE3sIfKqkfet1PJbqjJ6hW5ECgYEAtdpen7HC99boJ60ZD8Kj\nQQASb8cJypEx2UG/WJHvgMs4SJCWSXzSVO/RdS8PZ5moxbgQ1lJo3i5A3mKPB2+x\n7mdnfBrOC2Z4SoMbOIzqkYatAhilSw37J35A6jlZ8fdN9JK52MT/ONx4qTeSIzz6\ndS7esp8DnhF0RzcK/WsJnwA=\n-----END PRIVATE KEY-----\n",
+  "client_email": "google-drive-fathers-prophets@fathers-prophets-458809.iam.gserviceaccount.com",
+  "client_id": "112992800930068005443",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/google-drive-fathers-prophets%40fathers-prophets-458809.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
