@@ -12,6 +12,8 @@ import '../../cubit/layout/states/layout_states.dart';
 import '../../cubit/local/cubit/local_cubit.dart';
 import '../../routes.dart';
 import '../attendance_screen/attendance_screen.dart';
+import '../event_screen/event_search.dart';
+import '../quizzes_screen/quiz_search.dart';
 import '../quizzes_screen/quizzes_screen.dart';
 
 class LayoutScreen extends StatelessWidget {
@@ -60,29 +62,45 @@ class LayoutScreen extends StatelessWidget {
                   : cubit.currentIndex == 3
                   ? null
                   : [
-                GestureDetector(
+                    if(state is OnSearchEventOpenState || state is OnSearchQuizOpenState || state is OnSearchQuizState || state is OnSearchEventState)GestureDetector(
+                      child: const Icon(Icons.close),
+                      onTap: () {
+                        switch (cubit.currentIndex) {
+                          case 0: break;
+                          case 1:
+                            {
+                              cubit.onSearchEventCloseClicked();
+                            }
+                          case 2:
+                            {
+                              cubit.onSearchQuizCloseClicked();
+                            }
+                        }
+                      },
+                    ),
+                if(state is! OnSearchEventOpenState && state is! OnSearchQuizOpenState && state is! OnSearchQuizState && state is! OnSearchEventState) GestureDetector(
                   child: const Icon(Icons.search),
                   onTap: () {
-                    context.pushNamed(AppRoutes.search.name);
+                    switch (cubit.currentIndex) {
+                      case 0: break;
+                      case 1:
+                        {
+                          cubit.onSearchEventClicked();
+                        }
+                      case 2:
+                        {
+                          cubit.onSearchQuizClicked();
+                        }
+                    }
                   },
-                ),
+                )
               ],
               centerTitle: false,
               titleSpacing: 0,
             ),
-            floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
             floatingActionButton:
             (cubit.currentIndex != 0) && (cubit.userData.admin??false)
-                ? Container(
-              width: 70,
-              height: 70,
-              decoration: BoxDecoration(
-                color: context.read<LocaleCubit>().isDark? AppColors.mirage:AppColors.white,
-                borderRadius: BorderRadius.circular(55),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(5.0),
-                child: FloatingActionButton(
+                ? FloatingActionButton(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(50),
                   ),
@@ -114,9 +132,7 @@ class LayoutScreen extends StatelessWidget {
                     }
                   },
                   child: const Icon(Icons.edit),
-                ),
-              ),
-            )
+                )
                 : null,
             resizeToAvoidBottomInset: false,
             bottomNavigationBar: Padding(
@@ -159,8 +175,8 @@ class LayoutScreen extends StatelessWidget {
               controller: cubit.pageController,
               children: [
                 Text("Home"),
-                Text("Home"),
-                QuizzesScreen(quizzes: cubit.quizzes,quizzesDone: cubit.quizzesDone),
+                if(state is OnSearchEventOpenState ||state is OnSearchEventState) EventSearch(onChanged: (p0) => cubit.onSearchEvent(p0),)else Text("Home"),
+                if(state is OnSearchQuizOpenState || state is OnSearchQuizState) QuizSearch(quizzes: cubit.quizzesSearch, quizzesDone: cubit.quizzesDone,onChanged: (p0) => cubit.onSearchQuiz(p0),) else QuizzesScreen(quizzes: cubit.quizzes,quizzesDone: cubit.quizzesDone),
                 AttendanceScreen(attendanceList: cubit.attendance,),
               ],
               onPageChanged: (value) {

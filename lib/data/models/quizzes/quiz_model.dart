@@ -2,7 +2,7 @@ import 'package:fathers_prophets/data/models/quizzes/questions_model.dart';
 
 class QuizModel {
   final List<QuestionsModel>? questions;
-  final String? shahid;
+  String? shahid;
 
   QuizModel({this.questions, this.shahid});
 

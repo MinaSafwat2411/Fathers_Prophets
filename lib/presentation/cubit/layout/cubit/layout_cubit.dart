@@ -20,6 +20,7 @@ class LayoutCubit extends Cubit<LayoutStates> {
   var titles = ["home", "event", "quizzes", "attendance"];
   List<AttendanceModel> attendance = [];
   List<QuizzesModel> quizzes = [];
+  List<QuizzesModel> quizzesSearch = [];
   var userData = UserModel();
   List<String> quizzesDone = [];
 
@@ -53,7 +54,11 @@ class LayoutCubit extends Cubit<LayoutStates> {
   void getAllAttendance(String lang) async {
     try {
       emit(LoadingState());
-      attendance = await attendanceUseCase.getAllAttendance();
+      if(userData.isAdmin??false){
+        attendance = await attendanceUseCase.getAllAttendance();
+      }else{
+        attendance = await attendanceUseCase.getAttendanceByClass(userData.classId??'');
+      }
       for (var element in attendance) {
         element.dateView = formatDate(element.date?? DateTime.now(), lang);
       }
@@ -72,6 +77,7 @@ class LayoutCubit extends Cubit<LayoutStates> {
 
   void getAllQuizzes() async {
     quizzes = CacheHelper.getQuizzes();
+    quizzesSearch = quizzes;
   }
 
   static String formatDate(DateTime dateTime,String lang) {
@@ -103,5 +109,38 @@ class LayoutCubit extends Cubit<LayoutStates> {
   void afterUpdateQuizzes(){
     getUserData();
     emit(UpdateQuizzesState());
+  }
+
+  void onSearchQuizClicked() {
+    emit(OnSearchQuizOpenState());
+  }
+
+  void onSearchEventClicked() {
+    emit(OnSearchEventOpenState());
+  }
+
+  void onSearchEventCloseClicked() {
+    emit(OnSearchEventCloseState());
+  }
+
+  void onSearchQuizCloseClicked() {
+    emit(OnSearchQuizCloseState());
+  }
+
+  void onSearchQuiz(String query) {
+    if (query.isEmpty) {
+      quizzesSearch = quizzes;
+      emit(OnSearchQuizState());
+    } else {
+      quizzesSearch = quizzes.where((element) => element.number.toString().contains(query)).toList();
+      emit(OnSearchQuizState());
+    }
+  }
+  void onSearchEvent(String query) {
+    if (query.isEmpty) {
+      emit(OnSearchEventState());
+    } else {
+      emit(OnSearchEventState());
+    }
   }
 }

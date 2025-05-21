@@ -1,11 +1,13 @@
 import 'package:fathers_prophets/data/models/quizzes/quizzes_model.dart';
 import 'package:fathers_prophets/presentation/screens/add_attendance_screen/add_attendance_screen.dart';
+import 'package:fathers_prophets/presentation/screens/add_quizzes_screen/add_quiz_screen.dart';
 import 'package:fathers_prophets/presentation/screens/attendance_details_screen/attendance_details_screen.dart';
 import 'package:fathers_prophets/presentation/screens/layout_screen/layout_screen.dart';
 import 'package:fathers_prophets/presentation/screens/login_screen/login_screen.dart';
 import 'package:fathers_prophets/presentation/screens/onboarding_screen/onboarding_screen.dart';
 import 'package:fathers_prophets/presentation/screens/profile_screen/profile_screen.dart';
 import 'package:fathers_prophets/presentation/screens/quizzes_details_screen/quizzes_details_screen.dart';
+import 'package:fathers_prophets/presentation/screens/register_screen/register_screen.dart';
 import 'package:fathers_prophets/presentation/screens/setting_screen/setting_screen.dart';
 import 'package:fathers_prophets/presentation/screens/splash_screen/splash_screen.dart';
 import 'package:flutter/material.dart';
@@ -98,7 +100,7 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: AppRoutePaths.register,
       name: AppRoutes.register.name,
-      builder: (context, state) => const Text('register'),
+      builder: (context, state) => const RegisterScreen(),
     ),
     GoRoute(
       path: AppRoutePaths.forgotPassword,
@@ -139,12 +141,12 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: AppRoutePaths.quizDetails,
       name: AppRoutes.quizDetails.name,
-      builder: (context, state) => QuizzesDetailsScreen(quizzes: state.extra as QuizzesModel,),
+      builder: (context, state) => QuizzesDetailsScreen(quizzes: state.extra as QuizzesModel,query: state.uri.queryParameters,),
     ),
     GoRoute(
       path: AppRoutePaths.addQuiz,
       name: AppRoutes.addQuiz.name,
-      builder: (context, state) => const Text('addQuiz'),
+      builder: (context, state) => const AddQuizScreen(),
     ),
   ],
 );

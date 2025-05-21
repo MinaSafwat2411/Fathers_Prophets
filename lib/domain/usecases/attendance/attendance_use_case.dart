@@ -21,4 +21,7 @@ class AttendanceUseCase {
   Future<AttendanceModel?> getAttendanceById(String id)async {
     return await repository.getAttendanceById(id);
   }
+  Future<List<AttendanceModel>> getAttendanceByClass(String classId)async{
+    return await repository.getAttendanceByClass(classId)??[];
+  }
 }

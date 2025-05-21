@@ -79,7 +79,8 @@ class LoginScreen extends StatelessWidget {
                     ),
                     GestureDetector(
                       onTap: () {
-                        context.pushNamed(AppRoutes.forgotPassword.name);
+                        // context.pushNamed(AppRoutes.forgotPassword.name);
+                        cubit.authUseCase.sendPasswordResetEmail("minasafwat594@gmail.com");
                       },
                       child: Text(
                         localize.translate('click_here'),

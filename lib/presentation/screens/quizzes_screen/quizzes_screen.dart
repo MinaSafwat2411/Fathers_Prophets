@@ -20,7 +20,7 @@ class QuizzesScreen extends StatelessWidget {
     var localize = AppLocalizations.of(context);
     var cubit = context.read<LayoutCubit>();
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 4.0),
       child: Column(
         children: [
           ListView.separated(
@@ -69,7 +69,7 @@ class QuizzesScreen extends StatelessWidget {
                 );
               },
               separatorBuilder: (context, index) => SizedBox(height: 5,),
-              itemCount: 1
+              itemCount: quizzes.length
           ),
         ],
       ),

@@ -2,9 +2,10 @@ import 'package:fathers_prophets/core/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class Indicators extends StatelessWidget {
-  const Indicators({super.key,required this.index});
+  const Indicators({super.key,required this.index,required this.isDark});
 
   final int index;
+  final bool isDark;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +23,7 @@ class Indicators extends StatelessWidget {
                   width: 85,
                   height: 6,
                   decoration: BoxDecoration(
-                    color: i<=index-1? AppColors.mirage:AppColors.atlo,
+                    color: isDark?i<=index-1? AppColors.azureRadiance:AppColors.atlo :i<=index-1? AppColors.mirage:AppColors.atlo,
                   ),
                 ),
             ],
@@ -40,7 +41,7 @@ class Indicators extends StatelessWidget {
                   height: 20,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
-                    color: i<=index? AppColors.mirage:AppColors.atlo,
+                    color: isDark? i<=index? AppColors.azureRadiance:AppColors.atlo :i<=index? AppColors.mirage:AppColors.atlo,
                   ),
                 ),
             ],

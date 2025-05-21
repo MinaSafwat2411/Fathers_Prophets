@@ -17,9 +17,6 @@ class OnChangeLanguageState extends LayoutStates {}
 
 class OnChangeThemeState extends LayoutStates {}
 
-class OnSearchOpenState extends LayoutStates {}
-
-class OnSearchCloseState extends LayoutStates {}
 
 class UpdateAttendanceState extends LayoutStates {}
 
@@ -28,3 +25,16 @@ class UpdateQuizzesState extends LayoutStates {}
 class SortQuizzesState extends LayoutStates {}
 
 class SortAttendanceState extends LayoutStates {}
+
+class OnSearchQuizOpenState extends LayoutStates {}
+
+class OnSearchQuizCloseState extends LayoutStates {}
+
+class OnSearchQuizState extends LayoutStates {}
+
+class OnSearchEventState extends LayoutStates {}
+
+class OnSearchEventOpenState extends LayoutStates {}
+
+class OnSearchEventCloseState extends LayoutStates {}
+

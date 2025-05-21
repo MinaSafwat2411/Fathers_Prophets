@@ -11,6 +11,6 @@ class OnboardingTopButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Indicators(index: index,);
+    return Indicators(index: index,isDark: isDark,);
   }
 }

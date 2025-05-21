@@ -2,7 +2,7 @@
 class QuestionsModel {
   final List<String?>? answers;
   final String? question;
-  final int? correctAnswer;
+  int? correctAnswer;
 
   QuestionsModel({
     this.answers,

@@ -26,4 +26,11 @@ class AttendanceRepository {
     return AttendanceModel.fromJson(snapshot.data()!,snapshot.id);
   }
 
+  Future<List<AttendanceModel>?> getAttendanceByClass(String classId)async{
+    final snapshot = await FirebaseFirestore.instance.collection(FirebaseEndpoints.attendance).where(FirebaseEndpoints.classId,isEqualTo: classId).get();
+    return snapshot.docs
+        .map((doc) => AttendanceModel.fromJson(doc.data(),doc.id))
+        .toList();
+  }
+
 }
