@@ -41,7 +41,7 @@ class LoginScreen extends StatelessWidget {
                   observe: false,
                   label: localize.translate('email'),
                   controller: cubit.emailController,
-                  isDark: false,
+                  isDark: context.read<LocaleCubit>().isDark,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return localize.translate('email_validation_1');
@@ -57,7 +57,7 @@ class LoginScreen extends StatelessWidget {
                   observe: true,
                   label: localize.translate('password'),
                   controller: cubit.passwordController,
-                  isDark: false,
+                  isDark: context.read<LocaleCubit>().isDark,
                   validator: (value){
                     if(Validators.isValidPassword(value??"")){
                       return null;

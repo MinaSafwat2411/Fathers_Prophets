@@ -86,5 +86,17 @@
   "select_testament": "اختر العهد",
   "select_chapter": "اختر الإصحاح",
   "select_book": "اختر السفر",
-  "submit": "إرسال"
+  "submit": "إرسال",
+  "activity": "انشطة",
+  "add_more_questions": "أضف المزيد من الأسئلة",
+  "bible": "درس كتاب المقدس",
+  "coptic": "قبطي",
+  "melodies": "ألحان",
+  "ritual": "طقس",
+  "choir": "كورال",
+  "pingPong" : "بينج بونج",
+  "football" : "كرة قدم",
+  "volleyball": "كرة طائرة",
+  "chess": "شترنج",
+  "doctrine": "عقيدة"
 }

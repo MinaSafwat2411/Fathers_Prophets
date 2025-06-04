@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'app_colors.dart';
 
 abstract class AppThemes {
@@ -122,6 +121,102 @@ abstract class AppThemes {
       width: 300,
       elevation: 8,
       scrimColor: AppColors.gray20, // subtle overlay behind drawer
+    ),
+    datePickerTheme: DatePickerThemeData(
+      backgroundColor: AppColors.white,
+      surfaceTintColor: AppColors.white,
+      headerBackgroundColor: AppColors.white,
+      headerForegroundColor: AppColors.mirage,
+      yearForegroundColor: WidgetStateProperty.all(AppColors.mirage),
+      rangeSelectionBackgroundColor: AppColors.white,
+      rangePickerSurfaceTintColor: AppColors.mirage,
+      elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      dayBackgroundColor: WidgetStateProperty.resolveWith<Color?>((states) {
+          if (states.contains(WidgetState.selected)) {
+            return AppColors.mirage;
+          }
+          return AppColors.white;
+        }),
+      todayBackgroundColor: WidgetStateProperty.resolveWith<Color?>((states) {
+        if (states.contains(WidgetState.selected)) {
+          return AppColors.mirage;
+        }
+        return AppColors.white;
+      }),
+      todayBorder: BorderSide(
+        color: AppColors.mirage,
+      ),
+      todayForegroundColor: WidgetStateProperty.resolveWith<Color?>((states) {
+        if (states.contains(WidgetState.selected)) {
+          return AppColors.white;
+        }
+        return AppColors.mirage;
+      }),
+      rangeSelectionOverlayColor: WidgetStatePropertyAll(AppColors.mirage),
+      rangePickerBackgroundColor: AppColors.mirage,
+      dayStyle: TextStyle(
+        color: AppColors.white
+      ),
+      cancelButtonStyle: ButtonStyle(
+        foregroundColor: WidgetStatePropertyAll(AppColors.mirage)
+      ),
+      confirmButtonStyle: ButtonStyle(
+        foregroundColor: WidgetStatePropertyAll(AppColors.mirage)
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        border: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: AppColors.mirage,
+          ),
+        ),
+        helperStyle: TextStyle(
+            color: AppColors.mirage
+        ),
+        disabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: AppColors.mirage,
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: AppColors.mirage,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: AppColors.mirage,
+          ),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: AppColors.red,
+          ),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: AppColors.mirage,
+          ),
+        ),
+        labelStyle: TextStyle(
+            color: AppColors.mirage
+        ),
+        hintStyle: TextStyle(
+            color: AppColors.mirage
+        ),
+        floatingLabelStyle: TextStyle(
+            color: AppColors.mirage
+        ),
+        counterStyle: TextStyle(
+          color: AppColors.mirage,
+        ),
+        filled: false,
+      )
+    ),
+    colorScheme:  ColorScheme.light(
+    primary: AppColors.mirage,
     ),
   );
   static final dark = ThemeData(
@@ -248,5 +343,128 @@ abstract class AppThemes {
       elevation: 8,
       scrimColor: AppColors.gray20,
     ),
+    datePickerTheme: DatePickerThemeData(
+        headerForegroundColor: AppColors.white, // Changes "May 2025" text color
+        headerHeadlineStyle: TextStyle(color: AppColors.white), // Optional: change style of the date
+        headerHelpStyle: TextStyle(color: AppColors.white),
+        backgroundColor: AppColors.riverBed,
+        surfaceTintColor: AppColors.mirage,
+        headerBackgroundColor: AppColors.riverBed,
+        weekdayStyle: TextStyle(
+          color: AppColors.white
+        ),
+        rangePickerHeaderHeadlineStyle: TextStyle(
+          color: AppColors.white
+        ),
+        rangePickerHeaderHelpStyle: TextStyle(
+          color: AppColors.white
+        ),
+        yearStyle: TextStyle(
+          color: AppColors.white
+        ),
+        rangePickerHeaderForegroundColor: AppColors.white,
+        yearForegroundColor: WidgetStateProperty.resolveWith<Color?>((states) {
+          if (states.contains(WidgetState.selected)) {
+            return AppColors.mirage; // Selected year text color
+          }
+          return AppColors.white; // Default year text color
+        }),
+        rangeSelectionBackgroundColor: AppColors.white,
+        rangePickerSurfaceTintColor: AppColors.white,
+        elevation: 4,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        dayBackgroundColor: WidgetStateProperty.resolveWith<Color?>((states) {
+          if (states.contains(WidgetState.selected)) {
+            return AppColors.white;
+          }
+        }),
+        todayBackgroundColor: WidgetStateProperty.resolveWith<Color?>((states) {
+          if (states.contains(WidgetState.selected)) {
+            return AppColors.white;
+          }
+          return AppColors.riverBed;
+        }),
+        dayForegroundColor:WidgetStateProperty.resolveWith<Color?>((states) {
+          if (states.contains(WidgetState.selected)) {
+            return AppColors.mirage;
+          }else if(states.contains(WidgetState.disabled)){
+            return AppColors.gray;
+          }
+          return AppColors.white;
+        }) ,
+        todayBorder: BorderSide(
+          color: AppColors.white,
+        ),
+        todayForegroundColor: WidgetStateProperty.resolveWith<Color?>((states) {
+          if (states.contains(WidgetState.selected)) {
+            return AppColors.mirage;
+          }
+          return AppColors.white;
+        }),
+        rangeSelectionOverlayColor: WidgetStatePropertyAll(AppColors.white),
+        rangePickerBackgroundColor: AppColors.mirage,
+        dayStyle: TextStyle(
+            color: AppColors.white
+        ),
+        cancelButtonStyle: ButtonStyle(
+            foregroundColor: WidgetStatePropertyAll(AppColors.white)
+        ),
+        confirmButtonStyle: ButtonStyle(
+            foregroundColor: WidgetStatePropertyAll(AppColors.white)
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          border: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: AppColors.mirage,
+            ),
+          ),
+          helperStyle: TextStyle(
+              color: AppColors.mirage
+          ),
+          disabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: AppColors.mirage,
+            ),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: AppColors.mirage,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: AppColors.mirage,
+            ),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: AppColors.red,
+            ),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: AppColors.mirage,
+            ),
+          ),
+          labelStyle: TextStyle(
+              color: AppColors.mirage
+          ),
+          hintStyle: TextStyle(
+              color: AppColors.mirage
+          ),
+          floatingLabelStyle: TextStyle(
+              color: AppColors.mirage
+          ),
+          counterStyle: TextStyle(
+            color: AppColors.mirage,
+          ),
+          filled: false,
+        )
+    ),
+    colorScheme:  ColorScheme.dark(
+    primary: AppColors.white,
+  ),
   );
 }

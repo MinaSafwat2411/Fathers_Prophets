@@ -49,4 +49,28 @@ class QuizzesModel {
     'wednesday': wednesday?.toJson(),
     'docId': docId,
   };
+
+  QuizzesModel copyWith({
+    String? docId,
+    int? number,
+    QuizModel? friday,
+    QuizModel? monday,
+    QuizModel? saturday,
+    QuizModel? sunday,
+    QuizModel? thursday,
+    QuizModel? tuesday,
+    QuizModel? wednesday,
+  }) {
+    return QuizzesModel(
+      docId: docId ?? this.docId,
+      number: number ?? this.number,
+      friday: friday ?? this.friday,
+      monday: monday ?? this.monday,
+      saturday: saturday ?? this.saturday,
+      sunday: sunday ?? this.sunday,
+      thursday: thursday ?? this.thursday,
+      tuesday: tuesday ?? this.tuesday,
+      wednesday: wednesday ?? this.wednesday,
+    );
+  }
 }

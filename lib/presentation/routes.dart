@@ -11,11 +11,8 @@ import 'package:fathers_prophets/presentation/screens/register_screen/register_s
 import 'package:fathers_prophets/presentation/screens/setting_screen/setting_screen.dart';
 import 'package:fathers_prophets/presentation/screens/splash_screen/splash_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-
 import '../data/models/attendance/attendance_model.dart';
-import 'cubit/attendance/cubit/attendance_cubit.dart';
 
 enum AppRoutes {
   login,
@@ -37,6 +34,7 @@ enum AppRoutes {
   addAttendance,
   quizDetails,
   addQuiz,
+  addEvent,
 }
 
 final GoRouter router = GoRouter(
@@ -124,19 +122,11 @@ final GoRouter router = GoRouter(
           (context, state) => AttendanceDetailsScreen(
             attendance: state.extra as AttendanceModel,
           ),
-      onExit: (context, state) {
-        context.read<AttendanceCubit>().onRest();
-        return true;
-      },
     ),
     GoRoute(
       path: AppRoutePaths.addAttendance,
       name: AppRoutes.addAttendance.name,
       builder: (context, state) => const AddAttendanceScreen(),
-      onExit: (context, state) {
-        context.read<AttendanceCubit>().onRest();
-        return true;
-      },
     ),
     GoRoute(
       path: AppRoutePaths.quizDetails,
@@ -147,6 +137,11 @@ final GoRouter router = GoRouter(
       path: AppRoutePaths.addQuiz,
       name: AppRoutes.addQuiz.name,
       builder: (context, state) => const AddQuizScreen(),
+    ),
+    GoRoute(
+      path: AppRoutePaths.addEvent,
+      name: AppRoutes.addEvent.name,
+      builder: (context, state) => const Text('addEvent'),
     ),
   ],
 );
@@ -169,6 +164,7 @@ abstract class AppRoutePaths {
   static const String bookingDetails = '/booking-details';
   static const String attendanceDetails = '/attendance-details';
   static const String addAttendance = '/add-attendance';
+  static const String addEvent = '/add-event';
   static const String quizDetails = '/quiz-details';
   static const String addQuiz = '/add-quiz';
 }

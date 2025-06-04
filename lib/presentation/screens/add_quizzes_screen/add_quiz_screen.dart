@@ -10,6 +10,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/localization/app_localizations.dart';
 import '../../../core/widgets/custom_snackbar.dart';
 import '../../../data/models/bible/bible_model.dart';
+import '../../cubit/local/cubit/local_cubit.dart';
 import '../../cubit/quizzes/states/quizzes_states.dart';
 import 'day_enum.dart';
 
@@ -27,6 +28,7 @@ class AddQuizScreen extends StatelessWidget {
             appBar: AppBar(
               leading: IconButton(
                 onPressed: () {
+                  cubit.onRestAll();
                   context.pop(null);
                 },
                 icon: Icon(Icons.arrow_back_ios),
@@ -108,6 +110,7 @@ class AddQuizScreen extends StatelessWidget {
                               borderSide: BorderSide(color: AppColors.azureRadiance)
                           )
                       ),
+                      enabled: cubit.selectedDate.isNotEmpty,
                       dropdownMenuEntries: [
                         DropdownMenuEntry<bool>(
                           value: true,
@@ -136,7 +139,7 @@ class AddQuizScreen extends StatelessWidget {
                     Row(
                       mainAxisSize: MainAxisSize.max,
                       children: [
-                        if (cubit.isOldTestament)
+                        if (cubit.isOldTestament??false)
                           Expanded(
                             child: DropdownMenu(
                               inputDecorationTheme: InputDecorationTheme(
@@ -145,6 +148,7 @@ class AddQuizScreen extends StatelessWidget {
                                       borderSide: BorderSide(color: AppColors.azureRadiance)
                                   )
                               ),
+                              enabled: cubit.isOldTestament??false,
                               dropdownMenuEntries: [
                                 for (
                                   int i = 0;
@@ -174,7 +178,7 @@ class AddQuizScreen extends StatelessWidget {
                             ),
                           )
                         else
-                          Expanded(
+                        Expanded(
                             child: DropdownMenu(
                               inputDecorationTheme: InputDecorationTheme(
                                   enabledBorder: OutlineInputBorder(
@@ -193,6 +197,7 @@ class AddQuizScreen extends StatelessWidget {
                                     label: cubit.newTestamentBooks[i].name,
                                   ),
                               ],
+                              enabled: cubit.isOldTestament??false,
                               onSelected: (value) {
                                 cubit.onSelectTestament(
                                   value ?? BibleModel(name: "", chapters: 0),
@@ -219,6 +224,7 @@ class AddQuizScreen extends StatelessWidget {
                                     borderSide: BorderSide(color: AppColors.azureRadiance)
                                 )
                             ),
+                            enabled: cubit.selectedTestamentItem.name.isNotEmpty,
                             dropdownMenuEntries: [
                               for (
                                 int i = 0;
@@ -254,22 +260,24 @@ class AddQuizScreen extends StatelessWidget {
                         Expanded(
                           child: CustomBigTextField(
                             controller: cubit.fromController,
-                            isDark: false,
+                            isDark: context.read<LocaleCubit>().isDark,
                             observe: false,
                             label: localize.translate("from"),
                             onChanged: (p0) => cubit.onAddedVerse(),
                             keyboardType: TextInputType.number,
+                            enable: cubit.chapter.isNotEmpty,
                           ),
                         ),
                         SizedBox(width: 5),
                         Expanded(
                           child: CustomBigTextField(
                             controller: cubit.toController,
-                            isDark: false,
+                            isDark: context.read<LocaleCubit>().isDark,
                             observe: false,
                             label: localize.translate("to"),
                             onChanged: (p0) => cubit.onAddedVerse(),
                             keyboardType: TextInputType.number,
+                            enable: cubit.chapter.isNotEmpty,
                           ),
                         ),
                       ],
@@ -410,7 +418,8 @@ class AddQuizScreen extends StatelessWidget {
                     SizedBox(height: MediaQuery.of(context).size.height / 3),
                     CustomBigTextField(
                       controller: cubit.controller,
-                      isDark: false,
+                      isDark: context.read<LocaleCubit>().isDark,
+                      enable: cubit.question.length < 5,
                       observe: false,
                       label:
                           cubit.question.isEmpty
@@ -447,24 +456,30 @@ class AddQuizScreen extends StatelessWidget {
             ),
           ),
       listener: (context, state) async {
-        if (state is OnLimitQuestions) {
-          showCustomSnackBar(
+        switch(state){
+          case OnLimitQuestions() :showCustomSnackBar(
             context,
             localize.translate("max_questions"),
             icon: Icons.error,
             color: AppColors.red,
           );
-        }
-        if (state is OnReview) {
-          var isAdd = await context.pushNamed(
-            AppRoutes.quizDetails.name,
-            extra: cubit.quiz,
-            queryParameters: {'mode': 'add'},
+          case OnError() :showCustomSnackBar(
+            context,
+            localize.translate(state.error),
+            icon: Icons.error,
+            color: AppColors.red,
           );
-          if (isAdd == null) {
-            return;
-          } else {
-            context.pop(cubit.quiz);
+          case OnReview():{
+            var isAdd = await context.pushNamed(
+              AppRoutes.quizDetails.name,
+              extra: cubit.quiz,
+              queryParameters: {'mode': 'add'},
+            );
+            if (isAdd == null) {
+              return;
+            } else {
+              context.pop(cubit.quiz);
+            }
           }
         }
       },

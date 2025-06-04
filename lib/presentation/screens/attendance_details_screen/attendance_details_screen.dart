@@ -23,8 +23,13 @@ class AttendanceDetailsScreen extends StatelessWidget {
     cubit.attendance = attendance;
     return WillPopScope(
       onWillPop: () {
-        cubit.onRest();
-        return Future.value(true);
+        if (cubit.isUpdate) {
+          context.pop(null);
+          return Future.value(false);
+        } else {
+          context.pop(cubit.attendance);
+          return Future.value(false);
+        }
       },
       child: BlocConsumer<AttendanceCubit, AttendanceStates>(
         builder:
@@ -35,7 +40,7 @@ class AttendanceDetailsScreen extends StatelessWidget {
                     if (cubit.isUpdate) {
                       context.pop(null);
                     } else {
-                      context.pop(cubit.attendance);
+                      context.pop(attendance);
                     }
                   },
                   icon: Icon(Icons.arrow_back_ios),
@@ -113,11 +118,11 @@ class AttendanceDetailsScreen extends StatelessWidget {
                                           CrossAxisAlignment.center,
                                       children: [
                                         Padding(
-                                          padding: const EdgeInsets.only(
-                                            right: 8.0,
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 8.0,
                                           ),
                                           child: Text(
-                                            attendance
+                                            cubit.attendance
                                                     .attendance?[index]
                                                     ?.name ??
                                                 "",
@@ -129,12 +134,12 @@ class AttendanceDetailsScreen extends StatelessWidget {
                                           children: [
                                             Checkbox(
                                               value:
-                                                  attendance
+                                              cubit.attendance
                                                       .attendance?[index]
                                                       ?.shmas ??
                                                   false,
                                               onChanged: (value) {
-                                                attendance
+                                                cubit.attendance
                                                     .attendance?[index]
                                                     ?.shmas = value;
                                                 cubit.onUpdateItem();
@@ -143,12 +148,12 @@ class AttendanceDetailsScreen extends StatelessWidget {
                                             ),
                                             Checkbox(
                                               value:
-                                                  attendance
+                                              cubit.attendance
                                                       .attendance?[index]
                                                       ?.tnawel ??
                                                   false,
                                               onChanged: (value) {
-                                                attendance
+                                                cubit.attendance
                                                     .attendance?[index]
                                                     ?.tnawel = value;
                                                 cubit.onUpdateItem();
@@ -157,12 +162,12 @@ class AttendanceDetailsScreen extends StatelessWidget {
                                             ),
                                             Checkbox(
                                               value:
-                                                  attendance
+                                              cubit.attendance
                                                       .attendance?[index]
                                                       ?.odas ??
                                                   false,
                                               onChanged: (value) {
-                                                attendance
+                                                cubit.attendance
                                                     .attendance?[index]
                                                     ?.odas = value;
                                                 cubit.onUpdateItem();
@@ -171,12 +176,12 @@ class AttendanceDetailsScreen extends StatelessWidget {
                                             ),
                                             Checkbox(
                                               value:
-                                                  attendance
+                                              cubit.attendance
                                                       .attendance?[index]
                                                       ?.sundaySchool ??
                                                   false,
                                               onChanged: (value) {
-                                                attendance
+                                                cubit.attendance
                                                     .attendance?[index]
                                                     ?.sundaySchool = value;
                                                 cubit.onUpdateItem();
@@ -218,7 +223,11 @@ class AttendanceDetailsScreen extends StatelessWidget {
                 ),
               ),
             ),
-        listener: (context, state) {},
+        listener: (context, state) {
+          switch(state){
+            case OnSuccess() : context.pop(cubit.attendance);
+          }
+        },
         buildWhen: (previous, current) => current is! InitialState,
       ),
     );

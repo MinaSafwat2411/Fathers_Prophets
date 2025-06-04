@@ -67,10 +67,9 @@ class UserRepository {
   Future<void> updateApply(UserModel user)async{
     await FirebaseFirestore.instance.collection(FirebaseEndpoints.users).doc(user.uid).update(user.toJson());
   }
-  Future<void> updateApplyToAll()async{
-    var users = await getAllUser();
-    for(var user in users?? <UserModel>[]){
-      await updateUser(user??UserModel());
+  Future<void> updateApplyToAll(List<UserModel> users)async{
+    for(var user in users){
+      await updateUser(user);
     }
   }
 }

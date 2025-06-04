@@ -54,6 +54,7 @@ class DefaultFirebaseOptions {
     appId: '1:1067497462234:android:7e3bfb2dec5bec1ca2c8e3',
     messagingSenderId: '1067497462234',
     projectId: 'fathers-prophets',
+    databaseURL: 'https://fathers-prophets-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'fathers-prophets.firebasestorage.app',
   );
 
@@ -62,6 +63,7 @@ class DefaultFirebaseOptions {
     appId: '1:1067497462234:ios:eecf4c4595695013a2c8e3',
     messagingSenderId: '1067497462234',
     projectId: 'fathers-prophets',
+    databaseURL: 'https://fathers-prophets-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'fathers-prophets.firebasestorage.app',
     iosBundleId: 'com.fathersprophets.fathersProphets',
   );

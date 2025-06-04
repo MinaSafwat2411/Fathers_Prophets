@@ -1,5 +1,3 @@
-import 'package:fathers_prophets/presentation/cubit/attendance/cubit/attendance_cubit.dart';
-import 'package:fathers_prophets/presentation/cubit/attendance/states/attendance_states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -7,6 +5,8 @@ import '../../../core/localization/app_localizations.dart';
 import '../../../core/utils/app_colors.dart';
 import '../../../core/widgets/custom_button.dart';
 import '../../../core/widgets/custom_loading.dart';
+import '../../cubit/add_attendance/cubit/add_attendance_cubit.dart';
+import '../../cubit/add_attendance/states/add_attendance_states.dart';
 import '../../cubit/local/cubit/local_cubit.dart';
 
 class AddAttendanceScreen extends StatelessWidget {
@@ -14,15 +14,20 @@ class AddAttendanceScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var cubit = AttendanceCubit.get(context);
+    var cubit = AddAttendanceCubit.get(context);
     var localize = AppLocalizations.of(context);
     var textTheme = Theme.of(context).textTheme;
     return WillPopScope(
       onWillPop: () {
-        cubit.onRest();
-        return Future.value(true);
+        if(cubit.isUpdate||cubit.selectedDate==null){
+          cubit.onRest();
+          context.pop(null);
+        }else {
+          context.pop(cubit.attendance);
+        }
+        return Future.value(false);
       },
-      child: BlocConsumer<AttendanceCubit, AttendanceStates>(
+      child: BlocConsumer<AddAttendanceCubit, AddAttendanceStates>(
         builder: (context, state) => Scaffold(
           appBar: AppBar(
             leading: IconButton(
@@ -95,7 +100,7 @@ class AddAttendanceScreen extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Padding(
-                                    padding: const EdgeInsets.only(right: 8.0),
+                                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
                                     child: Text(
                                       cubit.attendance.attendance?[index]?.name ?? "",
                                     ),
@@ -179,7 +184,13 @@ class AddAttendanceScreen extends StatelessWidget {
             ),
           ),
         ),
-        listener: (context, state) {},
+        listener: (context, state) {
+          switch(state){
+            case OnSuccess():{
+              context.pop(cubit.attendance);
+            }
+          }
+        },
         buildWhen:(previous, current) => current is! InitialState,
       ),
     );

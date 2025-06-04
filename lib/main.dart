@@ -1,3 +1,4 @@
+import 'package:fathers_prophets/presentation/cubit/add_attendance/cubit/add_attendance_cubit.dart';
 import 'package:fathers_prophets/presentation/cubit/attendance/cubit/attendance_cubit.dart';
 import 'package:fathers_prophets/presentation/cubit/profile/cubit/profile_cubit.dart';
 import 'package:fathers_prophets/presentation/cubit/quizzes/cubit/quizzes_cubit.dart';
@@ -15,11 +16,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'core/localization/app_localizations.dart';
 import 'core/utils/app_themes.dart';
-import 'data/firebase/firebase_options.dart';
 import 'data/services/bloc_observer.dart';
 import 'data/services/cache_helper.dart';
 import 'data/services/notification_services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'data/firebase/firebase_options.dart';
 
 
 
@@ -28,7 +29,7 @@ void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await CacheHelper.init();
   await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
+    options: DefaultFirebaseOptions.currentPlatform
   );
   NotificationService.init();
   await NotificationService.handleFirebaseMessaging();
@@ -56,7 +57,8 @@ class MyApp extends StatelessWidget {
           BlocProvider(create: (context) => OnboardingCubit()),
           BlocProvider(create: (context) => LoginCubit()),
           BlocProvider(create: (context) => LayoutCubit()..getUserData()..getAllQuizzes()..getAllAttendance(lang)),
-          BlocProvider(create: (context) => AttendanceCubit()..getUserData()..getMembers()),
+          BlocProvider(create: (context) => AttendanceCubit()),
+          BlocProvider(create: (context) => AddAttendanceCubit()..getUserData()..getMembers()),
           BlocProvider(create: (context) => QuizzesCubit(),),
           BlocProvider(create: (context) => ProfileCubit()),
           BlocProvider(create: (context) => RegisterCubit()),

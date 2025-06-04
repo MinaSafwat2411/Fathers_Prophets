@@ -4,6 +4,7 @@ import 'package:fathers_prophets/data/models/users/member_quizzes_model.dart';
 import 'package:fathers_prophets/data/models/users/users_model.dart';
 import 'package:fathers_prophets/data/repositories/attendance/attendance_repository.dart';
 import 'package:fathers_prophets/domain/usecases/attendance/attendance_use_case.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -77,6 +78,7 @@ class LayoutCubit extends Cubit<LayoutStates> {
 
   void getAllQuizzes() async {
     quizzes = CacheHelper.getQuizzes();
+    sortQuizzes();
     quizzesSearch = quizzes;
   }
 

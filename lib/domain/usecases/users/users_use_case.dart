@@ -47,5 +47,10 @@ class UsersUseCase {
   Future<UserModel?> getUserData(String uid)async{
     return await userRepository.getUserData(uid);
   }
-
+  Future<void> updateApply(UserModel user)async{
+    await userRepository.updateApply(user);
+  }
+  Future<void> updateApplyToAll(List<UserModel> users)async {
+    await userRepository.updateApplyToAll(users);
+  }
 }

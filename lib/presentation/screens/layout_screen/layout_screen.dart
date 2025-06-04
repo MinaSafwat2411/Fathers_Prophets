@@ -1,4 +1,5 @@
-import 'package:fathers_prophets/core/utils/app_colors.dart';
+import 'package:fathers_prophets/presentation/cubit/add_attendance/cubit/add_attendance_cubit.dart';
+import 'package:fathers_prophets/presentation/screens/event_screen/event_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -107,7 +108,14 @@ class LayoutScreen extends StatelessWidget {
                   onPressed: () async {
                     switch (cubit.currentIndex) {
                       case 0: break;
-                      case 1: break;
+                      case 1: {
+                        var event = await context.pushNamed(AppRoutes.addEvent.name);
+                        if(event == null) {
+                          return;
+                        } else {
+                          break;
+                        }
+                      }
                       case 2:
                         {
                           var quiz = await context.pushNamed(AppRoutes.addQuiz.name);
@@ -126,6 +134,7 @@ class LayoutScreen extends StatelessWidget {
                         } else {
                           cubit.attendance.add(attendance as AttendanceModel);
                           cubit.sortAttendance();
+                          context.read<AddAttendanceCubit>().onRest();
                           break;
                         }
                       }
@@ -164,8 +173,8 @@ class LayoutScreen extends StatelessWidget {
                       label: localize.translate('quizzes'),
                     ),
                     CustomBottomNavigationBarItem.create(
-                      icon: Icons.person_outlined,
-                      label: localize.translate('attendance'),
+                      icon: (cubit.userData.isTeacher?? false)?  Icons.person_outlined : Icons.directions_run,
+                      label: (cubit.userData.isTeacher?? false)? localize.translate('attendance') : localize.translate('activity'),
                     ),
                   ],
                 ),
@@ -173,11 +182,12 @@ class LayoutScreen extends StatelessWidget {
             ),
             body: PageView(
               controller: cubit.pageController,
+              physics: NeverScrollableScrollPhysics(),
               children: [
                 Text("Home"),
-                if(state is OnSearchEventOpenState ||state is OnSearchEventState) EventSearch(onChanged: (p0) => cubit.onSearchEvent(p0),)else Text("Home"),
+                if(state is OnSearchEventOpenState ||state is OnSearchEventState) EventSearch(onChanged: (p0) => cubit.onSearchEvent(p0),)else EventScreen(),
                 if(state is OnSearchQuizOpenState || state is OnSearchQuizState) QuizSearch(quizzes: cubit.quizzesSearch, quizzesDone: cubit.quizzesDone,onChanged: (p0) => cubit.onSearchQuiz(p0),) else QuizzesScreen(quizzes: cubit.quizzes,quizzesDone: cubit.quizzesDone),
-                AttendanceScreen(attendanceList: cubit.attendance,),
+                (cubit.userData.isTeacher??false) ?AttendanceScreen(attendanceList: cubit.attendance,userData: cubit.userData,):Text("Activity"),
               ],
               onPageChanged: (value) {
                 cubit.onValueChange(value);

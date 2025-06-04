@@ -85,6 +85,18 @@
   "to": "To",
   "select_testament": "Select Testament",
   "select_chapter": "Select Chapter",
-  "select_book ": "Select Book",
-  "submit": "Submit"
+  "select_book": "Select Book",
+  "submit": "Submit",
+  "activity": "Activity",
+  "add_more_questions": "Add More Questions",
+  "bible": "Bible",
+  "coptic": "Coptic",
+  "melodies": "Melodies",
+  "ritual": "Ritual",
+  "choir": "Choir",
+  "pingPong" : "Ping Pong",
+  "football" : "Football",
+  "volleyball": "Volleyball",
+  "chess": "Chess",
+  "doctrine": "Doctrine"
 }

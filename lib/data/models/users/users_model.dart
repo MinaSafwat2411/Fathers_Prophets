@@ -90,4 +90,46 @@ class UserModel {
       "isAnyUpdate": isAnyUpdate,
     };
   }
+  UserModel copyWith({
+   String? address,
+   bool? admin,
+   String? classId,
+   String? name,
+   String? phone,
+   String? profile,
+   String? uid,
+   bool? isTeacher,
+   int? age,
+   DateTime? birthday,
+   String? fatherName,
+   bool? isShams,
+   ParentsModel? parents,
+   List<MemberQuizzesModel?>? quizzes,
+   bool? isAdmin,
+   String? date,
+   String? version,
+   bool? isAnyUpdate
+  }){
+    return UserModel(
+      address: address??this.address,
+      admin: admin??this.admin,
+      classId: classId??this.classId,
+      name: name??this.name,
+      phone: phone??this.phone,
+      profile: profile??this.profile,
+      uid: uid??this.uid,
+      isTeacher: isTeacher??this.isTeacher,
+      age: age??this.age,
+      birthday: birthday??this.birthday,
+      fatherName: fatherName??this.fatherName,
+      isShams: isShams??this.isShams,
+      parents: parents??this.parents,
+      quizzes: quizzes??this.quizzes,
+      isAdmin: isAdmin??this.isAdmin,
+      date: date??this.date,
+      version: version??this.version,
+      isAnyUpdate: isAnyUpdate??this.isAnyUpdate,
+    );
+  }
+
 }

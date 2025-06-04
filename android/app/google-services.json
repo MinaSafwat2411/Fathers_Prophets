@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "1067497462234",
+    "firebase_url": "https://fathers-prophets-default-rtdb.europe-west1.firebasedatabase.app",
     "project_id": "fathers-prophets",
     "storage_bucket": "fathers-prophets.firebasestorage.app"
   },

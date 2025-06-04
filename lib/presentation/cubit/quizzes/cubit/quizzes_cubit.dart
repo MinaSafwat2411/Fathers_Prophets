@@ -25,14 +25,14 @@ class QuizzesCubit extends Cubit<QuizzesStates> {
   var userData = UserModel();
   var quizAnswers = QuizAnswers();
   var quiz = QuizzesModel(
-    friday: QuizModel(questions: []),
-    monday: QuizModel(questions: []),
-    saturday: QuizModel(questions: []),
-    sunday: QuizModel(questions: []),
-    thursday: QuizModel(questions: []),
-    tuesday: QuizModel(questions: []),
-    wednesday: QuizModel(questions: []),
-    number: CacheHelper.getQuizzes().length+1
+    friday: QuizModel(questions: [],shahid: ""),
+    monday: QuizModel(questions: [],shahid: ""),
+    saturday: QuizModel(questions: [],shahid: ""),
+    sunday: QuizModel(questions: [],shahid: ""),
+    thursday: QuizModel(questions: [],shahid: ""),
+    tuesday: QuizModel(questions: [],shahid: ""),
+    wednesday: QuizModel(questions: [],shahid: ""),
+    number: CacheHelper.getQuizzes().length+1,
   );
   var selectedDate = "";
   TextEditingController controller = TextEditingController();
@@ -50,7 +50,7 @@ class QuizzesCubit extends Cubit<QuizzesStates> {
   var chapter = "";
   var from = "";
   var to = "";
-  var isOldTestament = false;
+  bool? isOldTestament;
   var selectedTestamentItem = BibleModel(name: "", chapters: 0);
   var questions = <QuestionsModel>[];
   List<Answer>? answers;
@@ -206,7 +206,7 @@ class QuizzesCubit extends Cubit<QuizzesStates> {
   }
 
   void onSubmit() async {
-    for (var i = 0; i < 1; i++) {
+    for (var i = 0; i <5 ; i++) {
       if (quizAnswers.friday?.answers?[i].answer ==
           quiz.friday?.questions?[i].correctAnswer) {
         score++;
@@ -271,9 +271,9 @@ class QuizzesCubit extends Cubit<QuizzesStates> {
 
   void onAddQuiz()async{
     try{
-      await quizzesUseCase.addNewQuiz(quiz);
-      var quizzes= CacheHelper.getQuizzes();
-      quizzes.add(quiz);
+      var docId = await quizzesUseCase.addNewQuiz(quiz);
+      var quizzes = CacheHelper.getQuizzes();
+      quizzes.add(quiz.copyWith(docId: docId));
       await CacheHelper.saveQuizzes(quizzes);
         emit(OnClose());
     }catch(e) {
@@ -330,7 +330,7 @@ class QuizzesCubit extends Cubit<QuizzesStates> {
       getQuestions();
     } else {
       selectedDate = "friday";
-      onRestAll();
+      onRestQuestionAdd();
       emit(OnSelectDate());
     }
   }
@@ -466,7 +466,8 @@ class QuizzesCubit extends Cubit<QuizzesStates> {
           }
       }
     }
-    onRestAll();
+    getQuestions();
+    onRestQuestionAdd();
     emit(OnResetAll());
   }
 
@@ -513,10 +514,47 @@ class QuizzesCubit extends Cubit<QuizzesStates> {
     emit(OnQuestionControllerChange());
   }
 
-  void onRestAll() {
+  void onRestQuestionAdd() {
     controller.clear();
     question.clear();
-    emit(OnAddQuestion());
+    Future.delayed(Duration(seconds: 1), () {
+      emit(OnAddQuestion());
+
+    });
+  }
+
+  void onRestAll(){
+    quizAnswers = QuizAnswers();
+    quiz = QuizzesModel(
+      friday: QuizModel(questions: [],shahid: ""),
+      monday: QuizModel(questions: [],shahid: ""),
+      saturday: QuizModel(questions: [],shahid: ""),
+      sunday: QuizModel(questions: [],shahid: ""),
+      thursday: QuizModel(questions: [],shahid: ""),
+      tuesday: QuizModel(questions: [],shahid: ""),
+      wednesday: QuizModel(questions: [],shahid: ""),
+      number: CacheHelper.getQuizzes().length+1,
+    );
+    selectedDate = "";
+    noOfQuestions = 5;
+    answerIndex = -1;
+    correctAnswer = [false, false, false, false, false];
+    question = <String>[];
+    score = 0;
+    correctAnswersIndex = -1;
+    selectedTestament = "";
+    chapter = "";
+    from = "";
+    to = "";
+    isOldTestament=null;
+    selectedTestamentItem = BibleModel(name: "", chapters: 0);
+    questions = <QuestionsModel>[];
+    answers=<Answer>[];
+    isAdd = false;
+    controller.clear();
+    question.clear();
+    fromController.clear();
+    toController.clear();
   }
 
   final List<BibleModel> oldTestamentBooks = [
@@ -658,7 +696,11 @@ class QuizzesCubit extends Cubit<QuizzesStates> {
   }
 
   void onReview() {
-    emit(OnReview());
+    if (from.isNotEmpty&&to.isNotEmpty&&quiz.friday?.questions?.length==5&&quiz.saturday?.questions?.length==5&&quiz.sunday?.questions?.length==5&&quiz.monday?.questions?.length==5&&quiz.tuesday?.questions?.length==5&&quiz.wednesday?.questions?.length==5&&quiz.thursday?.questions?.length==5) {
+      emit(OnReview());
+    }else{
+      emit(OnError("add_more_questions"));
+    }
   }
 
   void getQuestions() {

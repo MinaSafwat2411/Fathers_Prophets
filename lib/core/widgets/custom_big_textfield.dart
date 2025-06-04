@@ -12,7 +12,8 @@ class CustomBigTextField extends StatelessWidget {
     this.validator,
     this.onChanged,
     this.icon,
-    this.keyboardType
+    this.keyboardType,
+    this.enable = true,
   });
 
   final String? label;
@@ -23,6 +24,7 @@ class CustomBigTextField extends StatelessWidget {
   final void Function(String)? onChanged;
   Widget? icon;
   final TextInputType? keyboardType;
+  bool enable = true;
 
   @override
   Widget build(BuildContext context) {
@@ -30,10 +32,11 @@ class CustomBigTextField extends StatelessWidget {
       height: 60,
       width: double.infinity,
       child: TextFormField(
+        enabled: enable,
         keyboardType: keyboardType,
         onChanged: onChanged,
-        style: const TextStyle(
-          color: AppColors.mirage,
+        style:  TextStyle(
+          color: isDark ? AppColors.white:AppColors.mirage,
         ),
         controller: controller,
         decoration: InputDecoration(
@@ -44,10 +47,10 @@ class CustomBigTextField extends StatelessWidget {
           ),
           hintText: label,
           suffix: icon,
-          labelStyle: const TextStyle(
+          labelStyle:  TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w500,
-            color: AppColors.white,
+            color: isDark ? AppColors.mirage:AppColors.white,
           ),
           floatingLabelStyle: const TextStyle(
             color: AppColors.white,
@@ -76,8 +79,10 @@ class CustomBigTextField extends StatelessWidget {
             borderSide: const BorderSide(color: AppColors.red),
             borderRadius: BorderRadius.circular(8),
           ),
-          fillColor: isDark ? AppColors.mirage : AppColors.white,
-          filled: true,
+          counterStyle: TextStyle(
+            color: AppColors.white
+          ),
+          filled: false,
         ),
         autofocus: false,
         maxLines: 1,
