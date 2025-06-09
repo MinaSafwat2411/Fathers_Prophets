@@ -124,10 +124,8 @@ class SplashCubit extends Cubit<SplashStates> {
       if(ritualEvents.isNotEmpty) await CacheHelper.saveEvents(ritualEvents, 'ritual');
       if(doctrineEvents.isNotEmpty) await CacheHelper.saveEvents(doctrineEvents, 'doctrine');
       if(chessEvents.isNotEmpty) await CacheHelper.saveEvents(chessEvents, 'chess');
-
       emit(OnSuccess());
     } catch (e) {
-      print(e.toString());
       emit(OnError(e.toString()));
     }
   }
