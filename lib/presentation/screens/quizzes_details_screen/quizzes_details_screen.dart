@@ -3,7 +3,6 @@ import 'package:fathers_prophets/core/widgets/custom_button.dart';
 import 'package:fathers_prophets/data/models/quizzes/quizzes_model.dart';
 import 'package:fathers_prophets/presentation/cubit/quizzes/cubit/quizzes_cubit.dart';
 import 'package:fathers_prophets/presentation/cubit/quizzes/states/quizzes_states.dart';
-import 'package:fathers_prophets/presentation/routes.dart';
 import 'package:fathers_prophets/presentation/screens/quizzes_details_screen/quiz_day_questions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,7 +21,6 @@ class QuizzesDetailsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final isAddMode = query['mode'] == 'add';
     var localize = AppLocalizations.of(context);
-    var textTheme = Theme.of(context).textTheme;
     var cubit = BlocProvider.of<QuizzesCubit>(context)..createQuizAnswers(quizzes.docId??"",quizzes);
     cubit.isAdd = isAddMode;
     return BlocConsumer<QuizzesCubit,QuizzesStates>(
@@ -93,7 +91,7 @@ class QuizzesDetailsScreen extends StatelessWidget {
       ),
       listener: (context, state) {
         if(state is OnGetBack){
-          context.pop();
+          context.pop(false);
         }
         if(state is OnSubmit){
           showCustomSnackBar(context, "Your Score is ${cubit.score}", icon: Icons.error, color: AppColors.red);
@@ -103,7 +101,7 @@ class QuizzesDetailsScreen extends StatelessWidget {
           showCustomSnackBar(context, state.error, icon: Icons.error, color: AppColors.red);
         }
         if(state is OnClose){
-          context.pop(true);
+          context.pop(cubit.quiz);
         }
       },
       listenWhen: (previous, current) => current is OnGetBack || current is OnSubmit  ||current is OnClose,

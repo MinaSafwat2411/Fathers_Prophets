@@ -2,7 +2,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../data/services/cache_helper.dart';
-import '../../../../main.dart';
 import '../states/local_states.dart';
 
 class LocaleCubit extends Cubit<LocaleStates> {

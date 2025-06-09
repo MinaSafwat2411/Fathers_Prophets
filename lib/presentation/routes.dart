@@ -2,6 +2,7 @@ import 'package:fathers_prophets/data/models/quizzes/quizzes_model.dart';
 import 'package:fathers_prophets/presentation/screens/add_attendance_screen/add_attendance_screen.dart';
 import 'package:fathers_prophets/presentation/screens/add_quizzes_screen/add_quiz_screen.dart';
 import 'package:fathers_prophets/presentation/screens/attendance_details_screen/attendance_details_screen.dart';
+import 'package:fathers_prophets/presentation/screens/event_details/event_details.dart';
 import 'package:fathers_prophets/presentation/screens/layout_screen/layout_screen.dart';
 import 'package:fathers_prophets/presentation/screens/login_screen/login_screen.dart';
 import 'package:fathers_prophets/presentation/screens/onboarding_screen/onboarding_screen.dart';
@@ -13,6 +14,7 @@ import 'package:fathers_prophets/presentation/screens/splash_screen/splash_scree
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../data/models/attendance/attendance_model.dart';
+import '../data/models/events/events_model.dart';
 
 enum AppRoutes {
   login,
@@ -35,6 +37,7 @@ enum AppRoutes {
   quizDetails,
   addQuiz,
   addEvent,
+  eventDetails,
 }
 
 final GoRouter router = GoRouter(
@@ -143,6 +146,17 @@ final GoRouter router = GoRouter(
       name: AppRoutes.addEvent.name,
       builder: (context, state) => const Text('addEvent'),
     ),
+    GoRoute(
+      path: AppRoutePaths.eventDetails,
+      name: AppRoutes.eventDetails.name,
+      builder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>;
+        return EventDetails(
+          events: extra['items'] as List<EventsModel>,
+          title: extra['title'] as String,
+      );
+      },
+    ),
   ],
 );
 
@@ -167,4 +181,5 @@ abstract class AppRoutePaths {
   static const String addEvent = '/add-event';
   static const String quizDetails = '/quiz-details';
   static const String addQuiz = '/add-quiz';
+  static const String eventDetails = '/event-details';
 }

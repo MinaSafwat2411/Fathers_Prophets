@@ -273,9 +273,10 @@ class QuizzesCubit extends Cubit<QuizzesStates> {
     try{
       var docId = await quizzesUseCase.addNewQuiz(quiz);
       var quizzes = CacheHelper.getQuizzes();
-      quizzes.add(quiz.copyWith(docId: docId));
+      quiz= quiz.copyWith(docId: docId);
+      quizzes.add(quiz);
       await CacheHelper.saveQuizzes(quizzes);
-        emit(OnClose());
+      emit(OnClose());
     }catch(e) {
       emit(OnError(e.toString()));
     }
@@ -348,12 +349,10 @@ class QuizzesCubit extends Cubit<QuizzesStates> {
                   correctAnswer: correctAnswersIndex,
                 ),
               );
-              if (quiz.friday?.questions?.length == 5) {
-                onAddShahid();
-              }
             } else {
               emit(OnLimitQuestions());
             }
+            quiz.friday?.shahid = "$selectedTestament $chapter ($from - $to)";
             break;
           }
         case "saturday":
@@ -366,12 +365,10 @@ class QuizzesCubit extends Cubit<QuizzesStates> {
                   correctAnswer: correctAnswersIndex,
                 ),
               );
-              if (quiz.saturday?.questions?.length == 5) {
-                onAddShahid();
-              }
             } else {
               emit(OnLimitQuestions());
             }
+            quiz.saturday?.shahid = "$selectedTestament $chapter ($from - $to)";
             break;
           }
         case "sunday":
@@ -384,12 +381,10 @@ class QuizzesCubit extends Cubit<QuizzesStates> {
                   correctAnswer: correctAnswersIndex,
                 ),
               );
-              if (quiz.sunday?.questions?.length == 5) {
-                onAddShahid();
-              }
             } else {
               emit(OnLimitQuestions());
             }
+            quiz.sunday?.shahid = "$selectedTestament $chapter ($from - $to)";
             break;
           }
         case "monday":
@@ -402,12 +397,10 @@ class QuizzesCubit extends Cubit<QuizzesStates> {
                   correctAnswer: correctAnswersIndex,
                 ),
               );
-              if (quiz.monday?.questions?.length == 5) {
-                onAddShahid();
-              }
             } else {
               emit(OnLimitQuestions());
             }
+            quiz.monday?.shahid = "$selectedTestament $chapter ($from - $to)";
             break;
           }
         case "tuesday":
@@ -420,12 +413,10 @@ class QuizzesCubit extends Cubit<QuizzesStates> {
                   correctAnswer: correctAnswersIndex,
                 ),
               );
-              if (quiz.tuesday?.questions?.length == 5) {
-                onAddShahid();
-              }
             } else {
               emit(OnLimitQuestions());
             }
+            quiz.tuesday?.shahid = "$selectedTestament $chapter ($from - $to)";
             break;
           }
         case "wednesday":
@@ -438,12 +429,10 @@ class QuizzesCubit extends Cubit<QuizzesStates> {
                   correctAnswer: correctAnswersIndex,
                 ),
               );
-              if (quiz.wednesday?.questions?.length == 5) {
-                onAddShahid();
-              }
             } else {
               emit(OnLimitQuestions());
             }
+            quiz.wednesday?.shahid = "$selectedTestament $chapter ($from - $to)";
             break;
           }
         case "thursday":
@@ -456,12 +445,10 @@ class QuizzesCubit extends Cubit<QuizzesStates> {
                   correctAnswer: correctAnswersIndex,
                 ),
               );
-              if (quiz.thursday?.questions?.length == 5) {
-                onAddShahid();
-              }
             } else {
               emit(OnLimitQuestions());
             }
+            quiz.thursday?.shahid = "$selectedTestament $chapter ($from - $to)";
             break;
           }
       }
@@ -649,45 +636,6 @@ class QuizzesCubit extends Cubit<QuizzesStates> {
     emit(OnAnswer());
   }
 
-  void onAddShahid() {
-    switch (selectedDate) {
-      case "friday":
-        {
-          quiz.friday?.shahid = "$selectedTestament $chapter ($from - $to)";
-          break;
-        }
-      case "saturday":
-        {
-          quiz.friday?.shahid = "$selectedTestament $chapter ($from - $to)";
-          break;
-        }
-      case "sunday":
-        {
-          quiz.friday?.shahid = "$selectedTestament $chapter ($from - $to)";
-          break;
-        }
-      case "monday":
-        {
-          quiz.friday?.shahid = "$selectedTestament $chapter ($from - $to)";
-          break;
-        }
-      case "tuesday":
-        {
-          quiz.friday?.shahid = "$selectedTestament $chapter ($from - $to)";
-          break;
-        }
-      case "wednesday":
-        {
-          quiz.friday?.shahid = "$selectedTestament $chapter ($from - $to)";
-          break;
-        }
-      case "thursday":
-        {
-          quiz.friday?.shahid = "$selectedTestament $chapter ($from - $to)";
-          break;
-        }
-    }
-  }
 
   void onAddedVerse() {
     from = fromController.text;

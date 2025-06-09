@@ -98,5 +98,6 @@
   "football" : "Football",
   "volleyball": "Volleyball",
   "chess": "Chess",
-  "doctrine": "Doctrine"
+  "doctrine": "Doctrine",
+  "no_events": "No Events Found"
 }

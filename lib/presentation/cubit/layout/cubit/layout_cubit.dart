@@ -4,10 +4,10 @@ import 'package:fathers_prophets/data/models/users/member_quizzes_model.dart';
 import 'package:fathers_prophets/data/models/users/users_model.dart';
 import 'package:fathers_prophets/data/repositories/attendance/attendance_repository.dart';
 import 'package:fathers_prophets/domain/usecases/attendance/attendance_use_case.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import '../../../../data/models/events/events_model.dart';
 import '../../../../data/services/cache_helper.dart';
 import '../states/layout_states.dart';
 
@@ -24,6 +24,16 @@ class LayoutCubit extends Cubit<LayoutStates> {
   List<QuizzesModel> quizzesSearch = [];
   var userData = UserModel();
   List<String> quizzesDone = [];
+  var footballEvents = <EventsModel>[];
+  var bibleEvents = <EventsModel>[];
+  var pingPongEvents = <EventsModel>[];
+  var volleyballEvents = <EventsModel>[];
+  var copticEvents = <EventsModel>[];
+  var choirEvents = <EventsModel>[];
+  var melodiesEvents = <EventsModel>[];
+  var ritualEvents = <EventsModel>[];
+  var doctrineEvents = <EventsModel>[];
+  var chessEvents = <EventsModel>[];
 
   final attendanceUseCase = AttendanceUseCase(AttendanceRepository());
 
@@ -76,8 +86,18 @@ class LayoutCubit extends Cubit<LayoutStates> {
     emit(SuccessState());
   }
 
-  void getAllQuizzes() async {
+  void getAllData() async {
     quizzes = CacheHelper.getQuizzes();
+    footballEvents = CacheHelper.getEvents('football');
+    bibleEvents = CacheHelper.getEvents('bible');
+    pingPongEvents = CacheHelper.getEvents('pingPong');
+    volleyballEvents = CacheHelper.getEvents('volleyball');
+    copticEvents = CacheHelper.getEvents('coptic');
+    choirEvents = CacheHelper.getEvents('choir');
+    melodiesEvents = CacheHelper.getEvents('melodies');
+    ritualEvents = CacheHelper.getEvents('ritual');
+    doctrineEvents = CacheHelper.getEvents('doctrine');
+    chessEvents = CacheHelper.getEvents('chess');
     sortQuizzes();
     quizzesSearch = quizzes;
   }

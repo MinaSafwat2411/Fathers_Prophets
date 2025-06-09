@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/classes/class_model.dart';
+import '../models/events/events_model.dart';
 import '../models/quizzes/quizzes_model.dart';
 import '../models/users/users_model.dart';
 
@@ -183,6 +184,27 @@ class CacheHelper{
     } else {
       return null;
     }
+  }
+
+  static Future<bool> saveEvents(List<EventsModel?> events,String key) async {
+    String jsonString = jsonEncode(
+        events.map((eventsModel) => eventsModel?.toJson()).toList());
+    await sharedPreferences?.setString(key, jsonString);
+    return true;
+  }
+
+  static List<EventsModel> getEvents(String key) {
+    String? jsonString = sharedPreferences?.getString(key);
+    if (jsonString != null) {
+      List<dynamic> jsonList = jsonDecode(jsonString);
+      return jsonList.map((json) => EventsModel.fromJson(json,json['docId']??"")).toList();
+    } else {
+      return [];
+    }
+  }
+
+  static Future<bool> removeEvents(String key) async {
+    return await sharedPreferences!.remove(key);
   }
 
   static Future<bool> removeClassData() async {

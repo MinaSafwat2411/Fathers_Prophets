@@ -1,4 +1,5 @@
 import 'package:fathers_prophets/data/models/users/parents_model.dart';
+import 'package:fathers_prophets/data/models/users/user_events_model.dart';
 import 'member_quizzes_model.dart';
 
 class UserModel {
@@ -20,6 +21,7 @@ class UserModel {
   final String? date;
   final String? version;
   final bool? isAnyUpdate;
+  final UserEventsModel? events;
 
 
   UserModel({
@@ -40,7 +42,8 @@ class UserModel {
     this.isAdmin,
     this.date,
     this.version,
-    this.isAnyUpdate
+    this.isAnyUpdate,
+    this.events,
 });
   factory UserModel.fromJson(Map<String, dynamic> json,String uid) {
     return UserModel(
@@ -67,6 +70,13 @@ class UserModel {
       date: DateTime.parse(json['birthday']).toString(),
       version: json["version"],
       isAnyUpdate: json["isAnyUpdate"],
+      events: UserEventsModel.fromJson(json["events"]??<String, dynamic>{
+        "bible": [],
+        "football": [],
+        "pingPong": [],
+        "volleyball": [],
+        "coptic": [],
+      }),
     );
   }
   Map<String, dynamic> toJson() {
@@ -88,6 +98,7 @@ class UserModel {
       'uid':uid,
       "version": version,
       "isAnyUpdate": isAnyUpdate,
+      "events": events?.toJson(),
     };
   }
   UserModel copyWith({
@@ -108,7 +119,8 @@ class UserModel {
    bool? isAdmin,
    String? date,
    String? version,
-   bool? isAnyUpdate
+   bool? isAnyUpdate,
+    UserEventsModel? events
   }){
     return UserModel(
       address: address??this.address,
@@ -129,6 +141,7 @@ class UserModel {
       date: date??this.date,
       version: version??this.version,
       isAnyUpdate: isAnyUpdate??this.isAnyUpdate,
+      events: events??this.events,
     );
   }
 

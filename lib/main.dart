@@ -1,5 +1,6 @@
 import 'package:fathers_prophets/presentation/cubit/add_attendance/cubit/add_attendance_cubit.dart';
 import 'package:fathers_prophets/presentation/cubit/attendance/cubit/attendance_cubit.dart';
+import 'package:fathers_prophets/presentation/cubit/events/cubit/events_cubit.dart';
 import 'package:fathers_prophets/presentation/cubit/profile/cubit/profile_cubit.dart';
 import 'package:fathers_prophets/presentation/cubit/quizzes/cubit/quizzes_cubit.dart';
 import 'package:fathers_prophets/presentation/cubit/layout/cubit/layout_cubit.dart';
@@ -56,12 +57,13 @@ class MyApp extends StatelessWidget {
           BlocProvider(create: (context) => SplashCubit()..onNavigate(isDark,uid,isOpened)),
           BlocProvider(create: (context) => OnboardingCubit()),
           BlocProvider(create: (context) => LoginCubit()),
-          BlocProvider(create: (context) => LayoutCubit()..getUserData()..getAllQuizzes()..getAllAttendance(lang)),
+          BlocProvider(create: (context) => LayoutCubit()..getUserData()..getAllData()..getAllAttendance(lang)),
           BlocProvider(create: (context) => AttendanceCubit()),
           BlocProvider(create: (context) => AddAttendanceCubit()..getUserData()..getMembers()),
           BlocProvider(create: (context) => QuizzesCubit(),),
           BlocProvider(create: (context) => ProfileCubit()),
           BlocProvider(create: (context) => RegisterCubit()),
+          BlocProvider(create: (context) => EventsCubit()),
         ],
         child: BlocConsumer<LocaleCubit, LocaleStates>(
           builder: (context, state) => MaterialApp.router(

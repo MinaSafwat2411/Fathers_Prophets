@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'booking_shimmer_item.dart';
+import 'event_shimmer_item.dart';
 
 class BookingShimmer extends StatelessWidget {
   const BookingShimmer({super.key,required this.isDark});
@@ -9,7 +9,7 @@ class BookingShimmer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.separated(
-        itemBuilder: (context, index) => BookingShimmerItem(isDark: isDark,),
+        itemBuilder: (context, index) => EventShimmerItem(isDark: isDark,),
         separatorBuilder: (context, index) => const SizedBox(height: 15,),
         itemCount: 3);
   }

@@ -1,9 +1,12 @@
 import 'dart:async';
 
 import 'package:fathers_prophets/core/constants/firebase_endpoints.dart';
+import 'package:fathers_prophets/data/models/events/events_model.dart';
+import 'package:fathers_prophets/data/repositories/events/events_repository.dart';
 import 'package:fathers_prophets/data/repositories/quizzes/quizzes_repository.dart';
 import 'package:fathers_prophets/data/repositories/users/users_repository.dart';
 import 'package:fathers_prophets/domain/usecases/classes/classes_use_case.dart';
+import 'package:fathers_prophets/domain/usecases/events/events_use_case.dart';
 import 'package:fathers_prophets/domain/usecases/quizzes/quizzes_use_case.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../data/models/classes/class_model.dart';
@@ -21,11 +24,22 @@ class SplashCubit extends Cubit<SplashStates> {
   var classList = <ClassModel?>[];
   var memberList = <UserModel?>[];
   var quizzesList = <QuizzesModel?>[];
+  var footballEvents = <EventsModel>[];
+  var bibleEvents = <EventsModel>[];
+  var pingPongEvents = <EventsModel>[];
+  var volleyballEvents = <EventsModel>[];
+  var copticEvents = <EventsModel>[];
+  var choirEvents = <EventsModel>[];
+  var melodiesEvents = <EventsModel>[];
+  var ritualEvents = <EventsModel>[];
+  var doctrineEvents = <EventsModel>[];
+  var chessEvents = <EventsModel>[];
   var userData = UserModel();
 
   final UsersUseCase usersUseCase = UsersUseCase(UserRepository());
   final ClassesUseCase classesUseCase = ClassesUseCase(ClassRepository());
   final QuizzesUseCase questionsUseCase = QuizzesUseCase(QuizzesRepository());
+  final EventsUseCase eventsUseCase = EventsUseCase(EventsRepository());
 
   static SplashCubit get(context) => BlocProvider.of(context);
 
@@ -66,6 +80,16 @@ class SplashCubit extends Cubit<SplashStates> {
       classList = (await classesUseCase.getAllClasses()??[]);
       memberList = (await usersUseCase.getAllMembers()??[]);
       quizzesList = (await questionsUseCase.getAllQuizzes()??[]);
+      footballEvents = (await eventsUseCase.getFootballEvents());
+      bibleEvents = (await eventsUseCase.getBibleEvents());
+      pingPongEvents = (await eventsUseCase.getPingPongEvents());
+      volleyballEvents = (await eventsUseCase.getVolleyballEvents());
+      copticEvents = (await eventsUseCase.getCopticEvents());
+      choirEvents = (await eventsUseCase.getChoirEvents());
+      melodiesEvents = (await eventsUseCase.getMelodiesEvents());
+      ritualEvents = (await eventsUseCase.getRitualEvents());
+      doctrineEvents = (await eventsUseCase.getDoctrineEvents());
+      chessEvents = (await eventsUseCase.getChessEvents());
       await usersUseCase.updateUser(UserModel(
         isAnyUpdate: false,
         version: FirebaseEndpoints.version,
@@ -86,12 +110,24 @@ class SplashCubit extends Cubit<SplashStates> {
         profile: userData.profile,
         quizzes: userData.quizzes
       ));
-      await CacheHelper.saveServants(servantList);
-      await CacheHelper.saveClasses(classList);
-      await CacheHelper.saveMembers(memberList);
-      await CacheHelper.saveQuizzes(quizzesList);
+      if(servantList.isNotEmpty) await CacheHelper.saveServants(servantList);
+      if(classList.isNotEmpty) await CacheHelper.saveClasses(classList);
+      if(memberList.isNotEmpty) await CacheHelper.saveMembers(memberList);
+      if(quizzesList.isNotEmpty) await CacheHelper.saveQuizzes(quizzesList);
+      if(bibleEvents.isNotEmpty) await CacheHelper.saveEvents(bibleEvents, 'bible');
+      if(footballEvents.isNotEmpty) await CacheHelper.saveEvents(footballEvents, 'football');
+      if(pingPongEvents.isNotEmpty) await CacheHelper.saveEvents(pingPongEvents, 'pingPong');
+      if(volleyballEvents.isNotEmpty) await CacheHelper.saveEvents(volleyballEvents, 'volleyball');
+      if(copticEvents.isNotEmpty) await CacheHelper.saveEvents(copticEvents, 'coptic');
+      if(choirEvents.isNotEmpty) await CacheHelper.saveEvents(choirEvents, 'choir');
+      if(melodiesEvents.isNotEmpty) await CacheHelper.saveEvents(melodiesEvents, 'melodies');
+      if(ritualEvents.isNotEmpty) await CacheHelper.saveEvents(ritualEvents, 'ritual');
+      if(doctrineEvents.isNotEmpty) await CacheHelper.saveEvents(doctrineEvents, 'doctrine');
+      if(chessEvents.isNotEmpty) await CacheHelper.saveEvents(chessEvents, 'chess');
+
       emit(OnSuccess());
     } catch (e) {
+      print(e.toString());
       emit(OnError(e.toString()));
     }
   }
