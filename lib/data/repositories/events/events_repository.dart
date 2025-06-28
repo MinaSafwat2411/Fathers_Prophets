@@ -8,7 +8,7 @@ class EventsRepository {
       return [];
     }else {
       return snapshot.docs
-        .map((doc) => EventsModel.fromJson(doc.data(), doc.id))
+        .map((doc) => EventsModel.fromJson(doc.data(), doc.id,'football'))
         .toList();
     }
   }
@@ -18,7 +18,7 @@ class EventsRepository {
       return [];
     }else {
       return snapshot.docs
-          .map((doc) => EventsModel.fromJson(doc.data(), doc.id))
+          .map((doc) => EventsModel.fromJson(doc.data(), doc.id,'volleyball'))
           .toList();
     }
   }
@@ -28,7 +28,7 @@ class EventsRepository {
       return [];
     }else {
       return snapshot.docs
-          .map((doc) => EventsModel.fromJson(doc.data(), doc.id))
+          .map((doc) => EventsModel.fromJson(doc.data(), doc.id,'bible'))
           .toList();
     }
   }
@@ -38,7 +38,7 @@ class EventsRepository {
       return [];
     }else {
       return snapshot.docs
-          .map((doc) => EventsModel.fromJson(doc.data(), doc.id))
+          .map((doc) => EventsModel.fromJson(doc.data(), doc.id,'ritual'))
           .toList();
     }
   }
@@ -48,7 +48,7 @@ class EventsRepository {
       return [];
     }else {
       return snapshot.docs
-          .map((doc) => EventsModel.fromJson(doc.data(), doc.id))
+          .map((doc) => EventsModel.fromJson(doc.data(), doc.id,'doctrine'))
           .toList();
     }
 
@@ -59,7 +59,7 @@ class EventsRepository {
       return [];
     }else {
       return snapshot.docs
-          .map((doc) => EventsModel.fromJson(doc.data(), doc.id))
+          .map((doc) => EventsModel.fromJson(doc.data(), doc.id,'coptic'))
           .toList();
     }
   }
@@ -69,7 +69,7 @@ class EventsRepository {
       return [];
     }else {
       return snapshot.docs
-          .map((doc) => EventsModel.fromJson(doc.data(), doc.id))
+          .map((doc) => EventsModel.fromJson(doc.data(), doc.id,'choir'))
           .toList();
     }
   }
@@ -79,7 +79,7 @@ class EventsRepository {
       return [];
     }else {
       return snapshot.docs
-          .map((doc) => EventsModel.fromJson(doc.data(), doc.id))
+          .map((doc) => EventsModel.fromJson(doc.data(), doc.id,'chess'))
           .toList();
     }
   }
@@ -89,7 +89,7 @@ class EventsRepository {
       return [];
     }else {
     return snapshot.docs
-        .map((doc) => EventsModel.fromJson(doc.data(), doc.id))
+        .map((doc) => EventsModel.fromJson(doc.data(), doc.id,'pingPong'))
         .toList();
     }
   }
@@ -99,7 +99,7 @@ class EventsRepository {
       return [];
     }else {
       return snapshot.docs
-          .map((doc) => EventsModel.fromJson(doc.data(), doc.id))
+          .map((doc) => EventsModel.fromJson(doc.data(), doc.id,'melodies'))
           .toList();
     }
   }

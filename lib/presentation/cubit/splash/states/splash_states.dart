@@ -6,6 +6,8 @@ class OnNavigateToLoginScreen  extends SplashStates {}
 
 class OnNavigateToHomeScreen  extends SplashStates {}
 
+class OnNavigateToReviewScreen  extends SplashStates {}
+
 class OnNavigateToOnBoardingScreen  extends SplashStates {}
 
 class OnRequestUpToDate extends SplashStates{}

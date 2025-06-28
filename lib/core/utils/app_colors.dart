@@ -14,6 +14,11 @@ abstract class AppColors {
   static const Color alto50 = Color(0x55E0E0E0);
   static const Color gray = Color(0xff828282);
   static const Color gray20 = Color(0x337F7F7F);
+  static const Color gray50 = Color(0x557F7F7F);
+  static const Color gray70 = Color(0x777F7F7F);
+  static const Color gray80 = Color(0x807F7F7F);
+  static const Color gray90 = Color(0x997F7F7F);
+  static const Color gray100 = Color(0xAA7F7F7F);
   static const Color silver = Color(0xffC0C0C0);
   static const Color doveGray = Color(0xff666666);
   static const Color boulder = Color(0xff7A7A7A);

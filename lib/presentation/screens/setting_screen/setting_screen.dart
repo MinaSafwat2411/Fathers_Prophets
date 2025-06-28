@@ -5,7 +5,6 @@ import '../../../core/localization/app_localizations.dart';
 import '../../../core/utils/app_colors.dart';
 import '../../../core/widgets/custom_bottom_sheet.dart';
 import '../../../main.dart';
-import '../../cubit/layout/cubit/layout_cubit.dart';
 import '../../cubit/local/cubit/local_cubit.dart';
 import '../../cubit/local/states/local_states.dart';
 

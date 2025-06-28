@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../utils/app_colors.dart';
 
 class CustomButton extends StatelessWidget {
-  CustomButton(
+  const CustomButton(
       {super.key,
       required this.onPressed,
       required this.text,
@@ -16,7 +16,7 @@ class CustomButton extends StatelessWidget {
   final Color btnColor;
   final double height;
   final bool isEnabled ;
-  bool isDark = false;
+  final bool? isDark;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +30,7 @@ class CustomButton extends StatelessWidget {
         color: isEnabled? btnColor : AppColors.gray,
         child: Text(
           text,
-          style:  textTheme.bodyLarge?.copyWith(color: isDark? AppColors.mirage : AppColors.white),
+          style:  textTheme.bodyLarge?.copyWith(color: (isDark??false)? AppColors.mirage : AppColors.white),
         ),
       ),
     );

@@ -31,6 +31,9 @@ class UsersUseCase {
   Future<List<UserModel?>?> getAllMembers() async {
     return await userRepository.getAllMembers();
   }
+  Future<List<UserModel?>?> getAllAdmins() async {
+    return await userRepository.getAllAdmins();
+  }
   Future<String?> addNewMember(UserModel memberModel)async {
     return await userRepository.addNewMember(memberModel);
   }
@@ -52,5 +55,8 @@ class UsersUseCase {
   }
   Future<void> updateApplyToAll(List<UserModel> users)async {
     await userRepository.updateApplyToAll(users);
+  }
+  Future<void> addEventAttendance(String uid,String eventId,String title)async{
+    await userRepository.addEventAttendance(uid,eventId,title);
   }
 }

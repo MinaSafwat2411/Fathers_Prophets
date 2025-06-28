@@ -40,10 +40,17 @@ class UserRepository {
         .map((doc) => UserModel.fromJson(doc.data(), doc.id))
         .toList();
   }
+  Future<List<UserModel?>?> getAllAdmins() async {
+    final snapshot =
+    await FirebaseFirestore.instance.collection(FirebaseEndpoints.users).where(FirebaseEndpoints.isAdmin,isEqualTo: true).get();
+    return snapshot.docs
+        .map((doc) => UserModel.fromJson(doc.data(), doc.id))
+        .toList();
+  }
 
   Future<String?> addNewMember(UserModel memberModel)async{
-    final snapshot = await FirebaseFirestore.instance.collection(FirebaseEndpoints.users).add(memberModel.toJson());
-    return snapshot.id;
+    await FirebaseFirestore.instance.collection(FirebaseEndpoints.users).doc(memberModel.uid).set(memberModel.toJson());
+    return memberModel.uid;
   }
   Future<void> deleteMember(String id)async{
     await FirebaseFirestore.instance.collection(FirebaseEndpoints.users).doc(id).delete();
@@ -69,7 +76,16 @@ class UserRepository {
   }
   Future<void> updateApplyToAll(List<UserModel> users)async{
     for(var user in users){
-      await updateUser(user);
+      await FirebaseFirestore.instance.collection(FirebaseEndpoints.users).doc(user.uid).update({
+        "isAnyUpdate": true
+      });
+    }
+  }
+  Future<void> addEventAttendance(String uid,String eventId,String event)async{
+    if(uid.isNotEmpty) {
+      await FirebaseFirestore.instance.collection(FirebaseEndpoints.users).doc(uid).update({
+      event: FieldValue.arrayUnion([eventId])
+    });
     }
   }
 }

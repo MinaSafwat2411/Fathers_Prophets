@@ -1,16 +1,24 @@
 import 'package:fathers_prophets/data/models/quizzes/quizzes_model.dart';
+import 'package:fathers_prophets/data/models/users/users_model.dart';
 import 'package:fathers_prophets/presentation/screens/add_attendance_screen/add_attendance_screen.dart';
+import 'package:fathers_prophets/presentation/screens/add_event_attendance/add_event_attendance.dart';
+import 'package:fathers_prophets/presentation/screens/add_event_screen/add_event_screen.dart';
 import 'package:fathers_prophets/presentation/screens/add_quizzes_screen/add_quiz_screen.dart';
 import 'package:fathers_prophets/presentation/screens/attendance_details_screen/attendance_details_screen.dart';
+import 'package:fathers_prophets/presentation/screens/dashboard_screen/dashboard_screen.dart';
 import 'package:fathers_prophets/presentation/screens/event_details/event_details.dart';
+import 'package:fathers_prophets/presentation/screens/forgot_password_screen/forgot_password_screen.dart';
 import 'package:fathers_prophets/presentation/screens/layout_screen/layout_screen.dart';
 import 'package:fathers_prophets/presentation/screens/login_screen/login_screen.dart';
 import 'package:fathers_prophets/presentation/screens/onboarding_screen/onboarding_screen.dart';
 import 'package:fathers_prophets/presentation/screens/profile_screen/profile_screen.dart';
 import 'package:fathers_prophets/presentation/screens/quizzes_details_screen/quizzes_details_screen.dart';
 import 'package:fathers_prophets/presentation/screens/register_screen/register_screen.dart';
+import 'package:fathers_prophets/presentation/screens/review_screen/review_screen.dart';
+import 'package:fathers_prophets/presentation/screens/select_member_screen/select_member_screen.dart';
 import 'package:fathers_prophets/presentation/screens/setting_screen/setting_screen.dart';
 import 'package:fathers_prophets/presentation/screens/splash_screen/splash_screen.dart';
+import 'package:fathers_prophets/presentation/screens/user_details_screen/user_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../data/models/attendance/attendance_model.dart';
@@ -38,6 +46,11 @@ enum AppRoutes {
   addQuiz,
   addEvent,
   eventDetails,
+  addEventAttendance,
+  selectMember,
+  dashBoard,
+  userDetails,
+  review
 }
 
 final GoRouter router = GoRouter(
@@ -106,7 +119,7 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: AppRoutePaths.forgotPassword,
       name: AppRoutes.forgotPassword.name,
-      builder: (context, state) => const Text('forgotPassword'),
+      builder: (context, state) => const ForgotPasswordScreen(),
     ),
     GoRoute(
       path: AppRoutePaths.resetPassword,
@@ -144,7 +157,7 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: AppRoutePaths.addEvent,
       name: AppRoutes.addEvent.name,
-      builder: (context, state) => const Text('addEvent'),
+      builder: (context, state) => const AddEventScreen(),
     ),
     GoRoute(
       path: AppRoutePaths.eventDetails,
@@ -156,6 +169,53 @@ final GoRouter router = GoRouter(
           title: extra['title'] as String,
       );
       },
+    ),
+    GoRoute(
+      path: AppRoutePaths.addEventAttendance,
+      name: AppRoutes.addEventAttendance.name,
+      builder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>;
+        return AddEventAttendance(
+          event: extra['item'] as EventsModel,
+          title: extra['title'] as String,
+      );
+      },
+    ),
+    GoRoute(
+      path: AppRoutePaths.selectMember,
+      name: AppRoutes.selectMember.name,
+      builder: (context, state) => const SelectMemberScreen(),
+    ),
+    GoRoute(
+      path: AppRoutePaths.dashBoard,
+      name: AppRoutes.dashBoard.name,
+      builder: (context, state) => const DashboardScreen(),
+    ),
+    GoRoute(
+      path: AppRoutePaths.userDetails,
+      name: AppRoutes.userDetails.name,
+      builder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>;
+        return UserDetailsScreen(
+          user: extra['user'] as UserModel,
+          football: extra['football'] as int,
+          volleyball: extra['volleyball'] as int,
+          pingPong: extra['pingPong'] as int,
+          chess: extra['chess'] as int,
+          melodies: extra['melodies'] as int,
+          choir: extra['choir'] as int,
+          ritual: extra['ritual'] as int,
+          coptic: extra['coptic'] as int,
+          doctrine: extra['doctrine'] as int,
+          bible: extra['bible'] as int,
+          quizzes: extra['quizzes'] as int,
+        );
+      },
+    ),
+    GoRoute(
+      path: AppRoutePaths.review,
+      name: AppRoutes.review.name,
+      builder: (context, state) => const ReviewScreen(),
     ),
   ],
 );
@@ -182,4 +242,9 @@ abstract class AppRoutePaths {
   static const String quizDetails = '/quiz-details';
   static const String addQuiz = '/add-quiz';
   static const String eventDetails = '/event-details';
+  static const String addEventAttendance = '/add-event-attendance';
+  static const String selectMember = '/select-member';
+  static const String dashBoard = '/dashboard';
+  static const String userDetails = '/user-details';
+  static const String review = '/review_screen';
 }

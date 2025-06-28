@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../core/localization/app_localizations.dart';
 import '../../../core/widgets/event_item.dart';
 import '../../cubit/layout/cubit/layout_cubit.dart';
 import '../../cubit/local/cubit/local_cubit.dart';
@@ -11,8 +9,6 @@ class EventScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var textTheme = Theme.of(context).textTheme;
-    final localize = AppLocalizations.of(context);
     var cubit = context.read<LayoutCubit>();
     return SingleChildScrollView(
       child: Padding(

@@ -379,6 +379,7 @@ abstract class AppThemes {
           if (states.contains(WidgetState.selected)) {
             return AppColors.white;
           }
+          return null;
         }),
         todayBackgroundColor: WidgetStateProperty.resolveWith<Color?>((states) {
           if (states.contains(WidgetState.selected)) {

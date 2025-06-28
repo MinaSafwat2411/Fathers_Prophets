@@ -70,7 +70,7 @@ class QuizDayQuestions extends StatelessWidget {
                 ),
               ),
               separatorBuilder: (context, parentIndex) => SizedBox(height: 5),
-              itemCount: questions.length ?? 0,
+              itemCount: questions.length,
             ),
           ],
         ),

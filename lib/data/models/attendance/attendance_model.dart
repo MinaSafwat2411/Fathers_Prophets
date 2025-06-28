@@ -36,5 +36,21 @@ class AttendanceModel {
     };
   }
 
+  AttendanceModel copyWith({
+    DateTime? date,
+    List<Attendance?>? attendance,
+    String? id,
+    String? classId,
+    String? dateView,
+}){
+    return AttendanceModel(
+      date: date ?? this.date,
+      attendance: attendance ?? this.attendance,
+      id: id ?? this.id,
+      classId: classId ?? this.classId,
+      dateView: dateView ?? this.dateView,
+    );
+  }
+
 }
 

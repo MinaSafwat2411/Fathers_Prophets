@@ -6,8 +6,6 @@ import 'package:fathers_prophets/presentation/cubit/quizzes/states/quizzes_state
 import 'package:fathers_prophets/presentation/screens/add_quizzes_screen/day_enum.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../../core/constants/firebase_endpoints.dart';
 import '../../../../data/models/bible/bible_model.dart';
 import '../../../../data/models/quizzes/questions_model.dart';
 import '../../../../data/models/quizzes/quiz_answers.dart';
@@ -23,6 +21,8 @@ class QuizzesCubit extends Cubit<QuizzesStates> {
   static QuizzesCubit get(context) => BlocProvider.of(context);
 
   var userData = UserModel();
+  var memberList = <UserModel>[];
+  var adminList = <UserModel>[];
   var quizAnswers = QuizAnswers();
   var quiz = QuizzesModel(
     friday: QuizModel(questions: [],shahid: ""),
@@ -241,26 +241,9 @@ class QuizzesCubit extends Cubit<QuizzesStates> {
         MemberQuizzesModel(docId: quiz.docId, degree: score),
       );
       await usersUseCase.updateUser(
-        UserModel(
-          isAnyUpdate: false,
-          version: FirebaseEndpoints.version,
-          address: userData.address,
-          admin: userData.admin,
-          age: userData.age,
-          birthday: userData.birthday,
-          classId: userData.classId,
-          date: userData.date,
-          fatherName: userData.fatherName,
-          uid: userData.uid,
-          isAdmin: userData.admin,
-          isShams: userData.isShams,
-          isTeacher: userData.isTeacher,
-          name: userData.name,
-          parents: userData.parents,
-          phone: userData.phone,
-          profile: userData.profile,
+        userData.copyWith(
           quizzes: userData.quizzes,
-        ),
+        )
       );
       await CacheHelper.saveUserData(userData);
       emit(OnSubmit());
@@ -271,6 +254,10 @@ class QuizzesCubit extends Cubit<QuizzesStates> {
 
   void onAddQuiz()async{
     try{
+      adminList = CacheHelper.getAdmins();
+      memberList = CacheHelper.getMembers();
+      await usersUseCase.updateApplyToAll(adminList);
+      await usersUseCase.updateApplyToAll(memberList);
       var docId = await quizzesUseCase.addNewQuiz(quiz);
       var quizzes = CacheHelper.getQuizzes();
       quiz= quiz.copyWith(docId: docId);

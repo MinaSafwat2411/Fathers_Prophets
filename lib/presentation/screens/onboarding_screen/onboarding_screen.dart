@@ -37,7 +37,8 @@ class OnboardingScreen extends StatelessWidget {
             children: [
               OnboardingTopButton(
                 isDark: context.read<LocaleCubit>().isDark,
-                index:cubit.currentIndex
+                index:cubit.currentIndex,
+                total: 4,
               ),
               Expanded(
                 child: PageView(

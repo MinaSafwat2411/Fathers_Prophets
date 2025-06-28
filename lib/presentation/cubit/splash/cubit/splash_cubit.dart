@@ -21,8 +21,8 @@ class SplashCubit extends Cubit<SplashStates> {
   SplashCubit() : super(SplashInitialState());
 
   var servantList = <UserModel?>[];
-  var classList = <ClassModel?>[];
   var memberList = <UserModel?>[];
+  var adminList = <UserModel?>[];
   var quizzesList = <QuizzesModel?>[];
   var footballEvents = <EventsModel>[];
   var bibleEvents = <EventsModel>[];
@@ -34,6 +34,7 @@ class SplashCubit extends Cubit<SplashStates> {
   var ritualEvents = <EventsModel>[];
   var doctrineEvents = <EventsModel>[];
   var chessEvents = <EventsModel>[];
+  var classList=<ClassModel>[];
   var userData = UserModel();
 
   final UsersUseCase usersUseCase = UsersUseCase(UserRepository());
@@ -51,15 +52,58 @@ class SplashCubit extends Cubit<SplashStates> {
           });
         } else {
           try {
-            userData = await usersUseCase.getUserData(uid) ?? UserModel();
+          userData = await usersUseCase.getUserData(uid) ?? UserModel();
           await CacheHelper.saveUserData(userData);
-          if ((userData.isAnyUpdate??false)) {
-            await getAllFirebaseDate();
-          }else if (!(FirebaseEndpoints.version == userData.version)) {
-            emit(OnRequestUpToDate());
+          classList = [
+            ClassModel(
+                docId: "2uli6QXyKY8VrpjMz99H",
+                name: "ابونا ابراهيم"
+            ),
+            ClassModel(
+                docId: "8aB4mDsvky0FbzOQwfTU",
+                name: "دانيال النبي"
+            ),
+            ClassModel(
+                docId: "9l6zfZIO1C6OavYCvuRV",
+                name: "امنا سارة"
+            ),
+            ClassModel(
+                docId: "bCkH6KkCRnEDMk5Ea6sf",
+                name: "حنه النبيه"
+            ),
+            ClassModel(
+                docId: "el2A2Mjm45SU5jliE29g",
+                name: "دبورة النبية"
+            ),
+            ClassModel(
+                docId: "f0nBkPZu9OJbQ0Hstqij",
+                name: "امنا رفقة"
+            ),
+            ClassModel(
+                docId: "fE4xWCz3bvBhyZeMuk7g",
+                name: "ابونا اسحق"
+            ),
+            ClassModel(
+                docId: "nXB5fzKgjVkIrVrXrLDo",
+                name: "موسي النبي"
+            ),
+          ];
+          if(classList.isNotEmpty) {
+            await CacheHelper.saveClasses(classList);
+          }else{
+            await CacheHelper.removeClasses();
           }
-          if(state is! OnRequestUpToDate){
-            emit(OnNavigateToHomeScreen());
+          if((userData.isReviewed??false)) {
+            if ((userData.isAnyUpdate??false)) {
+              await getAllFirebaseDate();
+            }else if (!(FirebaseEndpoints.version == userData.version)) {
+              emit(OnRequestUpToDate());
+            }
+            if(state is! OnRequestUpToDate){
+              emit(OnNavigateToHomeScreen());
+            }
+          }else{
+            Future.delayed(Duration(seconds: 3),() => emit(OnNavigateToReviewScreen()),);
           }
           } catch (e) {
             emit(OnError(e.toString()));
@@ -76,9 +120,11 @@ class SplashCubit extends Cubit<SplashStates> {
   Future<void> getAllFirebaseDate() async {
     try {
       emit(OnLoading());
-      servantList = (await usersUseCase.getAllServants()??[]);
-      classList = (await classesUseCase.getAllClasses()??[]);
-      memberList = (await usersUseCase.getAllMembers()??[]);
+      if(userData.isAdmin??false){
+        servantList = (await usersUseCase.getAllServants()??[]);
+        memberList = (await usersUseCase.getAllMembers()??[]);
+        adminList = (await usersUseCase.getAllAdmins()??[]);
+      }
       quizzesList = (await questionsUseCase.getAllQuizzes()??[]);
       footballEvents = (await eventsUseCase.getFootballEvents());
       bibleEvents = (await eventsUseCase.getBibleEvents());
@@ -90,40 +136,81 @@ class SplashCubit extends Cubit<SplashStates> {
       ritualEvents = (await eventsUseCase.getRitualEvents());
       doctrineEvents = (await eventsUseCase.getDoctrineEvents());
       chessEvents = (await eventsUseCase.getChessEvents());
-      await usersUseCase.updateUser(UserModel(
-        isAnyUpdate: false,
-        version: FirebaseEndpoints.version,
-        address: userData.address,
-        admin: userData.admin,
-        age: userData.age,
-        birthday: userData.birthday,
-        classId: userData.classId,
-        date: userData.date,
-        fatherName: userData.fatherName,
-        uid: userData.uid,
-        isAdmin: userData.admin,
-        isShams: userData.isShams,
-        isTeacher: userData.isTeacher,
-        name: userData.name,
-        parents: userData.parents,
-        phone: userData.phone,
-        profile: userData.profile,
-        quizzes: userData.quizzes
+      await usersUseCase.updateUser(userData.copyWith(
+          isAnyUpdate: false
       ));
-      if(servantList.isNotEmpty) await CacheHelper.saveServants(servantList);
-      if(classList.isNotEmpty) await CacheHelper.saveClasses(classList);
-      if(memberList.isNotEmpty) await CacheHelper.saveMembers(memberList);
-      if(quizzesList.isNotEmpty) await CacheHelper.saveQuizzes(quizzesList);
-      if(bibleEvents.isNotEmpty) await CacheHelper.saveEvents(bibleEvents, 'bible');
-      if(footballEvents.isNotEmpty) await CacheHelper.saveEvents(footballEvents, 'football');
-      if(pingPongEvents.isNotEmpty) await CacheHelper.saveEvents(pingPongEvents, 'pingPong');
-      if(volleyballEvents.isNotEmpty) await CacheHelper.saveEvents(volleyballEvents, 'volleyball');
-      if(copticEvents.isNotEmpty) await CacheHelper.saveEvents(copticEvents, 'coptic');
-      if(choirEvents.isNotEmpty) await CacheHelper.saveEvents(choirEvents, 'choir');
-      if(melodiesEvents.isNotEmpty) await CacheHelper.saveEvents(melodiesEvents, 'melodies');
-      if(ritualEvents.isNotEmpty) await CacheHelper.saveEvents(ritualEvents, 'ritual');
-      if(doctrineEvents.isNotEmpty) await CacheHelper.saveEvents(doctrineEvents, 'doctrine');
-      if(chessEvents.isNotEmpty) await CacheHelper.saveEvents(chessEvents, 'chess');
+      if(userData.isAdmin??false){
+        if(servantList.isNotEmpty) {
+          await CacheHelper.saveServants(servantList);
+        }else{
+          await CacheHelper.removeServants();
+        }
+        if(adminList.isNotEmpty) {
+          await CacheHelper.saveAdmins(adminList);
+        }else{
+          await CacheHelper.removeAdmins();
+        }
+        if(memberList.isNotEmpty) {
+          await CacheHelper.saveMembers(memberList);
+        }else{
+          await CacheHelper.removeMembers();
+        }
+      }
+      if(quizzesList.isNotEmpty) {
+        await CacheHelper.saveQuizzes(quizzesList);
+      }else{
+        await CacheHelper.removeQuizzes();
+      }
+      if(bibleEvents.isNotEmpty) {
+        await CacheHelper.saveEvents(bibleEvents, 'bible');
+      }else{
+        await CacheHelper.removeEvents('bible');
+      }
+      if(footballEvents.isNotEmpty) {
+        await CacheHelper.saveEvents(footballEvents, 'football');
+      }else{
+        await CacheHelper.removeEvents('football');
+      }
+      if(pingPongEvents.isNotEmpty) {
+        await CacheHelper.saveEvents(pingPongEvents, 'pingPong');
+      }else{
+        await CacheHelper.removeEvents('pingPong');
+      }
+      if(volleyballEvents.isNotEmpty) {
+        await CacheHelper.saveEvents(volleyballEvents, 'volleyball');
+      }else{
+        await CacheHelper.removeEvents('volleyball');
+      }
+      if(copticEvents.isNotEmpty) {
+        await CacheHelper.saveEvents(copticEvents, 'coptic');
+      }else{
+        await CacheHelper.removeEvents('coptic');
+      }
+      if(choirEvents.isNotEmpty) {
+        await CacheHelper.saveEvents(choirEvents, 'choir');
+      }else{
+        await CacheHelper.removeEvents('choir');
+      }
+      if(melodiesEvents.isNotEmpty) {
+        await CacheHelper.saveEvents(melodiesEvents, 'melodies');
+      }else{
+        await CacheHelper.removeEvents('melodies');
+      }
+      if(ritualEvents.isNotEmpty) {
+        await CacheHelper.saveEvents(ritualEvents, 'ritual');
+      }else{
+        await CacheHelper.removeEvents('ritual');
+      }
+      if(doctrineEvents.isNotEmpty) {
+        await CacheHelper.saveEvents(doctrineEvents, 'doctrine');
+      }else{
+        await CacheHelper.removeEvents('doctrine');
+      }
+      if(chessEvents.isNotEmpty) {
+        await CacheHelper.saveEvents(chessEvents, 'chess');
+      }else{
+        await CacheHelper.removeEvents('chess');
+      }
       emit(OnSuccess());
     } catch (e) {
       emit(OnError(e.toString()));

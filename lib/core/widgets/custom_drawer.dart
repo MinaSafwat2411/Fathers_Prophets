@@ -32,7 +32,7 @@ class CustomDrawer extends StatelessWidget {
                   const SizedBox(
                     height: 40,
                   ),
-                  ClipOval(
+                  cubit.userData.uid !=''?ClipOval(
                     child: Image.asset(
                             context.read<LocaleCubit>().isDark? 'assets/images/logo_dark.png': 'assets/images/logo_light.png',
                             fit: BoxFit.fill,
@@ -40,6 +40,11 @@ class CustomDrawer extends StatelessWidget {
                             height: 100,
                           )
 
+                  ):Image.asset(
+                    context.read<LocaleCubit>().isDark? 'assets/images/logo_dark.png': 'assets/images/logo_light.png',
+                    fit: BoxFit.fill,
+                    width: 100,
+                    height: 100,
                   ),
                   const SizedBox(
                     height: 5,
@@ -57,6 +62,8 @@ class CustomDrawer extends StatelessWidget {
                 ],
               ),
             ),
+            if(cubit.userData.isAdmin??false)SizedBox(height: 20,),
+            if(cubit.userData.isAdmin??false)TextButton(onPressed: () => context.pushNamed(AppRoutes.dashBoard.name), child: Text(localize.translate("dash_board"),style: textTheme.titleLarge,)),
             const Spacer(),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 24),
@@ -80,10 +87,11 @@ class CustomDrawer extends StatelessWidget {
                     )
                   ],
                 ),
-                onPressed: () async{
+                onPressed: () async {
                   await context.pushNamed(AppRoutes.settings.name);
+                  if (!context.mounted) return;
                   cubit.getNewThemes(context.read<LocaleCubit>().lang);
-                  },
+                },
               ),
             )
           ]),

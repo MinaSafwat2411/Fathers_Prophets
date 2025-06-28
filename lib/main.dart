@@ -1,6 +1,9 @@
 import 'package:fathers_prophets/presentation/cubit/add_attendance/cubit/add_attendance_cubit.dart';
 import 'package:fathers_prophets/presentation/cubit/attendance/cubit/attendance_cubit.dart';
+import 'package:fathers_prophets/presentation/cubit/comment/cubit/comment_cubit.dart';
+import 'package:fathers_prophets/presentation/cubit/dashboard/cubit/dashboard_cubit.dart';
 import 'package:fathers_prophets/presentation/cubit/events/cubit/events_cubit.dart';
+import 'package:fathers_prophets/presentation/cubit/forgot_password/cubit/forgot_password_cubit.dart';
 import 'package:fathers_prophets/presentation/cubit/profile/cubit/profile_cubit.dart';
 import 'package:fathers_prophets/presentation/cubit/quizzes/cubit/quizzes_cubit.dart';
 import 'package:fathers_prophets/presentation/cubit/layout/cubit/layout_cubit.dart';
@@ -26,20 +29,18 @@ import 'data/firebase/firebase_options.dart';
 
 
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await CacheHelper.init();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform
-  );
-  NotificationService.init();
-  await NotificationService.handleFirebaseMessaging();
-  if(kDebugMode) Bloc.observer = MyBlocObserver();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await NotificationService.init();
+  if (kDebugMode) Bloc.observer = MyBlocObserver();
   bool isDark = await CacheHelper.getData(key: 'isDark') ?? false;
   String lang = await CacheHelper.getData(key: 'lang') ?? 'en';
   String uid = await CacheHelper.getData(key: 'uid') ?? '';
   bool isOpened = CacheHelper.getData(key: 'isOpened') ?? false;
-  runApp(MyApp(isDark: isDark,lang: lang,uid: uid,isOpened: isOpened));
+
+  runApp(MyApp(isDark: isDark, lang: lang, uid: uid, isOpened: isOpened));
 }
 
 class MyApp extends StatelessWidget {
@@ -61,9 +62,12 @@ class MyApp extends StatelessWidget {
           BlocProvider(create: (context) => AttendanceCubit()),
           BlocProvider(create: (context) => AddAttendanceCubit()..getUserData()..getMembers()),
           BlocProvider(create: (context) => QuizzesCubit(),),
-          BlocProvider(create: (context) => ProfileCubit()),
+          BlocProvider(create: (context) => ProfileCubit()..getUserData()),
           BlocProvider(create: (context) => RegisterCubit()),
-          BlocProvider(create: (context) => EventsCubit()),
+          BlocProvider(create: (context) => CommentCubit()),
+          BlocProvider(create: (context) => EventsCubit()..getAllMembers()),
+          BlocProvider(create: (context) => DashboardCubit()..getAllData()),
+          BlocProvider(create: (context) => ForgotPasswordCubit(),)
         ],
         child: BlocConsumer<LocaleCubit, LocaleStates>(
           builder: (context, state) => MaterialApp.router(

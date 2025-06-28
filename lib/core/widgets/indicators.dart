@@ -2,10 +2,11 @@ import 'package:fathers_prophets/core/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class Indicators extends StatelessWidget {
-  const Indicators({super.key,required this.index,required this.isDark});
+   const Indicators({super.key,required this.index,required this.isDark,this.total});
 
   final int index;
   final bool isDark;
+  final int? total;
 
   @override
   Widget build(BuildContext context) {
@@ -16,11 +17,11 @@ class Indicators extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 25),
           child: Row(
             mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment:MainAxisAlignment.spaceBetween,
             children: [
-              for (int i = 0; i < 4; i++)
+              for (int i = 0; i < (total??4); i++)
                 Container(
-                  width: 85,
+                  width: total == 4? 85:(MediaQuery.of(context).size.width/2)-35,
                   height: 6,
                   decoration: BoxDecoration(
                     color: isDark?i<=index-1? AppColors.azureRadiance:AppColors.atlo :i<=index-1? AppColors.mirage:AppColors.atlo,
@@ -35,7 +36,7 @@ class Indicators extends StatelessWidget {
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              for (int i = 0; i < 5; i++)
+              for (int i = 0; i < (total??4)+1; i++)
                 Container(
                   width: 20,
                   height: 20,

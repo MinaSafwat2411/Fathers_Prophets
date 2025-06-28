@@ -27,11 +27,11 @@ class QuizSearch extends StatelessWidget {
             onChanged: onChanged,
             hintText: localize.translate('search'),
             leading: Icon(Icons.search,color: context.read<LocaleCubit>().isDark ? AppColors.mirage:AppColors.white),
-            padding: MaterialStateProperty.all<EdgeInsets>(
+            padding: WidgetStateProperty.all<EdgeInsets>(
               const EdgeInsets.all(8),
             ),
             controller: controller,
-            elevation: MaterialStateProperty.all<double>(2),
+            elevation: WidgetStateProperty.all<double>(2),
             keyboardType: TextInputType.number,
             textStyle: WidgetStatePropertyAll(TextStyle(color: context.read<LocaleCubit>().isDark ? AppColors.mirage:AppColors.white)),
             backgroundColor: WidgetStatePropertyAll(context.read<LocaleCubit>().isDark ? AppColors.white:AppColors.mirage),

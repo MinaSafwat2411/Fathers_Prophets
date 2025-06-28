@@ -14,3 +14,10 @@ class OnErrorState extends RegisterStates{
 class OnRegisterState extends RegisterStates{}
 
 class OnChangeScreen extends RegisterStates{}
+
+class OnClassSelected extends RegisterStates{}
+
+class OnPasswordObscure extends RegisterStates{}
+
+class OnConfirmPasswordObscure extends RegisterStates{}
+

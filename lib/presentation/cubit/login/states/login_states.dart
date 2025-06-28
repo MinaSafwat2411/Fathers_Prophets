@@ -10,3 +10,7 @@ class LoginErrorState extends LoginStates{
   final String message;
   LoginErrorState({required this.message});
 }
+
+class ToReviewState extends LoginStates{}
+
+class OnObscureText extends LoginStates{}

@@ -6,35 +6,28 @@ class NotificationService {
   static final FlutterLocalNotificationsPlugin _localNotifications =
   FlutterLocalNotificationsPlugin();
 
+  static bool _isPermissionRequested = false;
+
   static Future<void> init() async {
-    const AndroidInitializationSettings androidSettings =
-    AndroidInitializationSettings('@mipmap/ic_launcher');
-
-    const InitializationSettings settings =
-    InitializationSettings(android: androidSettings);
-
+    const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const settings = InitializationSettings(android: androidSettings);
     await _localNotifications.initialize(settings);
+
+    await _safeRequestFirebaseMessaging(); // Move here instead of calling separately
   }
 
-  static Future<void> showLocalNotification(
-      {required String title, required String body}) async {
-    const AndroidNotificationDetails androidDetails =
-    AndroidNotificationDetails('channel_id', 'channel_name',
-        importance: Importance.max, priority: Priority.high);
+  static Future<void> _safeRequestFirebaseMessaging() async {
+    if (_isPermissionRequested) return;
+    _isPermissionRequested = true;
 
-    const NotificationDetails details =
-    NotificationDetails(android: androidDetails);
-
-    await _localNotifications.show(0, title, body, details);
-  }
-
-  static Future<void> handleFirebaseMessaging() async {
     FirebaseMessaging messaging = FirebaseMessaging.instance;
 
-    await messaging.requestPermission();
+    try {
+      await messaging.requestPermission();
+    } catch (e) {
+      debugPrint("❌ Error requesting permission: $e");
+    }
 
-    // 🔁 Retry logic with delay
-    await Future.delayed(Duration(seconds: 2));
     try {
       String? token = await messaging.getToken();
       debugPrint("✅ FCM Token: $token");
@@ -56,4 +49,11 @@ class NotificationService {
     });
   }
 
+  static Future<void> showLocalNotification({required String title, required String body}) async {
+    const androidDetails = AndroidNotificationDetails('channel_id', 'channel_name',
+        importance: Importance.max, priority: Priority.high);
+    const notificationDetails = NotificationDetails(android: androidDetails);
+    await _localNotifications.show(0, title, body, notificationDetails);
+  }
 }
+

@@ -24,6 +24,7 @@ class LoginCubit extends Cubit<LoginStates>  {
   var servantList = <UserModel?>[];
   var classList=<ClassModel?>[];
   var memberList=<UserModel?>[];
+  var adminList=<UserModel?>[];
   var quizzesList=<QuizzesModel?>[];
   var footballEvents = <EventsModel>[];
   var bibleEvents = <EventsModel>[];
@@ -35,6 +36,8 @@ class LoginCubit extends Cubit<LoginStates>  {
   var ritualEvents = <EventsModel>[];
   var doctrineEvents = <EventsModel>[];
   var chessEvents = <EventsModel>[];
+  var userData = UserModel();
+  bool obscureText = true;
 
   final UsersUseCase usersUseCase = UsersUseCase(UserRepository());
   final ClassesUseCase classesUseCase = ClassesUseCase(ClassRepository());
@@ -56,19 +59,69 @@ class LoginCubit extends Cubit<LoginStates>  {
           email: emailController.text, password: passwordController.text);
       try {
         var uid = await authUseCase.login(auth);
-        await getAllFirebaseDate(uid??"");
-        emit(LoginSuccessState());
+        if(uid==null) return;
+        userData = await usersUseCase.getUserData(uid)??UserModel();
+        await CacheHelper.saveUserData(userData);
+        classList = [
+          ClassModel(
+            docId: "2uli6QXyKY8VrpjMz99H",
+            name: "ابونا ابراهيم"
+          ),
+          ClassModel(
+              docId: "8aB4mDsvky0FbzOQwfTU",
+              name: "دانيال النبي"
+          ),
+          ClassModel(
+              docId: "9l6zfZIO1C6OavYCvuRV",
+              name: "امنا سارة"
+          ),
+          ClassModel(
+              docId: "bCkH6KkCRnEDMk5Ea6sf",
+              name: "حنه النبيه"
+          ),
+          ClassModel(
+              docId: "el2A2Mjm45SU5jliE29g",
+              name: "دبورة النبية"
+          ),
+          ClassModel(
+              docId: "f0nBkPZu9OJbQ0Hstqij",
+              name: "امنا رفقة"
+          ),
+          ClassModel(
+              docId: "fE4xWCz3bvBhyZeMuk7g",
+              name: "ابونا اسحق"
+          ),
+          ClassModel(
+              docId: "nXB5fzKgjVkIrVrXrLDo",
+              name: "موسي النبي"
+          ),
+        ];
+        if(classList.isNotEmpty) {
+          await CacheHelper.saveClasses(classList);
+        }else{
+          await CacheHelper.removeClasses();
+        }
+        if((userData.isReviewed??false)) {
+          if((userData.isAnyUpdate??false)) {
+            await getAllFirebaseDate();
+          }
+          Future.delayed(Duration(seconds: 1),() => emit(LoginSuccessState()),);
+        }else{
+          Future.delayed(Duration(seconds: 1),() => emit(ToReviewState()),);
+        }
       } catch (e) {
         message = e.toString();
         emit(LoginErrorState(message: message));
       }
     }
   }
-  Future<void> getAllFirebaseDate(String uid)async{
+  Future<void> getAllFirebaseDate()async{
     try{
-      servantList = (await usersUseCase.getAllServants()??[]);
-      classList = (await classesUseCase.getAllClasses()??[]);
-      memberList = (await usersUseCase.getAllMembers()??[]);
+      if(userData.isAdmin??false){
+        servantList = (await usersUseCase.getAllServants()??[]);
+        memberList = (await usersUseCase.getAllMembers()??[]);
+        adminList = (await usersUseCase.getAllAdmins()??[]);
+      }
       quizzesList = (await questionsUseCase.getAllQuizzes()??[]);
       footballEvents = (await eventsUseCase.getFootballEvents());
       bibleEvents = (await eventsUseCase.getBibleEvents());
@@ -78,23 +131,90 @@ class LoginCubit extends Cubit<LoginStates>  {
       choirEvents = (await eventsUseCase.getChoirEvents());
       melodiesEvents = (await eventsUseCase.getMelodiesEvents());
       ritualEvents = (await eventsUseCase.getRitualEvents());
-      if(servantList.isNotEmpty) await CacheHelper.saveServants(servantList);
-      if(classList.isNotEmpty) await CacheHelper.saveClasses(classList);
-      if(memberList.isNotEmpty) await CacheHelper.saveMembers(memberList);
-      if(quizzesList.isNotEmpty) await CacheHelper.saveQuizzes(quizzesList);
-      if(bibleEvents.isNotEmpty) await CacheHelper.saveEvents(bibleEvents, 'bible');
-      if(footballEvents.isNotEmpty) await CacheHelper.saveEvents(footballEvents, 'football');
-      if(pingPongEvents.isNotEmpty) await CacheHelper.saveEvents(pingPongEvents, 'pingPong');
-      if(volleyballEvents.isNotEmpty) await CacheHelper.saveEvents(volleyballEvents, 'volleyball');
-      if(copticEvents.isNotEmpty) await CacheHelper.saveEvents(copticEvents, 'coptic');
-      if(choirEvents.isNotEmpty) await CacheHelper.saveEvents(choirEvents, 'choir');
-      if(melodiesEvents.isNotEmpty) await CacheHelper.saveEvents(melodiesEvents, 'melodies');
-      if(ritualEvents.isNotEmpty) await CacheHelper.saveEvents(ritualEvents, 'ritual');
-      if(doctrineEvents.isNotEmpty) await CacheHelper.saveEvents(doctrineEvents, 'doctrine');
-      if(chessEvents.isNotEmpty) await CacheHelper.saveEvents(chessEvents, 'chess');
-      await CacheHelper.saveUserData(await usersUseCase.getUserData(uid)??UserModel());
+      doctrineEvents = (await eventsUseCase.getDoctrineEvents());
+      chessEvents = (await eventsUseCase.getChessEvents());
+      await usersUseCase.updateUser(userData.copyWith(
+          isAnyUpdate: false
+      ));
+      if(userData.isAdmin??false){
+        if(servantList.isNotEmpty) {
+          await CacheHelper.saveServants(servantList);
+        }else{
+          await CacheHelper.removeServants();
+        }
+        if(adminList.isNotEmpty) {
+          await CacheHelper.saveAdmins(adminList);
+        }else{
+          await CacheHelper.removeAdmins();
+        }
+        if(memberList.isNotEmpty) {
+          await CacheHelper.saveMembers(memberList);
+        }else{
+          await CacheHelper.removeMembers();
+        }
+      }
+      if(quizzesList.isNotEmpty) {
+        await CacheHelper.saveQuizzes(quizzesList);
+      }else{
+        await CacheHelper.removeQuizzes();
+      }
+      if(bibleEvents.isNotEmpty) {
+        await CacheHelper.saveEvents(bibleEvents, 'bible');
+      }else{
+        await CacheHelper.removeEvents('bible');
+      }
+      if(footballEvents.isNotEmpty) {
+        await CacheHelper.saveEvents(footballEvents, 'football');
+      }else{
+        await CacheHelper.removeEvents('football');
+      }
+      if(pingPongEvents.isNotEmpty) {
+        await CacheHelper.saveEvents(pingPongEvents, 'pingPong');
+      }else{
+        await CacheHelper.removeEvents('pingPong');
+      }
+      if(volleyballEvents.isNotEmpty) {
+        await CacheHelper.saveEvents(volleyballEvents, 'volleyball');
+      }else{
+        await CacheHelper.removeEvents('volleyball');
+      }
+      if(copticEvents.isNotEmpty) {
+        await CacheHelper.saveEvents(copticEvents, 'coptic');
+      }else{
+        await CacheHelper.removeEvents('coptic');
+      }
+      if(choirEvents.isNotEmpty) {
+        await CacheHelper.saveEvents(choirEvents, 'choir');
+      }else{
+        await CacheHelper.removeEvents('choir');
+      }
+      if(melodiesEvents.isNotEmpty) {
+        await CacheHelper.saveEvents(melodiesEvents, 'melodies');
+      }else{
+        await CacheHelper.removeEvents('melodies');
+      }
+      if(ritualEvents.isNotEmpty) {
+        await CacheHelper.saveEvents(ritualEvents, 'ritual');
+      }else{
+        await CacheHelper.removeEvents('ritual');
+      }
+      if(doctrineEvents.isNotEmpty) {
+        await CacheHelper.saveEvents(doctrineEvents, 'doctrine');
+      }else{
+        await CacheHelper.removeEvents('doctrine');
+      }
+      if(chessEvents.isNotEmpty) {
+        await CacheHelper.saveEvents(chessEvents, 'chess');
+      }else{
+        await CacheHelper.removeEvents('chess');
+      }
     }catch(e){
       rethrow;
     }
+  }
+
+  void onObscureText(){
+    obscureText = !obscureText;
+    emit(OnObscureText());
   }
 }

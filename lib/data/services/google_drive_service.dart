@@ -19,7 +19,7 @@ class GoogleDriveUploader {
         credentials, [drive.DriveApi.driveFileScope]);
   }
 
-  Future<String?> _uploadFileToDrive(File file, String fileName) async {
+  Future<String?> uploadFileToDrive(File file, String fileName) async {
     final authClient = await _getAuthClient();
     if (authClient == null) return null;
 
@@ -49,7 +49,7 @@ class GoogleDriveUploader {
     if (pickedFile == null) return null;
 
     final file = File(pickedFile.path);
-    return await _uploadFileToDrive(
+    return await uploadFileToDrive(
         file, 'image_${DateTime.now().millisecondsSinceEpoch}.jpg');
   }
 
@@ -59,7 +59,7 @@ class GoogleDriveUploader {
     if (pickedFile == null) return null;
 
     final file = File(pickedFile.path);
-    return await _uploadFileToDrive(
+    return await uploadFileToDrive(
         file, 'video_${DateTime.now().millisecondsSinceEpoch}.mp4');
   }
 
@@ -68,7 +68,7 @@ class GoogleDriveUploader {
     if (result == null || result.files.single.path == null) return null;
 
     final file = File(result.files.single.path!);
-    return await _uploadFileToDrive(
+    return await uploadFileToDrive(
         file, 'audio_${DateTime.now().millisecondsSinceEpoch}.mp3');
   }
 
@@ -80,7 +80,7 @@ class GoogleDriveUploader {
     if (result == null || result.files.single.path == null) return null;
 
     final file = File(result.files.single.path!);
-    return await _uploadFileToDrive(
+    return await uploadFileToDrive(
         file, 'text_${DateTime.now().millisecondsSinceEpoch}.txt');
   }
 
@@ -92,7 +92,7 @@ class GoogleDriveUploader {
     if (result == null || result.files.single.path == null) return null;
 
     final file = File(result.files.single.path!);
-    return await _uploadFileToDrive(
+    return await uploadFileToDrive(
         file, 'pdf_${DateTime.now().millisecondsSinceEpoch}.pdf');
   }
 

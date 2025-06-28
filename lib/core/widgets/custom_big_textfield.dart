@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../utils/app_colors.dart';
 
 class CustomBigTextField extends StatelessWidget {
-  CustomBigTextField({
+  const CustomBigTextField({
     super.key,
     this.label,
     required this.controller,
@@ -14,6 +14,8 @@ class CustomBigTextField extends StatelessWidget {
     this.icon,
     this.keyboardType,
     this.enable = true,
+    this.suffix,
+    this.border,
   });
 
   final String? label;
@@ -22,9 +24,11 @@ class CustomBigTextField extends StatelessWidget {
   final String? Function(String?)? validator;
   final bool observe;
   final void Function(String)? onChanged;
-  Widget? icon;
+  final Widget? icon;
   final TextInputType? keyboardType;
-  bool enable = true;
+  final bool enable;
+  final Widget? suffix;
+  final double? border;
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +44,7 @@ class CustomBigTextField extends StatelessWidget {
         ),
         controller: controller,
         decoration: InputDecoration(
+          suffixIcon: suffix,
           hintStyle:  TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w500,
@@ -57,27 +62,27 @@ class CustomBigTextField extends StatelessWidget {
           ),
           border: OutlineInputBorder(
             borderSide: const BorderSide(color: AppColors.azureRadiance),
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(border??8),
           ),
           focusedBorder: OutlineInputBorder(
             borderSide: const BorderSide(color: AppColors.azureRadiance),
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(border??8),
           ),
           disabledBorder: OutlineInputBorder(
             borderSide: const BorderSide(color: AppColors.azureRadiance),
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(border??8),
           ),
           enabledBorder: OutlineInputBorder(
             borderSide: const BorderSide(color: AppColors.azureRadiance),
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(border??8),
           ),
           errorBorder: OutlineInputBorder(
             borderSide: const BorderSide(color: AppColors.red),
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(border??8),
           ),
           focusedErrorBorder: OutlineInputBorder(
             borderSide: const BorderSide(color: AppColors.red),
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(border??8),
           ),
           counterStyle: TextStyle(
             color: AppColors.white

@@ -68,6 +68,25 @@ class CacheHelper{
   static Future<bool> removeServants() async {
     return await sharedPreferences!.remove('users');
   }
+  static Future<bool> saveAdmins(List<UserModel?> admins) async {
+    String jsonString = jsonEncode(admins.map((admin) => admin?.toJson()).toList());
+    await sharedPreferences?.setString('admins', jsonString);
+    return true;
+  }
+
+  static List<UserModel> getAdmins(){
+    String? jsonString = sharedPreferences?.getString('admins');
+    if (jsonString != null) {
+      List<dynamic> jsonList = jsonDecode(jsonString);
+      return jsonList.map((json) => UserModel.fromJson(json,json['uid'])).toList();
+    } else {
+      return [];
+    }
+  }
+  static Future<bool> removeAdmins() async {
+    return await sharedPreferences!.remove('admins');
+  }
+
 
   static Future<bool> saveClasses(List<ClassModel?> classes) async {
     String jsonString = jsonEncode(
@@ -197,7 +216,11 @@ class CacheHelper{
     String? jsonString = sharedPreferences?.getString(key);
     if (jsonString != null) {
       List<dynamic> jsonList = jsonDecode(jsonString);
-      return jsonList.map((json) => EventsModel.fromJson(json,json['docId']??"")).toList();
+      final events = jsonList
+          .map((json) => EventsModel.fromJson(json, json['docId'] ?? "",key))
+          .toList();
+      events.sort((a, b) => (b.dateTime ?? DateTime.now()).compareTo(a.dateTime ?? DateTime.now()));
+      return events;
     } else {
       return [];
     }

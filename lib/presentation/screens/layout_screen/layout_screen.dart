@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fathers_prophets/presentation/cubit/add_attendance/cubit/add_attendance_cubit.dart';
 import 'package:fathers_prophets/presentation/screens/event_screen/event_screen.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/localization/app_localizations.dart';
 import '../../../core/widgets/custom_bottom_nav_bar.dart';
 import '../../../core/widgets/custom_drawer.dart';
+import '../../../core/widgets/profile_loading_image.dart';
 import '../../../data/models/attendance/attendance_model.dart';
 import '../../../data/models/quizzes/quizzes_model.dart';
 import '../../cubit/layout/cubit/layout_cubit.dart';
@@ -14,6 +16,7 @@ import '../../cubit/local/cubit/local_cubit.dart';
 import '../../routes.dart';
 import '../attendance_screen/attendance_screen.dart';
 import '../event_screen/event_search.dart';
+import '../home_screen/home_screen.dart';
 import '../quizzes_screen/quiz_search.dart';
 import '../quizzes_screen/quizzes_screen.dart';
 
@@ -38,10 +41,23 @@ class LayoutScreen extends StatelessWidget {
                   cubit.scaffoldKey.currentState!.openDrawer();
                 },
                 icon: ClipOval(
-                  child: Image.asset(
+                  child: cubit.userData.profile == '' ?Image.asset(
                     context.read<LocaleCubit>().isDark
                         ? "assets/images/logo_dark.png"
                         : "assets/images/logo_light.png",
+                  ):ClipOval(
+                    child: CachedNetworkImage(
+                      width: 40,
+                      height: 40,
+                      fit: BoxFit.fill,
+                      imageUrl: cubit.userData.profile??"",
+                      placeholder: (context, imageProvider) => ProfileLoadingImage(
+                        isDark: context.read<LocaleCubit>().isDark,
+                      ),
+                      errorWidget: (context, url, error) =>  ProfileLoadingImage(
+                        isDark: context.read<LocaleCubit>().isDark,
+                      ),
+                    )
                   ),
                 ),
               ),
@@ -56,7 +72,8 @@ class LayoutScreen extends StatelessWidget {
                 GestureDetector(
                   child: const Icon(Icons.notifications),
                   onTap: () {
-                    context.pushNamed(AppRoutes.notifications.name);
+                    // context.pushNamed(AppRoutes.notifications.name);
+
                   },
                 ),
               ]
@@ -100,49 +117,70 @@ class LayoutScreen extends StatelessWidget {
               titleSpacing: 0,
             ),
             floatingActionButton:
-            (cubit.currentIndex != 0) && (cubit.userData.admin??false)
+            (cubit.currentIndex != 0) && (cubit.userData.isAdmin??false)
                 ? FloatingActionButton(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(50),
                   ),
                   onPressed: () async {
-                    switch (cubit.currentIndex) {
-                      case 0: break;
-                      case 1: {
-                        var event = await context.pushNamed(AppRoutes.addEvent.name);
-                        if(event == null) {
-                          return;
-                        } else {
-                          break;
-                        }
-                      }
-                      case 2:
-                        {
-                          var quiz = await context.pushNamed(AppRoutes.addQuiz.name);
-                          if(quiz == null) {
-                            return;
-                          } else {
-                            cubit.quizzes.add(quiz as QuizzesModel);
-                            cubit.sortQuizzes();
-                          }
-                          break;
-                        }
-                      case 3: {
-                        var attendance = await context.pushNamed(AppRoutes.addAttendance.name);
-                        if(attendance == null) {
-                          return ;
-                        } else {
-                          cubit.attendance.add(attendance as AttendanceModel);
-                          cubit.sortAttendance();
-                          context.read<AddAttendanceCubit>().onRest();
-                          break;
-                        }
-                      }
+                switch (cubit.currentIndex) {
+                  case 0:
+                    break;
+
+                  case 1: {
+                    var event = await context.pushNamed(AppRoutes.addEvent.name);
+                    if (!context.mounted) return;
+
+                    if (event != null) {
+                      cubit.getAllData();
                     }
-                  },
+                    break;
+                  }
+
+                  case 2: {
+                    var quiz = await context.pushNamed(AppRoutes.addQuiz.name);
+                    if (!context.mounted) return;
+
+                    if (quiz != null) {
+                      cubit.quizzes.add(quiz as QuizzesModel);
+                      cubit.sortQuizzes();
+                    }
+                    break;
+                  }
+
+                  case 3: {
+                    var attendance = await context.pushNamed(AppRoutes.addAttendance.name);
+                    if (!context.mounted) return;
+
+                    if (attendance != null) {
+                      cubit.attendance.add(attendance as AttendanceModel);
+                      cubit.sortAttendance();
+                      context.read<AddAttendanceCubit>().onRest();
+                    }
+                    break;
+                  }
+                }
+              },
                   child: const Icon(Icons.edit),
                 )
-                : null,
+                : (cubit.currentIndex == 3) && (cubit.userData.isTeacher??false)?FloatingActionButton(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(50),
+              ),
+              onPressed: () async {
+                var attendance = await context.pushNamed(AppRoutes.addAttendance.name);
+
+                if (!context.mounted) return;
+
+                if (attendance != null) {
+                  cubit.attendance.add(attendance as AttendanceModel);
+                  cubit.sortAttendance();
+                  context.read<AddAttendanceCubit>().onRest();
+                }
+              },
+
+              child: const Icon(Icons.edit),
+            ):null,
             resizeToAvoidBottomInset: false,
             bottomNavigationBar: Padding(
               padding: const EdgeInsets.only(
@@ -184,8 +222,13 @@ class LayoutScreen extends StatelessWidget {
               controller: cubit.pageController,
               physics: NeverScrollableScrollPhysics(),
               children: [
-                Text("Home"),
-                if(state is OnSearchEventOpenState ||state is OnSearchEventState) EventSearch(onChanged: (p0) => cubit.onSearchEvent(p0),)else EventScreen(),
+                if(cubit.allEvents.isNotEmpty) HomeScreen() else Center(
+                  child: Text(
+                    localize.translate('no_events'),
+                    style: textTheme.titleLarge,
+                  ),
+                ),
+                if(state is OnSearchEventOpenState ||state is OnSearchEventState) EventSearch(onChanged: (p0) => cubit.onSearchEvent(p0),events: cubit.filteredEvents,)else EventScreen(),
                 if(state is OnSearchQuizOpenState || state is OnSearchQuizState) QuizSearch(quizzes: cubit.quizzesSearch, quizzesDone: cubit.quizzesDone,onChanged: (p0) => cubit.onSearchQuiz(p0),) else QuizzesScreen(quizzes: cubit.quizzes,quizzesDone: cubit.quizzesDone),
                 (cubit.userData.isTeacher??false) ?AttendanceScreen(attendanceList: cubit.attendance,userData: cubit.userData,):Text("Activity"),
               ],

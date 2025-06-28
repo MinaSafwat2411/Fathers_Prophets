@@ -34,6 +34,10 @@ class LayoutCubit extends Cubit<LayoutStates> {
   var ritualEvents = <EventsModel>[];
   var doctrineEvents = <EventsModel>[];
   var chessEvents = <EventsModel>[];
+  List<EventsModel> comingEvents = <EventsModel>[];
+  List<EventsModel> filteredEvents = <EventsModel>[];
+  List<EventsModel> allEvents = <EventsModel>[];
+
 
   final attendanceUseCase = AttendanceUseCase(AttendanceRepository());
 
@@ -67,7 +71,7 @@ class LayoutCubit extends Cubit<LayoutStates> {
       emit(LoadingState());
       if(userData.isAdmin??false){
         attendance = await attendanceUseCase.getAllAttendance();
-      }else{
+      }else if(userData.isTeacher??false){
         attendance = await attendanceUseCase.getAttendanceByClass(userData.classId??'');
       }
       for (var element in attendance) {
@@ -87,19 +91,35 @@ class LayoutCubit extends Cubit<LayoutStates> {
   }
 
   void getAllData() async {
+    emit(LoadingState());
     quizzes = CacheHelper.getQuizzes();
     footballEvents = CacheHelper.getEvents('football');
+    comingEvents.addAll(footballEvents.where((element) => element.dateTime!.isAfter(DateTime.now())).toList());
     bibleEvents = CacheHelper.getEvents('bible');
+    comingEvents.addAll(bibleEvents.where((element) => element.dateTime!.isAfter(DateTime.now())).toList());
     pingPongEvents = CacheHelper.getEvents('pingPong');
+    comingEvents.addAll(pingPongEvents.where((element) => element.dateTime!.isAfter(DateTime.now())).toList());
     volleyballEvents = CacheHelper.getEvents('volleyball');
+    comingEvents.addAll(volleyballEvents.where((element) => element.dateTime!.isAfter(DateTime.now())).toList());
     copticEvents = CacheHelper.getEvents('coptic');
+    comingEvents.addAll(copticEvents.where((element) => element.dateTime!.isAfter(DateTime.now())).toList());
     choirEvents = CacheHelper.getEvents('choir');
+    comingEvents.addAll(choirEvents.where((element) => element.dateTime!.isAfter(DateTime.now())).toList());
     melodiesEvents = CacheHelper.getEvents('melodies');
+    comingEvents.addAll(melodiesEvents.where((element) => element.dateTime!.isAfter(DateTime.now())).toList());
     ritualEvents = CacheHelper.getEvents('ritual');
+    comingEvents.addAll(ritualEvents.where((element) => element.dateTime!.isAfter(DateTime.now())).toList());
     doctrineEvents = CacheHelper.getEvents('doctrine');
+    comingEvents.addAll(doctrineEvents.where((element) => element.dateTime!.isAfter(DateTime.now())).toList());
     chessEvents = CacheHelper.getEvents('chess');
+    comingEvents.addAll(chessEvents.where((element) => element.dateTime!.isAfter(DateTime.now())).toList());
+    filteredEvents.addAll(footballEvents+bibleEvents+pingPongEvents+volleyballEvents+copticEvents+choirEvents+melodiesEvents+ritualEvents+doctrineEvents+chessEvents);
+    filteredEvents.sort((a, b) => (b.dateTime?? DateTime.now()).compareTo(a.dateTime?? DateTime.now()));
+    comingEvents.sort((a, b) => (b.dateTime?? DateTime.now()).compareTo(a.dateTime?? DateTime.now()));
+    allEvents = filteredEvents;
     sortQuizzes();
     quizzesSearch = quizzes;
+    emit(SuccessState());
   }
 
   static String formatDate(DateTime dateTime,String lang) {
@@ -115,10 +135,12 @@ class LayoutCubit extends Cubit<LayoutStates> {
   }
 
   void getUserData(){
+    emit(LoadingState());
     userData = CacheHelper.getUserData();
     for(var item in userData.quizzes??<MemberQuizzesModel>[]){
       quizzesDone.add(item?.docId??'');
     }
+    emit(SuccessState());
   }
   void sortAttendance(){
     attendance.sort((a, b) => (b.date?? DateTime.now()).compareTo(a.date?? DateTime.now()));
@@ -160,8 +182,10 @@ class LayoutCubit extends Cubit<LayoutStates> {
   }
   void onSearchEvent(String query) {
     if (query.isEmpty) {
+      filteredEvents = allEvents;
       emit(OnSearchEventState());
     } else {
+      filteredEvents= filteredEvents.where((element) => (element.title??"").contains(query)).toList();
       emit(OnSearchEventState());
     }
   }

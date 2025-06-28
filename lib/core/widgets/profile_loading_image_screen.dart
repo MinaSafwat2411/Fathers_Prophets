@@ -1,0 +1,25 @@
+import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
+
+import '../utils/app_colors.dart';
+
+class ProfileLoadingImageScreen extends StatelessWidget {
+  const ProfileLoadingImageScreen({super.key,required this.isDark});
+  final bool isDark;
+
+  @override
+  Widget build(BuildContext context) {
+    return Shimmer.fromColors(
+      baseColor: isDark? AppColors.riverBed:AppColors.gray,
+      highlightColor: AppColors.white,
+      child: Container(
+        height: 100,
+        width: 100,
+        decoration: const BoxDecoration(
+          shape: BoxShape.circle,
+          color: AppColors.gray20,
+        ),
+      ),
+    );
+  }
+}

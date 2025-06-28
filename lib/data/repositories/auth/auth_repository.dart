@@ -49,6 +49,8 @@ class AuthRepository {
     try {
       final currentUser = firebaseAuth.currentUser;
       return currentUser != null;
+    } on FirebaseAuthException catch (e) {
+      throw extractFirebaseAuthError(e);
     } catch (e) {
       throw "An unexpected error occurred. Please try again.";
     }
@@ -58,6 +60,8 @@ class AuthRepository {
     try {
       final currentUser = firebaseAuth.currentUser;
       return currentUser?.uid ?? '';
+    } on FirebaseAuthException catch (e) {
+      throw extractFirebaseAuthError(e);
     } catch (e) {
       throw "An unexpected error occurred. Please try again.";
     }
@@ -67,6 +71,8 @@ class AuthRepository {
     try {
       final currentUser = firebaseAuth.currentUser;
       return currentUser?.email ?? '';
+    } on FirebaseAuthException catch (e) {
+      throw extractFirebaseAuthError(e);
     } catch (e) {
       throw "An unexpected error occurred. Please try again.";
     }
@@ -78,6 +84,8 @@ class AuthRepository {
       if (currentUser != null) {
         await currentUser.updatePassword(newPassword);
       }
+    } on FirebaseAuthException catch (e) {
+      throw extractFirebaseAuthError(e);
     } catch (e) {
       throw "An unexpected error occurred. Please try again.";
     }
@@ -90,6 +98,8 @@ class AuthRepository {
         // ignore: deprecated_member_use
         await currentUser.updateEmail(newEmail);
       }
+    } on FirebaseAuthException catch (e) {
+      throw extractFirebaseAuthError(e);
     } catch (e) {
       throw "An unexpected error occurred. Please try again.";
     }
@@ -98,6 +108,8 @@ class AuthRepository {
   Future<void> sendPasswordResetEmail(String email) async {
     try {
       await firebaseAuth.sendPasswordResetEmail(email: email);
+    } on FirebaseAuthException catch (e) {
+      throw extractFirebaseAuthError(e);
     } catch (e) {
       throw "An unexpected error occurred. Please try again.";
     }
@@ -109,6 +121,8 @@ class AuthRepository {
       if (currentUser != null) {
         await currentUser.delete();
       }
+    } on FirebaseAuthException catch (e) {
+      throw extractFirebaseAuthError(e);
     } catch (e) {
       throw "An unexpected error occurred. Please try again.";
     }
@@ -120,6 +134,8 @@ class AuthRepository {
       if (currentUser != null) {
         await currentUser.sendEmailVerification();
       }
+    } on FirebaseAuthException catch (e) {
+      throw extractFirebaseAuthError(e);
     } catch (e) {
       throw "An unexpected error occurred. Please try again.";
     }
@@ -131,6 +147,8 @@ class AuthRepository {
         return currentUser.emailVerified;
       }
       return false;
+    } on FirebaseAuthException catch (e) {
+      throw extractFirebaseAuthError(e);
     } catch (e) {
       throw "An unexpected error occurred. Please try again.";
     }

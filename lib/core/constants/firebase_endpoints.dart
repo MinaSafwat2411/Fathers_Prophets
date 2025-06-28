@@ -8,6 +8,7 @@ class FirebaseEndpoints {
   static const String classes = "Classes";
   static const String users = "Users";
   static const String isTeacher = "isTeacher";
+  static const String isAdmin = "isAdmin";
   static const String classId = "class";
   static const String version = "1.0.0";
 }

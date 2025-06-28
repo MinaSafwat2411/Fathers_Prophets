@@ -23,7 +23,7 @@ class EventItem extends StatelessWidget {
           'items':events
         }),
         child: Card(
-          color: isDark?AppColors.riverBed:AppColors.azureRadiance,
+          color: isDark?AppColors.riverBed:AppColors.slateGray,
           child: Column(
             children: [
               Image(image:AssetImage(image),fit: BoxFit.cover,width: 150,height: 150,),

@@ -14,7 +14,6 @@ class SplashScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var cubit = BlocProvider.of<SplashCubit>(context);
     return BlocConsumer<SplashCubit, SplashStates>(
       builder: (context, state) =>  Scaffold(
         body: Center(
@@ -32,6 +31,7 @@ class SplashScreen extends StatelessWidget {
           case OnNavigateToLoginScreen(): {context.goNamed(AppRoutes.login.name);break;}
           case OnNavigateToHomeScreen(): {context.goNamed(AppRoutes.layout.name);break;}
           case OnRequestUpToDate(): {showCustomSnackBar(context, "Check your Update",color: AppColors.red,icon: Icons.update);}
+          case OnNavigateToReviewScreen(): {context.goNamed(AppRoutes.review.name);break;}
         }
       },
     );
