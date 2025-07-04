@@ -103,6 +103,23 @@ class EventsRepository {
           .toList();
     }
   }
+  Future<List<EventsModel>?> getPrayEvents() async {
+    final snapshot = await FirebaseFirestore.instance.collection("Pray").get();
+    if(snapshot.docs.isEmpty){
+      return [];
+    }else {
+      return snapshot.docs
+          .map((doc) => EventsModel.fromJson(doc.data(), doc.id, 'pray')).toList();
+    }
+  }
+  Future<List<EventsModel>?> getPraiseEvents() async {
+    final snapshot = await FirebaseFirestore.instance.collection("Praise").get();
+    if(snapshot.docs.isEmpty){
+      return [];
+    }else {
+      return snapshot.docs.map((doc) => EventsModel.fromJson(doc.data(), doc.id, 'praise')).toList();
+    }
+  }
   Future<String?> addNewFootballEvent(EventsModel eventsModel)async{
     final snapshot = await FirebaseFirestore.instance.collection("Football").add(eventsModel.toJson());
     return snapshot.id;
@@ -149,6 +166,16 @@ class EventsRepository {
 
   Future<String?> addNewMelodiesEvent(EventsModel eventsModel)async{
     final snapshot = await FirebaseFirestore.instance.collection("Melodies").add(eventsModel.toJson());
+    return snapshot.id;
+  }
+
+  Future<String?> addNewPrayEvent(EventsModel eventsModel)async{
+    final snapshot = await FirebaseFirestore.instance.collection("Pray").add(eventsModel.toJson());
+    return snapshot.id;
+  }
+
+  Future<String?> addNewPraiseEvent(EventsModel eventsModel)async{
+    final snapshot = await FirebaseFirestore.instance.collection("Praise").add(eventsModel.toJson());
     return snapshot.id;
   }
 }

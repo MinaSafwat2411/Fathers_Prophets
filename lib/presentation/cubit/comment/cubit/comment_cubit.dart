@@ -6,6 +6,9 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../data/models/comment/comment_model.dart';
+import '../../../../data/models/eventattendance/event_attendance_model.dart';
+import '../../../../data/repositories/eventattendance/event_attendance_repository.dart';
+import '../../../../domain/usecases/eventattendance/event_attendance_use_case.dart';
 import '../states/comment_states.dart';
 
 class CommentCubit extends Cubit<CommentStates> {
@@ -14,9 +17,13 @@ class CommentCubit extends Cubit<CommentStates> {
   static CommentCubit get(context) => BlocProvider.of(context);
   TextEditingController commentController = TextEditingController();
 
+  final EventAttendanceUseCase eventsAttendanceUseCase = EventAttendanceUseCase(EventAttendanceRepository());
+
   final _db = FirebaseDatabase.instance.ref();
   StreamSubscription<DatabaseEvent>? commentSub;
   List<ClassModel> classes = <ClassModel>[];
+  EventAttendanceModel attendance= EventAttendanceModel();
+  List<CommentModel> comments = <CommentModel>[];
 
   void listenToComments(String userId) {
     classes = CacheHelper.getClasses();
@@ -35,6 +42,7 @@ class CommentCubit extends Cubit<CommentStates> {
 
       comments.sort((a, b) => b.timestamp.compareTo(a.timestamp));
       comments.removeWhere((comment) => comment.authorId != userId);
+      this.comments = comments;
       emit(CommentLoaded(comments));
     }, onError: (error) {
       emit(CommentError(error.toString()));
@@ -46,6 +54,30 @@ class CommentCubit extends Cubit<CommentStates> {
     commentController.clear();
   }
 
+  Future<void> deleteComment(String commentId) async {
+    await _db.child("comments").child(commentId).remove();
+    comments.removeWhere((comment) => comment.id == commentId);
+    emit(CommentDeleted());
+  }
+
+  Future<void> updateComment(CommentModel comment) async {
+    await _db.child("comments").child(comment.id??"").update(comment.toJson());
+    commentController.clear();
+    comments.removeWhere((c) => c.id == comment.id);
+    comments.add(comment);
+    emit(CommentUpdated());
+  }
+
+  Future<void> getAttendance(String userId) async {
+    emit(OnLoading());
+    try{
+      final attendance = await eventsAttendanceUseCase.getEventAttendanceById(userId);
+      this.attendance = attendance??EventAttendanceModel();
+      emit(OnSuccess());
+    }catch(e){
+      emit(OnError(e.toString()));
+    }
+  }
   @override
   Future<void> close() {
     commentSub?.cancel();

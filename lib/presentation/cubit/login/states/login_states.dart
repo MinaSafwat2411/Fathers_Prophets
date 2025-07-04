@@ -14,3 +14,5 @@ class LoginErrorState extends LoginStates{
 class ToReviewState extends LoginStates{}
 
 class OnObscureText extends LoginStates{}
+
+class OnRequestUpToDate extends LoginStates{}

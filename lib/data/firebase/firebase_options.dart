@@ -50,21 +50,22 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyChr3ym7N1up8lA5JFeAwPbggcWIkM9cRg',
-    appId: '1:1067497462234:android:7e3bfb2dec5bec1ca2c8e3',
-    messagingSenderId: '1067497462234',
-    projectId: 'fathers-prophets',
-    databaseURL: 'https://fathers-prophets-default-rtdb.europe-west1.firebasedatabase.app',
-    storageBucket: 'fathers-prophets.firebasestorage.app',
+    apiKey: 'AIzaSyDfxaI4i_zb0zBQo0qn79mEbPeXzxQ5xoM',
+    appId: '1:722252357354:android:d72ff7c2aa5b1d9e380193',
+    messagingSenderId: '722252357354',
+    projectId: 'fathers-prophets-20a98',
+    databaseURL: 'https://fathers-prophets-20a98-default-rtdb.europe-west1.firebasedatabase.app',
+    storageBucket: 'fathers-prophets-20a98.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBU7_oxca1gDuSjgRQSSV5vBw36jkBzyTE',
-    appId: '1:1067497462234:ios:eecf4c4595695013a2c8e3',
-    messagingSenderId: '1067497462234',
-    projectId: 'fathers-prophets',
-    databaseURL: 'https://fathers-prophets-default-rtdb.europe-west1.firebasedatabase.app',
-    storageBucket: 'fathers-prophets.firebasestorage.app',
+    apiKey: 'AIzaSyBHFEIYnIWQ4e29d49cww2x5zbxNcgsO7I',
+    appId: '1:722252357354:ios:a369dfad7deefb51380193',
+    messagingSenderId: '722252357354',
+    projectId: 'fathers-prophets-20a98',
+    databaseURL: 'https://fathers-prophets-20a98-default-rtdb.europe-west1.firebasedatabase.app',
+    storageBucket: 'fathers-prophets-20a98.firebasestorage.app',
     iosBundleId: 'com.fathersprophets.fathersProphets',
   );
+
 }

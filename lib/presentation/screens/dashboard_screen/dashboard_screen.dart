@@ -1,11 +1,9 @@
 import 'package:fathers_prophets/core/utils/app_colors.dart';
-import 'package:fathers_prophets/core/widgets/custom_loading.dart';
-import 'package:fathers_prophets/data/services/cache_helper.dart';
+import 'package:fathers_prophets/presentation/cubit/layout/cubit/layout_cubit.dart';
 import 'package:fathers_prophets/presentation/cubit/local/cubit/local_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-
 import '../../../core/localization/app_localizations.dart';
 import '../../cubit/dashboard/cubit/dashboard_cubit.dart';
 import '../../cubit/dashboard/states/dashboard_states.dart';
@@ -18,7 +16,6 @@ class DashboardScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final localize = AppLocalizations.of(context);
     var textTheme = Theme.of(context).textTheme;
-    var cardTheme = Theme.of(context).cardTheme;
     var cubit = DashboardCubit.get(context);
     return BlocConsumer<DashboardCubit, DashboardStates>(
       builder:
@@ -32,205 +29,112 @@ class DashboardScreen extends StatelessWidget {
                 icon: const Icon(Icons.arrow_back_ios_new_outlined),
               ),
             ),
-            body: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: 55,
-                    child: ListView.separated(
-                      scrollDirection: Axis.horizontal,
-                      itemBuilder:
-                          (context, index) => GestureDetector(
-                            onTap: () => cubit.onFilter(index),
-                            child: Card(
-                              shape: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(20),
-                                borderSide: BorderSide(
-                                  color: AppColors.transparent
-                                )
-                              ),
-                              color:
-                                  cubit.selected != index
-                                      ? cardTheme.color
-                                      : context.read<LocaleCubit>().isDark
-                                      ? AppColors.white
-                                      : AppColors.mirage,
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 8.0,
-                                  horizontal: 15,
-                                ),
-                                child: Text(
-                                  textAlign: TextAlign.center,
-                                  cubit.list[index],
-                                  style: textTheme.bodyMedium?.copyWith(
-                                    color:
-                                        cubit.selected != index
-                                            ? textTheme.bodyMedium?.color
-                                            : context.read<LocaleCubit>().isDark
-                                            ? AppColors.black
-                                            : AppColors.white,
-                                  ),
-                                ),
-                              ),
-                            ),
+            body: PageView(
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: DropdownMenu(
+                        inputDecorationTheme: InputDecorationTheme(
+                            enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(color: AppColors.azureRadiance)
+                            )
+                        ),
+                        dropdownMenuEntries: [
+                          DropdownMenuEntry<String>(
+                            value: "2uli6QXyKY8VrpjMz99H",
+                            label: "ابونا ابراهيم",
                           ),
-                      separatorBuilder: (context, index) => const SizedBox(),
-                      itemCount: cubit.list.length,
-                    ),
-                  ),
-                  state is! OnLoading
-                      ? Expanded(
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.vertical,
-                            child: DataTable(
-                              columns: [
-                                DataColumn(
-                                  label: Text(localize.translate('name')),
-                                ),
-                                DataColumn(
-                                  label: Text(localize.translate('class')),
-                                ),
-                                DataColumn(
-                                  label: Text(localize.translate('bible')),
-                                ),
-                                DataColumn(
-                                  label: Text(localize.translate('football')),
-                                ),
-                                DataColumn(
-                                  label: Text(localize.translate('ritual')),
-                                ),
-                                DataColumn(
-                                  label: Text(localize.translate('chess')),
-                                ),
-                                DataColumn(
-                                  label: Text(localize.translate('choir')),
-                                ),
-                                DataColumn(
-                                  label: Text(localize.translate('melodies')),
-                                ),
-                                DataColumn(
-                                  label: Text(localize.translate('doctrine')),
-                                ),
-                                DataColumn(
-                                  label: Text(localize.translate('volleyball')),
-                                ),
-                                DataColumn(
-                                  label: Text(localize.translate('pingPong')),
-                                ),
-                                DataColumn(
-                                  label: Text(localize.translate('coptic')),
-                                ),
-                                DataColumn(
-                                  label: Text(localize.translate('quizzes')),
-                                ),
-                              ],
-                              rows:
-                                  cubit.membersFiltered.map((user) {
-                                    return DataRow(
-                                      cells: [
-                                        DataCell(
-                                            GestureDetector(
-                                                onTap: () {
-                                                  context.pushNamed(AppRoutes.userDetails.name, extra: {
-                                                    'user':user,
-                                                    'football':cubit.football,
-                                                    'volleyball':cubit.volleyball,
-                                                    'pingPong':cubit.pingPong,
-                                                    'chess':cubit.chess,
-                                                    'melodies':cubit.melodies,
-                                                    'choir':cubit.choir,
-                                                    'ritual':cubit.ritual,
-                                                    'coptic':cubit.coptic,
-                                                    'doctrine':cubit.doctrine,
-                                                    'bible':cubit.bible,
-                                                    'quizzes':cubit.quizzes,
-                                                  });
-                                                },
-                                                child:
-                                                Text(user.name ?? ''))),
-                                        DataCell(
-                                          Text(
-                                            CacheHelper.getClasses()
-                                                    .firstWhere(
-                                                      (element) =>
-                                                          element.docId ==
-                                                          user.classId,
-                                                    )
-                                                    .name ??
-                                                "",
-                                          ),
-                                        ),
-                                        DataCell(
-                                          Text(
-                                            "${user.bible?.length ?? 0} / ${cubit.bible}",
-                                          ),
-                                        ),
-                                        DataCell(
-                                          Text(
-                                            "${user.football?.length ?? 0} / ${cubit.football}",
-                                          ),
-                                        ),
-                                        DataCell(
-                                          Text(
-                                            "${user.ritual?.length ?? 0} / ${cubit.ritual}",
-                                          ),
-                                        ),
-                                        DataCell(
-                                          Text(
-                                            "${user.chess?.length ?? 0} / ${cubit.chess}",
-                                          ),
-                                        ),
-                                        DataCell(
-                                          Text(
-                                            "${user.choir?.length ?? 0} / ${cubit.choir}",
-                                          ),
-                                        ),
-                                        DataCell(
-                                          Text(
-                                            "${user.melodies?.length ?? 0} / ${cubit.melodies}",
-                                          ),
-                                        ),
-                                        DataCell(
-                                          Text(
-                                            "${user.doctrine?.length ?? 0} / ${cubit.doctrine}",
-                                          ),
-                                        ),
-                                        DataCell(
-                                          Text(
-                                            "${user.volleyball?.length ?? 0} / ${cubit.volleyball}",
-                                          ),
-                                        ),
-                                        DataCell(
-                                          Text(
-                                            "${user.pingPong?.length ?? 0} / ${cubit.pingPong}",
-                                          ),
-                                        ),
-                                        DataCell(
-                                          Text(
-                                            "${user.coptic?.length ?? 0} / ${cubit.coptic}",
-                                          ),
-                                        ),
-                                        DataCell(
-                                          Text(
-                                            "${user.quizzes?.length ?? 0} / ${cubit.quizzes}",
-                                          ),
-                                        ),
-                                      ],
-                                    );
-                                  }).toList(),
+                          DropdownMenuEntry<String>(
+                            value: "8aB4mDsvky0FbzOQwfTU",
+                            label: "دانيال النبي",
+                          ),
+                          DropdownMenuEntry<String>(
+                            value: "9l6zfZIO1C6OavYCvuRV",
+                            label: "امنا سارة",
+                          ),
+                          DropdownMenuEntry<String>(
+                            value: "bCkH6KkCRnEDMk5Ea6sf",
+                            label: "حنه النبيه",
+                          ),
+                          DropdownMenuEntry<String>(
+                            value: "el2A2Mjm45SU5jliE29g",
+                            label: "دبورة النبية",
+                          ),
+                          DropdownMenuEntry<String>(
+                            value: "f0nBkPZu9OJbQ0Hstqij",
+                            label: "امنا رفقة",
+                          ),
+                          DropdownMenuEntry<String>(
+                            value: "fE4xWCz3bvBhyZeMuk7g",
+                            label: "ابونا اسحق",
+                          ),
+                          DropdownMenuEntry<String>(
+                            value: "nXB5fzKgjVkIrVrXrLDo",
+                            label: "موسي النبي",
+                          ),
+                        ],
+                        onSelected: (value) {
+                          cubit.onSelectClass(value.toString());
+                        },
+                        width: double.infinity,
+                        hintText: localize.translate("select_class"),
+                        menuStyle: MenuStyle(
+                          shape: WidgetStatePropertyAll(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
                             ),
                           ),
                         ),
-                      )
-                      : CustomLoading(
-                        isDark: context.read<LocaleCubit>().isDark,
                       ),
-                ],
-              ),
+                    ),
+                    state is! OnLoading? Expanded(
+                      child: ListView(
+                        children: [
+                          for(var item in cubit.members) TextButton(onPressed: () {
+                            context.pushNamed(AppRoutes.userDetails.name, extra: {'user':item,
+                              'football':context.read<LayoutCubit>().footballEvents.length,
+                              'volleyball':context.read<LayoutCubit>().volleyballEvents.length,
+                              'pingPong':context.read<LayoutCubit>().pingPongEvents.length,
+                              'chess':context.read<LayoutCubit>().chessEvents.length,
+                              'melodies':context.read<LayoutCubit>().melodiesEvents.length,
+                              'choir':context.read<LayoutCubit>().choirEvents.length,
+                              'ritual':context.read<LayoutCubit>().ritualEvents.length,
+                              'coptic':context.read<LayoutCubit>().copticEvents.length,
+                              'doctrine':context.read<LayoutCubit>().doctrineEvents.length,
+                              'bible':context.read<LayoutCubit>().bibleEvents.length,
+                              'pray':context.read<LayoutCubit>().prayEvents.length,
+                              'praise':context.read<LayoutCubit>().praiseEvents.length,
+                            });
+                          }, child: Card(child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(item.name??'', style: textTheme.bodyLarge,),
+                              ],
+                            ),
+                          )))
+                          ]
+                      ),
+                    ):
+                    Expanded(
+                      child: Center(
+                        child: CircularProgressIndicator(
+                            strokeWidth: 1,
+                            backgroundColor: AppColors.transparent,
+                            color: context.read<LocaleCubit>().isDark? AppColors.white: AppColors.mirage
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ],
             ),
           ),
       listener: (context, state) {},

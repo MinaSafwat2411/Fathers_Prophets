@@ -170,8 +170,15 @@ class LoginScreen extends StatelessWidget {
             color: AppColors.red
           );
         }
+        if (state is OnRequestUpToDate) {
+          showCustomSnackBar(
+              context, "Check your Update",
+              color: AppColors.red,
+              icon: Icons.update
+          );
+        }
       },
-      listenWhen: (previous, current) => current is LoginErrorState || current is LoginSuccessState || current is ToReviewState,
+      listenWhen: (previous, current) => current is LoginErrorState || current is LoginSuccessState || current is ToReviewState ||current is OnRequestUpToDate ||current is LoginErrorState,
       buildWhen: (previous, current) =>
            current is LoginLoadingState || current is OnObscureText,
     );

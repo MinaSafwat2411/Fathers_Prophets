@@ -33,7 +33,7 @@ class UserRepository {
         .map((doc) => UserModel.fromJson(doc.data(), doc.id))
         .toList();
   }
-  Future<List<UserModel?>?> getAllMembers() async {
+  Future<List<UserModel>?> getAllMembers() async {
     final snapshot =
     await FirebaseFirestore.instance.collection(FirebaseEndpoints.users).where(FirebaseEndpoints.isTeacher,isEqualTo: false).get();
     return snapshot.docs

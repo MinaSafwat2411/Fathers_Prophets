@@ -10,9 +10,11 @@ import '../../../../data/models/bible/bible_model.dart';
 import '../../../../data/models/quizzes/questions_model.dart';
 import '../../../../data/models/quizzes/quiz_answers.dart';
 import '../../../../data/models/quizzes/quiz_model.dart';
-import '../../../../data/models/users/member_quizzes_model.dart';
+import '../../../../data/models/quizzes_score/quizzes_score_model.dart';
 import '../../../../data/repositories/quizzes/quizzes_repository.dart';
+import '../../../../data/repositories/quizzes_score/quizzes_score_repository.dart';
 import '../../../../data/repositories/users/users_repository.dart';
+import '../../../../domain/usecases/quizzes_score/quizzes_score_use_case.dart';
 import '../../../../domain/usecases/users/users_use_case.dart';
 
 class QuizzesCubit extends Cubit<QuizzesStates> {
@@ -44,6 +46,8 @@ class QuizzesCubit extends Cubit<QuizzesStates> {
   var question = <String>[];
   final UsersUseCase usersUseCase = UsersUseCase(UserRepository());
   final QuizzesUseCase quizzesUseCase = QuizzesUseCase(QuizzesRepository());
+  final QuizzesScoreUseCase quizzesScoreUseCase = QuizzesScoreUseCase(QuizzesScoreRepository());
+
   var score = 0;
   var correctAnswersIndex = -1;
   var selectedTestament = "";
@@ -237,15 +241,10 @@ class QuizzesCubit extends Cubit<QuizzesStates> {
       }
     }
     try {
-      userData.quizzes?.add(
-        MemberQuizzesModel(docId: quiz.docId, degree: score),
-      );
-      await usersUseCase.updateUser(
-        userData.copyWith(
-          quizzes: userData.quizzes,
-        )
-      );
-      await CacheHelper.saveUserData(userData);
+      await quizzesScoreUseCase.updateQuizzesScore(userData.uid??"", QuizzesScoreModel(
+        score: score,
+        quizzes: [quiz.docId??""],
+      ));
       emit(OnSubmit());
     } catch (e) {
       emit(OnError(e.toString()));

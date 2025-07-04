@@ -106,6 +106,24 @@ class EventScreen extends StatelessWidget {
                 ),
               ],
             ),
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                EventItem(
+                  image:context.read<LocaleCubit>().isDark?"assets/images/ic_pray_dark.png":"assets/images/ic_pray_light.png" ,
+                  title: 'pray',
+                  isDark: context.read<LocaleCubit>().isDark,
+                  events: cubit.prayEvents,
+                ),
+                EventItem(
+                  image:context.read<LocaleCubit>().isDark?"assets/images/ic_praise_dark.png":"assets/images/ic_praise_light.png" ,
+                  title: 'praise',
+                  isDark: context.read<LocaleCubit>().isDark,
+                  events: cubit.chessEvents,
+                ),
+              ],
+            ),
           ],
         ),
       ),

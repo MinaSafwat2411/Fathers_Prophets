@@ -28,7 +28,7 @@ class UsersUseCase {
   Future<List<UserModel?>?> getServantsClassId(String id) async {
     return await userRepository.getServantsClassId(id);
   }
-  Future<List<UserModel?>?> getAllMembers() async {
+  Future<List<UserModel>?> getAllMembers() async {
     return await userRepository.getAllMembers();
   }
   Future<List<UserModel?>?> getAllAdmins() async {

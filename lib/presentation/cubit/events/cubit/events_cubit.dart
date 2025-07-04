@@ -3,10 +3,12 @@ import 'package:bloc/bloc.dart';
 import 'package:fathers_prophets/data/models/classes/class_model.dart';
 import 'package:fathers_prophets/data/models/events/events_model.dart';
 import 'package:fathers_prophets/data/models/users/users_model.dart';
+import 'package:fathers_prophets/data/repositories/eventattendance/event_attendance_repository.dart';
 import 'package:fathers_prophets/data/services/cache_helper.dart';
 import 'package:fathers_prophets/domain/usecases/users/users_use_case.dart';
 import 'package:fathers_prophets/presentation/screens/add_event_screen/event_enum.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' show BlocProvider;
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
@@ -14,8 +16,11 @@ import '../../../../data/models/events/event_attendance_model.dart';
 import '../../../../data/repositories/events/events_repository.dart';
 import '../../../../data/repositories/users/users_repository.dart';
 import '../../../../data/services/google_drive_service.dart';
+import '../../../../domain/usecases/eventattendance/event_attendance_use_case.dart';
 import '../../../../domain/usecases/events/events_use_case.dart';
 import '../states/events_states.dart';
+import 'package:flutter/services.dart' show rootBundle;
+import 'package:path_provider/path_provider.dart';
 
 class EventsCubit extends Cubit<EventsStates> {
   EventsCubit() : super(InitialState());
@@ -33,12 +38,13 @@ class EventsCubit extends Cubit<EventsStates> {
   TextEditingController titleController = TextEditingController();
   TextEditingController searchController = TextEditingController();
   File? image;
-  List<EventAttendanceModel> selectedMembers = [];
+  List<AttendanceEventModel> selectedMembers = [];
   List<ClassModel> classes = [];
   int currentIndex = 0;
   var userData = UserModel();
 
   final EventsUseCase eventsUseCase = EventsUseCase(EventsRepository());
+  final EventAttendanceUseCase eventsAttendanceUseCase = EventAttendanceUseCase(EventAttendanceRepository());
   final GoogleDriveUploader googleDriveUploader = GoogleDriveUploader();
   final UsersUseCase usersUseCase = UsersUseCase(UserRepository());
 
@@ -87,7 +93,7 @@ class EventsCubit extends Cubit<EventsStates> {
   }
   void onAddMember(UserModel member,int index){
     group.values.elementAt(currentIndex)[index].checked = true;
-    selectedMembers.add(EventAttendanceModel(userId: member.uid, name: member.name));
+    selectedMembers.add(AttendanceEventModel(userId: member.uid, name: member.name));
     emit(OnAddMember());
   }
 
@@ -109,9 +115,17 @@ class EventsCubit extends Cubit<EventsStates> {
     return map;
   }
 
-  void onBackDone(List<EventAttendanceModel> selectedMembers) {
+  void onBackDone(List<AttendanceEventModel> selectedMembers) {
     this.selectedMembers = selectedMembers;
     emit(OnBackDone());
+  }
+
+  Future<File> getDefaultImageFile() async {
+    final byteData = await rootBundle.load('assets/images/logo_light.png');
+    final tempDir = await getTemporaryDirectory();
+    final file = File('${tempDir.path}/default_image.png');
+    await file.writeAsBytes(byteData.buffer.asUint8List());
+    return file;
   }
 
   void onSubmit() async {
@@ -119,11 +133,10 @@ class EventsCubit extends Cubit<EventsStates> {
     event = event.copyWith(
       title: titleController.text,
       image: await googleDriveUploader.uploadFileToDrive(
-        image!,
+        image!=null?image!:await getDefaultImageFile(),
         'image_${DateTime.now().millisecondsSinceEpoch}.jpg',
       ),
       date: selectedDate.toString(),
-      attendance: [],
     );
     try {
       switch (selectedEvent) {
@@ -201,8 +214,22 @@ class EventsCubit extends Cubit<EventsStates> {
             events.add(event.copyWith(docId: id));
             await CacheHelper.saveEvents(events, 'football');
           }
+          case EventEnum.PRAISE:
+            {
+              String id  =await eventsUseCase.addNewPraiseEvent(event.copyWith(name: "تسبحة"));
+              var events = CacheHelper.getEvents('praise');
+              events.add(event.copyWith(docId: id));
+              await CacheHelper.saveEvents(events, 'praise');
+            }
+          case EventEnum.PRAY:{
+            String id = await eventsUseCase.addNewPrayEvent(event.copyWith(name:  "صلاة"));
+            var events = CacheHelper.getEvents('pray');
+            events.add(event.copyWith(docId: id));
+            await CacheHelper.saveEvents(events, 'pray');
+          }
       }
-      await usersUseCase.updateApplyToAll(servants);
+      await usersUseCase.updateApplyToAll(admins);
+      // await usersUseCase.updateApplyToAll(servants);
       // await usersUseCase.updateApplyToAll(members);
       emit(OnSuccess());
     } catch (e) {
@@ -245,62 +272,7 @@ class EventsCubit extends Cubit<EventsStates> {
     try{
       for(var element in selectedMembers){
         try{
-          await usersUseCase.addEventAttendance(element.userId ?? "", event, title);
-          final user = members.firstWhere((user) => user.uid == element.userId);
-          switch (title) {
-            case "bible":{
-              if (!user.bible!.contains(event)) {
-                user.bible!.add(event);
-              }
-            }
-            case "doctrine":{
-              if (!user.doctrine!.contains(event)) {
-                user.doctrine!.add(event);
-              }
-            }
-            case "coptic": {
-              if (!user.coptic!.contains(event)) {
-                user.coptic!.add(event);
-              }
-            }
-            case "ritual": {
-              if (!user.ritual!.contains(event)) {
-                user.ritual!.add(event);
-              }
-            }
-            case "choir": {
-              if (!user.choir!.contains(event)) {
-                user.choir!.add(event);
-              }
-            }
-            case "melodies": {
-              if (!user.melodies!.contains(event)) {
-                user.melodies!.add(event);
-              }
-            }
-            case "chess": {
-              if (!user.chess!.contains(event)) {
-                user.chess!.add(event);
-              }
-            }
-            case "pingPong": {
-              if (!user.pingPong!.contains(event)) {
-                user.pingPong!.add(event);
-              }
-            }
-            case "volleyball": {
-              if (!user.volleyball!.contains(event)) {
-                user.volleyball!.add(event);
-              }
-            }
-            case "football": {
-              if (!user.football!.contains(event)) {
-                user.football!.add(event);
-              }
-            }
-            default:{}
-          }
-          await usersUseCase.updateApplyToAll(admins);
+          await eventsAttendanceUseCase.addEventAttendance(element.userId ?? "", event, title);
         }catch(e){
           emit(OnError(e.toString()));
         }

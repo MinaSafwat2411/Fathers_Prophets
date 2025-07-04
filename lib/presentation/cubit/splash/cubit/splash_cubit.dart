@@ -1,10 +1,10 @@
 import 'dart:async';
 
-import 'package:fathers_prophets/core/constants/firebase_endpoints.dart';
 import 'package:fathers_prophets/data/models/events/events_model.dart';
 import 'package:fathers_prophets/data/repositories/events/events_repository.dart';
 import 'package:fathers_prophets/data/repositories/quizzes/quizzes_repository.dart';
 import 'package:fathers_prophets/data/repositories/users/users_repository.dart';
+import 'package:fathers_prophets/data/services/read_from_json.dart';
 import 'package:fathers_prophets/domain/usecases/classes/classes_use_case.dart';
 import 'package:fathers_prophets/domain/usecases/events/events_use_case.dart';
 import 'package:fathers_prophets/domain/usecases/quizzes/quizzes_use_case.dart';
@@ -13,7 +13,9 @@ import '../../../../data/models/classes/class_model.dart';
 import '../../../../data/models/quizzes/quizzes_model.dart';
 import '../../../../data/models/users/users_model.dart';
 import '../../../../data/repositories/classes/class_repository.dart';
+import '../../../../data/repositories/splash/splash_repository.dart';
 import '../../../../data/services/cache_helper.dart';
+import '../../../../domain/usecases/splash/splash_use_case.dart';
 import '../../../../domain/usecases/users/users_use_case.dart';
 import '../states/splash_states.dart';
 
@@ -21,7 +23,7 @@ class SplashCubit extends Cubit<SplashStates> {
   SplashCubit() : super(SplashInitialState());
 
   var servantList = <UserModel?>[];
-  var memberList = <UserModel?>[];
+  var memberList = <UserModel>[];
   var adminList = <UserModel?>[];
   var quizzesList = <QuizzesModel?>[];
   var footballEvents = <EventsModel>[];
@@ -34,186 +36,219 @@ class SplashCubit extends Cubit<SplashStates> {
   var ritualEvents = <EventsModel>[];
   var doctrineEvents = <EventsModel>[];
   var chessEvents = <EventsModel>[];
-  var classList=<ClassModel>[];
+  var prayEvents = <EventsModel>[];
+  var praiseEvents = <EventsModel>[];
+  var classList = <ClassModel>[];
   var userData = UserModel();
 
   final UsersUseCase usersUseCase = UsersUseCase(UserRepository());
   final ClassesUseCase classesUseCase = ClassesUseCase(ClassRepository());
   final QuizzesUseCase questionsUseCase = QuizzesUseCase(QuizzesRepository());
   final EventsUseCase eventsUseCase = EventsUseCase(EventsRepository());
+  final SplashUseCase splashUseCase = SplashUseCase(SplashRepository());
 
   static SplashCubit get(context) => BlocProvider.of(context);
 
-  void onNavigate(isDark, uid, isOpened) async {
-      if (isOpened) {
-        if (uid == '') {
-          Future.delayed(const Duration(seconds: 3), () {
-            emit(OnNavigateToLoginScreen());
-          });
-        } else {
-          try {
-          userData = await usersUseCase.getUserData(uid) ?? UserModel();
-          await CacheHelper.saveUserData(userData);
-          classList = [
-            ClassModel(
-                docId: "2uli6QXyKY8VrpjMz99H",
-                name: "ابونا ابراهيم"
-            ),
-            ClassModel(
-                docId: "8aB4mDsvky0FbzOQwfTU",
-                name: "دانيال النبي"
-            ),
-            ClassModel(
-                docId: "9l6zfZIO1C6OavYCvuRV",
-                name: "امنا سارة"
-            ),
-            ClassModel(
-                docId: "bCkH6KkCRnEDMk5Ea6sf",
-                name: "حنه النبيه"
-            ),
-            ClassModel(
-                docId: "el2A2Mjm45SU5jliE29g",
-                name: "دبورة النبية"
-            ),
-            ClassModel(
-                docId: "f0nBkPZu9OJbQ0Hstqij",
-                name: "امنا رفقة"
-            ),
-            ClassModel(
-                docId: "fE4xWCz3bvBhyZeMuk7g",
-                name: "ابونا اسحق"
-            ),
-            ClassModel(
-                docId: "nXB5fzKgjVkIrVrXrLDo",
-                name: "موسي النبي"
-            ),
-          ];
-          if(classList.isNotEmpty) {
-            await CacheHelper.saveClasses(classList);
-          }else{
-            await CacheHelper.removeClasses();
-          }
-          if((userData.isReviewed??false)) {
-            if ((userData.isAnyUpdate??false)) {
-              await getAllFirebaseDate();
-            }else if (!(FirebaseEndpoints.version == userData.version)) {
-              emit(OnRequestUpToDate());
-            }
-            if(state is! OnRequestUpToDate){
-              emit(OnNavigateToHomeScreen());
-            }
-          }else{
-            Future.delayed(Duration(seconds: 3),() => emit(OnNavigateToReviewScreen()),);
-          }
-          } catch (e) {
-            emit(OnError(e.toString()));
-          }
-      }
-    }else{
-        Future.delayed(const Duration(seconds: 3), () {
-          emit(OnNavigateToOnBoardingScreen());
-        }
-        );
-      }
-  }
-
-  Future<void> getAllFirebaseDate() async {
-    try {
-      emit(OnLoading());
+  Future<void> getAllFirebaseDate()async{
+    try{
+      await CacheHelper.removeMembers();
+      await CacheHelper.removeMembersByClassId(classList[0].docId);
+      await CacheHelper.removeMembersByClassId(classList[1].docId);
+      await CacheHelper.removeMembersByClassId(classList[2].docId);
+      await CacheHelper.removeMembersByClassId(classList[3].docId);
+      await CacheHelper.removeMembersByClassId(classList[4].docId);
+      await CacheHelper.removeMembersByClassId(classList[5].docId);
+      await CacheHelper.removeMembersByClassId(classList[6].docId);
+      await CacheHelper.removeMembersByClassId(classList[7].docId);
+      await CacheHelper.removeQuizzes();
+      await CacheHelper.removeEvents('bible');
+      await CacheHelper.removeEvents('football');
+      await CacheHelper.removeEvents('pingPong');
+      await CacheHelper.removeEvents('volleyball');
+      await CacheHelper.removeEvents('coptic');
+      await CacheHelper.removeEvents('choir');
+      await CacheHelper.removeEvents('melodies');
+      await CacheHelper.removeEvents('ritual');
+      await CacheHelper.removeEvents('doctrine');
+      await CacheHelper.removeEvents('chess');
+      await CacheHelper.removeEvents('pray');
+      await CacheHelper.removeEvents('praise');
+      await CacheHelper.removeServants();
+      await CacheHelper.removeServantsByClassId(classList[0].docId);
+      await CacheHelper.removeServantsByClassId(classList[1].docId);
+      await CacheHelper.removeServantsByClassId(classList[2].docId);
+      await CacheHelper.removeServantsByClassId(classList[3].docId);
+      await CacheHelper.removeServantsByClassId(classList[4].docId);
+      await CacheHelper.removeServantsByClassId(classList[5].docId);
+      await CacheHelper.removeServantsByClassId(classList[6].docId);
+      await CacheHelper.removeServantsByClassId(classList[7].docId);
+      await CacheHelper.removeAdmins();
       if(userData.isAdmin??false){
         servantList = (await usersUseCase.getAllServants()??[]);
-        memberList = (await usersUseCase.getAllMembers()??[]);
+        memberList = (await ReadFromJson().getMembersJsonData());
         adminList = (await usersUseCase.getAllAdmins()??[]);
       }
+      switch(userData.role){
+        case 'admin':
+          quizzesList = (await questionsUseCase.getAllQuizzes()??[]);
+          footballEvents = (await eventsUseCase.getFootballEvents());
+          bibleEvents = (await eventsUseCase.getBibleEvents());
+          pingPongEvents = (await eventsUseCase.getPingPongEvents());
+          volleyballEvents = (await eventsUseCase.getVolleyballEvents());
+          copticEvents = (await eventsUseCase.getCopticEvents());
+          choirEvents = (await eventsUseCase.getChoirEvents());
+          melodiesEvents = (await eventsUseCase.getMelodiesEvents());
+          ritualEvents = (await eventsUseCase.getRitualEvents());
+          doctrineEvents = (await eventsUseCase.getDoctrineEvents());
+          chessEvents = (await eventsUseCase.getChessEvents());
+          prayEvents = (await eventsUseCase.getPrayEvents());
+          praiseEvents = (await eventsUseCase.getPraiseEvents());
+          break;
+        case 'sports':
+          footballEvents = (await eventsUseCase.getFootballEvents());
+          bibleEvents = (await eventsUseCase.getBibleEvents());
+          pingPongEvents = (await eventsUseCase.getPingPongEvents());
+          volleyballEvents = (await eventsUseCase.getVolleyballEvents());
+          chessEvents = (await eventsUseCase.getChessEvents());
+          break;
+        case 'coptic':
+          copticEvents = (await eventsUseCase.getCopticEvents());
+          break;
+        case 'choir':
+          choirEvents = (await eventsUseCase.getChoirEvents());
+          break;
+        case 'melodies':
+          melodiesEvents = (await eventsUseCase.getMelodiesEvents());
+          break;
+        case 'ritual':
+          ritualEvents = (await eventsUseCase.getRitualEvents());
+          break;
+        case 'doctrine':
+          doctrineEvents = (await eventsUseCase.getDoctrineEvents());
+          break;
+        case 'pray':
+          prayEvents = (await eventsUseCase.getPrayEvents());
+          break;
+        case 'praise':
+          praiseEvents = (await eventsUseCase.getPraiseEvents());
+          break;
+        default: break;
+      }
       quizzesList = (await questionsUseCase.getAllQuizzes()??[]);
-      footballEvents = (await eventsUseCase.getFootballEvents());
-      bibleEvents = (await eventsUseCase.getBibleEvents());
-      pingPongEvents = (await eventsUseCase.getPingPongEvents());
-      volleyballEvents = (await eventsUseCase.getVolleyballEvents());
-      copticEvents = (await eventsUseCase.getCopticEvents());
-      choirEvents = (await eventsUseCase.getChoirEvents());
-      melodiesEvents = (await eventsUseCase.getMelodiesEvents());
-      ritualEvents = (await eventsUseCase.getRitualEvents());
-      doctrineEvents = (await eventsUseCase.getDoctrineEvents());
-      chessEvents = (await eventsUseCase.getChessEvents());
       await usersUseCase.updateUser(userData.copyWith(
           isAnyUpdate: false
       ));
       if(userData.isAdmin??false){
         if(servantList.isNotEmpty) {
           await CacheHelper.saveServants(servantList);
-        }else{
-          await CacheHelper.removeServants();
+          await CacheHelper.saveServantsByClassId(servantList.where((element) => element?.classId == classList[0].docId).toList(), classList[0].docId);
+          await CacheHelper.saveServantsByClassId(servantList.where((element) => element?.classId == classList[1].docId).toList(), classList[1].docId);
+          await CacheHelper.saveServantsByClassId(servantList.where((element) => element?.classId == classList[2].docId).toList(), classList[2].docId);
+          await CacheHelper.saveServantsByClassId(servantList.where((element) => element?.classId == classList[3].docId).toList(), classList[3].docId);
+          await CacheHelper.saveServantsByClassId(servantList.where((element) => element?.classId == classList[4].docId).toList(), classList[4].docId);
+          await CacheHelper.saveServantsByClassId(servantList.where((element) => element?.classId == classList[5].docId).toList(), classList[5].docId);
+          await CacheHelper.saveServantsByClassId(servantList.where((element) => element?.classId == classList[6].docId).toList(), classList[6].docId);
+          await CacheHelper.saveServantsByClassId(servantList.where((element) => element?.classId == classList[7].docId).toList(), classList[7].docId);
         }
-        if(adminList.isNotEmpty) {
-          await CacheHelper.saveAdmins(adminList);
-        }else{
-          await CacheHelper.removeAdmins();
-        }
-        if(memberList.isNotEmpty) {
+        if (memberList.isNotEmpty) {
           await CacheHelper.saveMembers(memberList);
-        }else{
-          await CacheHelper.removeMembers();
+          await CacheHelper.saveMembersByClassId(memberList.where((element) => element.classId == classList[0].docId).toList(), classList[0].docId);
+          await CacheHelper.saveMembersByClassId(memberList.where((element) => element.classId == classList[1].docId).toList(), classList[1].docId);
+          await CacheHelper.saveMembersByClassId(memberList.where((element) => element.classId == classList[2].docId).toList(), classList[2].docId);
+          await CacheHelper.saveMembersByClassId(memberList.where((element) => element.classId == classList[3].docId).toList(), classList[3].docId);
+          await CacheHelper.saveMembersByClassId(memberList.where((element) => element.classId == classList[4].docId).toList(), classList[4].docId);
+          await CacheHelper.saveMembersByClassId(memberList.where((element) => element.classId == classList[5].docId).toList(), classList[5].docId);
+          await CacheHelper.saveMembersByClassId(memberList.where((element) => element.classId == classList[6].docId).toList(), classList[6].docId);
+          await CacheHelper.saveMembersByClassId(memberList.where((element) => element.classId == classList[7].docId).toList(), classList[7].docId);
+        }
+        if(adminList.isNotEmpty) await CacheHelper.saveAdmins(adminList);
+      }
+      if(quizzesList.isNotEmpty) await CacheHelper.saveQuizzes(quizzesList);
+      if(bibleEvents.isNotEmpty) await CacheHelper.saveEvents(bibleEvents, 'bible');
+      if(footballEvents.isNotEmpty) await CacheHelper.saveEvents(footballEvents, 'football');
+      if(pingPongEvents.isNotEmpty) await CacheHelper.saveEvents(pingPongEvents, 'pingPong');
+      if(volleyballEvents.isNotEmpty) await CacheHelper.saveEvents(volleyballEvents, 'volleyball');
+      if(copticEvents.isNotEmpty) await CacheHelper.saveEvents(copticEvents, 'coptic');
+      if(choirEvents.isNotEmpty) await CacheHelper.saveEvents(choirEvents, 'choir');
+      if(melodiesEvents.isNotEmpty) await CacheHelper.saveEvents(melodiesEvents, 'melodies');
+      if(ritualEvents.isNotEmpty) await CacheHelper.saveEvents(ritualEvents, 'ritual');
+      if(doctrineEvents.isNotEmpty)await CacheHelper.saveEvents(doctrineEvents, 'doctrine');
+      if(chessEvents.isNotEmpty) await CacheHelper.saveEvents(chessEvents, 'chess');
+      if(prayEvents.isNotEmpty) await CacheHelper.saveEvents(prayEvents, 'pray');
+      if(praiseEvents.isNotEmpty) await CacheHelper.saveEvents(praiseEvents, 'praise');
+
+    }catch(e){
+      rethrow;
+    }
+  }
+
+  void onNavigate(isDark, uid, isOpened) async {
+    if (isOpened) {
+      if (uid == '') {
+        Future.delayed(const Duration(seconds: 3), () {
+          emit(OnNavigateToLoginScreen());
+        });
+      } else {
+        try {
+          if ((await splashUseCase.getRequireToUpdate().then((value) => value.requireToUpdate ?? true,))) {
+            emit(OnRequestUpToDate());
+          }else{
+            userData = await usersUseCase.getUserData(uid) ?? UserModel();
+            await CacheHelper.saveUserData(userData);
+            classList = [
+              ClassModel(
+                  docId: "2uli6QXyKY8VrpjMz99H",
+                  name: "ابونا ابراهيم"
+              ),
+              ClassModel(
+                  docId: "8aB4mDsvky0FbzOQwfTU",
+                  name: "دانيال النبي"
+              ),
+              ClassModel(
+                  docId: "9l6zfZIO1C6OavYCvuRV",
+                  name: "امنا سارة"
+              ),
+              ClassModel(
+                  docId: "bCkH6KkCRnEDMk5Ea6sf",
+                  name: "حنه النبيه"
+              ),
+              ClassModel(
+                  docId: "el2A2Mjm45SU5jliE29g",
+                  name: "دبورة النبية"
+              ),
+              ClassModel(
+                  docId: "f0nBkPZu9OJbQ0Hstqij",
+                  name: "امنا رفقة"
+              ),
+              ClassModel(
+                  docId: "fE4xWCz3bvBhyZeMuk7g",
+                  name: "ابونا اسحق"
+              ),
+              ClassModel(
+                  docId: "nXB5fzKgjVkIrVrXrLDo",
+                  name: "موسي النبي"
+              ),
+            ];
+            await CacheHelper.saveClasses(classList);
+            if ((userData.isReviewed ?? false)) {
+              if ((userData.isAnyUpdate ?? false)) {
+                await getAllFirebaseDate();
+              }
+              emit(OnNavigateToHomeScreen());
+            } else {
+              Future.delayed(
+                Duration(seconds: 3), () => emit(OnNavigateToReviewScreen()),);
+            }
+          }
+        } catch (e) {
+          emit(OnError(e.toString()));
         }
       }
-      if(quizzesList.isNotEmpty) {
-        await CacheHelper.saveQuizzes(quizzesList);
-      }else{
-        await CacheHelper.removeQuizzes();
+    } else {
+      Future.delayed(const Duration(seconds: 3), () {
+        emit(OnNavigateToOnBoardingScreen());
       }
-      if(bibleEvents.isNotEmpty) {
-        await CacheHelper.saveEvents(bibleEvents, 'bible');
-      }else{
-        await CacheHelper.removeEvents('bible');
-      }
-      if(footballEvents.isNotEmpty) {
-        await CacheHelper.saveEvents(footballEvents, 'football');
-      }else{
-        await CacheHelper.removeEvents('football');
-      }
-      if(pingPongEvents.isNotEmpty) {
-        await CacheHelper.saveEvents(pingPongEvents, 'pingPong');
-      }else{
-        await CacheHelper.removeEvents('pingPong');
-      }
-      if(volleyballEvents.isNotEmpty) {
-        await CacheHelper.saveEvents(volleyballEvents, 'volleyball');
-      }else{
-        await CacheHelper.removeEvents('volleyball');
-      }
-      if(copticEvents.isNotEmpty) {
-        await CacheHelper.saveEvents(copticEvents, 'coptic');
-      }else{
-        await CacheHelper.removeEvents('coptic');
-      }
-      if(choirEvents.isNotEmpty) {
-        await CacheHelper.saveEvents(choirEvents, 'choir');
-      }else{
-        await CacheHelper.removeEvents('choir');
-      }
-      if(melodiesEvents.isNotEmpty) {
-        await CacheHelper.saveEvents(melodiesEvents, 'melodies');
-      }else{
-        await CacheHelper.removeEvents('melodies');
-      }
-      if(ritualEvents.isNotEmpty) {
-        await CacheHelper.saveEvents(ritualEvents, 'ritual');
-      }else{
-        await CacheHelper.removeEvents('ritual');
-      }
-      if(doctrineEvents.isNotEmpty) {
-        await CacheHelper.saveEvents(doctrineEvents, 'doctrine');
-      }else{
-        await CacheHelper.removeEvents('doctrine');
-      }
-      if(chessEvents.isNotEmpty) {
-        await CacheHelper.saveEvents(chessEvents, 'chess');
-      }else{
-        await CacheHelper.removeEvents('chess');
-      }
-      emit(OnSuccess());
-    } catch (e) {
-      emit(OnError(e.toString()));
+      );
     }
   }
 }

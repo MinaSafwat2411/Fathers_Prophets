@@ -208,7 +208,8 @@ final GoRouter router = GoRouter(
           coptic: extra['coptic'] as int,
           doctrine: extra['doctrine'] as int,
           bible: extra['bible'] as int,
-          quizzes: extra['quizzes'] as int,
+          pray: extra['pray'] as int,
+          praise: extra['praise'] as int,
         );
       },
     ),

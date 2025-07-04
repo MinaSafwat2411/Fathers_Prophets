@@ -1,14 +1,14 @@
 {
   "project_info": {
-    "project_number": "1067497462234",
-    "firebase_url": "https://fathers-prophets-default-rtdb.europe-west1.firebasedatabase.app",
-    "project_id": "fathers-prophets",
-    "storage_bucket": "fathers-prophets.firebasestorage.app"
+    "project_number": "722252357354",
+    "firebase_url": "https://fathers-prophets-20a98-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "fathers-prophets-20a98",
+    "storage_bucket": "fathers-prophets-20a98.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1067497462234:android:7e3bfb2dec5bec1ca2c8e3",
+        "mobilesdk_app_id": "1:722252357354:android:d72ff7c2aa5b1d9e380193",
         "android_client_info": {
           "package_name": "com.fathersprophets.fathers_prophets"
         }
@@ -16,7 +16,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyChr3ym7N1up8lA5JFeAwPbggcWIkM9cRg"
+          "current_key": "AIzaSyDfxaI4i_zb0zBQo0qn79mEbPeXzxQ5xoM"
         }
       ],
       "services": {

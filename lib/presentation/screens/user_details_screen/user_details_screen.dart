@@ -5,12 +5,15 @@ import 'package:fathers_prophets/presentation/screens/user_details_screen/user_i
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../../core/localization/app_localizations.dart';
 import '../../../core/utils/app_colors.dart';
 import '../../../core/widgets/custom_snackbar.dart';
 import '../../../data/models/comment/comment_model.dart';
 import '../../cubit/comment/cubit/comment_cubit.dart';
 import '../../cubit/comment/states/comment_states.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+
 
 class UserDetailsScreen extends StatelessWidget {
   const UserDetailsScreen({
@@ -26,7 +29,8 @@ class UserDetailsScreen extends StatelessWidget {
     required this.coptic,
     required this.doctrine,
     required this.bible,
-    required this.quizzes,
+    required this.pray,
+    required this.praise,
   });
 
   final UserModel user;
@@ -40,11 +44,12 @@ class UserDetailsScreen extends StatelessWidget {
   final int coptic;
   final int doctrine;
   final int bible;
-  final int quizzes;
+  final int pray;
+  final int praise;
 
   @override
   Widget build(BuildContext context) {
-    var cubit = CommentCubit.get(context)..listenToComments(user.uid ?? "");
+    var cubit = CommentCubit.get(context)..getAttendance(user.uid ?? "")..listenToComments(user.uid ?? "");
     final localize = AppLocalizations.of(context);
     var textTheme = Theme.of(context).textTheme;
     return BlocConsumer<CommentCubit, CommentStates>(
@@ -88,7 +93,7 @@ class UserDetailsScreen extends StatelessWidget {
                     Text(user.name ?? "", style: textTheme.titleLarge),
                   ],
                 ),
-                Card(
+                (state is! OnLoading)?Card(
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Column(
@@ -117,7 +122,7 @@ class UserDetailsScreen extends StatelessWidget {
                               Icon(Icons.people_alt_outlined),
                               SizedBox(width: 8,),
                               Text(
-                                "${localize.translate('class')} : ${cubit.classes.firstWhere((element) => element.docId==user.classId,).name ?? ""}",
+                                "${localize.translate('class')} : ${cubit.classes.firstWhere((element) => element.docId==user.classId,).name}",
                                 style: textTheme.titleMedium,
                               )
                             ],
@@ -126,84 +131,127 @@ class UserDetailsScreen extends StatelessWidget {
                         SizedBox(height: 8,),
                         UserItem(
                           title: 'football',
-                          length: user.football?.length??0,
+                          length: cubit.attendance.football?.length??0,
                           total: football,
                         ),
                         SizedBox(height: 8,),
                         UserItem(
                           title: 'volleyball',
-                          length: user.volleyball?.length??0,
+                          length: cubit.attendance.volleyball?.length??0,
                           total: volleyball,
                         ),
                         SizedBox(height: 8,),
                         UserItem(
                           title: 'pingpong',
-                          length: user.pingPong?.length??0,
+                          length: cubit.attendance.pingPong?.length??0,
                           total: pingPong,
                         ),
                         SizedBox(height: 8,),
                         UserItem(
                           title: 'chess',
-                          length: user.chess?.length??0,
+                          length: cubit.attendance.chess?.length??0,
                           total: chess,
                         ),
                         SizedBox(height: 8,),
                         UserItem(
                           title: 'melodies',
-                          length: user.melodies?.length??0,
+                          length: cubit.attendance.melodies?.length??0,
                           total: melodies,
                         ),
                         SizedBox(height: 8,),
                         UserItem(
                           title: 'choir',
-                          length: user.choir?.length??0,
+                          length: cubit.attendance.choir?.length??0,
                           total: choir,
                         ),
                         SizedBox(height: 8,),
                         UserItem(
                           title: 'ritual',
-                          length: user.ritual?.length??0,
+                          length: cubit.attendance.ritual?.length??0,
                           total: ritual,
                         ),
                         SizedBox(height: 8,),
                         UserItem(
                           title: 'coptic',
-                          length: user.coptic?.length??0,
+                          length: cubit.attendance.coptic?.length??0,
                           total: coptic,
                         ),
                         SizedBox(height: 8,),
                         UserItem(
                           title: 'doctrine',
-                          length: user.doctrine?.length??0,
+                          length: cubit.attendance.doctrine?.length??0,
                           total: doctrine,
                         ),
                         SizedBox(height: 8,),
                         UserItem(
                           title: 'bible',
-                          length: user.bible?.length??0,
+                          length: cubit.attendance.bible?.length??0,
                           total: bible,
+                        ),
+                        SizedBox(height: 8,),
+                        UserItem(
+                          title: 'pray',
+                          length: cubit.attendance.pray?.length??0,
+                          total: pray,
+                        ),
+                        SizedBox(height: 8,),
+                        UserItem(
+                          title: 'praise',
+                          length: cubit.attendance.praise?.length??0,
+                          total: praise,
                         ),
                         SizedBox(height: 8,),
                      ]
                   ),
                 ),
-                ),
-                if (state is CommentLoaded)state.comments.isNotEmpty? Card(
-                  child: ListView.separated(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      padding: const EdgeInsets.all(8),
-                      itemCount: state.comments.length,
-                      itemBuilder: (context, index) {
-                        final comment = state.comments[index];
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8),
-                          child: Text("${index+1}) ${comment.content}",style: textTheme.titleMedium,),
-                        );
-                      },
-                      separatorBuilder: (_, __) => const SizedBox(height: 8),
+                ):Shimmer.fromColors(
+                  baseColor: context.read<LocaleCubit>().isDark? AppColors.riverBed:AppColors.gray,
+                  highlightColor: AppColors.white,
+                  child: Container(
+                    height: 800,
+                    width: double.infinity,
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.all((Radius.circular(20))),
+                      color: AppColors.gray20,
                     ),
-                ):Padding(
+                  ),
+                ),
+                if (state is!CommentLoading) cubit.comments.isNotEmpty? ListView.separated(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    padding: const EdgeInsets.all(8),
+                    itemCount: cubit.comments.length,
+                    itemBuilder: (context, index) {
+                      final comment = cubit.comments[index];
+                      return Slidable(
+                        startActionPane: ActionPane(
+                          extentRatio: 0.5,
+                            motion: const ScrollMotion(),
+                            children: [
+                              SlidableAction(
+                                borderRadius: BorderRadius.all(Radius.circular(20)),
+                                flex: 1,
+                                onPressed: (context) => cubit.deleteComment(comment.id??""),
+                                backgroundColor: context.read<LocaleCubit>().isDark? AppColors.white:AppColors.riverBed,
+                                foregroundColor: AppColors.red,
+                                icon: Icons.delete,
+                                label: localize.translate('delete'),
+                              ),
+                            ]
+                        ),
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: Card(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 8),
+                              child: Text("${index+1}) ${comment.content}",style: textTheme.titleMedium,maxLines: 10,),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                    separatorBuilder: (_, __) => const SizedBox(height: 8),
+                  ):Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(localize.translate('no_comments'),textAlign: TextAlign.center,style: textTheme.labelLarge,),
                 ),

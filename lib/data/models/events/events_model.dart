@@ -1,4 +1,3 @@
-import 'event_attendance_model.dart';
 
 class EventsModel {
   final String? nameAr;
@@ -49,7 +48,6 @@ class EventsModel {
     String? docId,
     DateTime? dateTime,
     String? nameEn,
-    List<EventAttendanceModel>? attendance,
   }) {
     return EventsModel(
       date: date ?? this.date,

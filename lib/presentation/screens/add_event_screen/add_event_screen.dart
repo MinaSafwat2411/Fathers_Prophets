@@ -112,7 +112,15 @@ class AddEventScreen extends StatelessWidget {
                         DropdownMenuEntry<EventEnum>(
                           value: EventEnum.CHESS,
                           label: localize.translate("chess"),
-                        )
+                        ),
+                        DropdownMenuEntry<EventEnum>(
+                          value: EventEnum.PRAY,
+                          label: localize.translate("pray"),
+                        ),
+                        DropdownMenuEntry<EventEnum>(
+                          value: EventEnum.PRAISE,
+                          label: localize.translate("praise"),
+                        ),
                       ],
                       onSelected: (value) {
                         cubit.onSelectEvent(value);

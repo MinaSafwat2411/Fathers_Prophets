@@ -38,3 +38,5 @@ class OnSearchEventOpenState extends LayoutStates {}
 
 class OnSearchEventCloseState extends LayoutStates {}
 
+class CanPreviewState extends LayoutStates {}
+

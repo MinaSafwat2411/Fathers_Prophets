@@ -35,7 +35,7 @@ class QuizzesScreen extends StatelessWidget {
                         if(!isChecked) {
                           var  quiz = await context.pushNamed(AppRoutes.quizDetails.name,extra: quizzes[index]);
                           if(quiz as bool){
-                            cubit.afterUpdateQuizzes();
+                            cubit.afterUpdateQuizzes(quizzes[index].docId??"");
                           }
                         }
                       },

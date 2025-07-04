@@ -33,21 +33,23 @@ class HomeScreen extends StatelessWidget {
                       'title': item.nameEn,
                     });
               },
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: CachedNetworkImage(
-                  width: double.infinity,
-                  height: 200,
-                  fit: BoxFit.fill,
-                  imageUrl: item.image ?? '',
-                  placeholder:
-                      (context, url) => EventShimmerItem(
-                        isDark: context.read<LocaleCubit>().isDark,
-                      ),
-                  errorWidget:
-                      (context, url, error) => EventShimmerItem(
-                        isDark: context.read<LocaleCubit>().isDark,
-                      ),
+              child: Card(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: CachedNetworkImage(
+                    width: double.infinity,
+                    height: 200,
+                    fit: BoxFit.fill,
+                    imageUrl: item.image ?? '',
+                    placeholder:
+                        (context, url) => EventShimmerItem(
+                          isDark: context.read<LocaleCubit>().isDark,
+                        ),
+                    errorWidget:
+                        (context, url, error) => EventShimmerItem(
+                          isDark: context.read<LocaleCubit>().isDark,
+                        ),
+                  ),
                 ),
               ),
             );

@@ -54,20 +54,22 @@ class AddEventAttendance extends StatelessWidget {
                 mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: CachedNetworkImage(
-                      height: 200,
-                      width: double.infinity,
-                      fit: BoxFit.fill,
-                      imageUrl: event.image ?? '',
-                      placeholder:
-                          (context, url) => EventShimmerItem(
-                        isDark: context.read<LocaleCubit>().isDark,
-                      ),
-                      errorWidget:
-                          (context, url, error) => EventShimmerItem(
-                        isDark: context.read<LocaleCubit>().isDark,
+                  Card(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: CachedNetworkImage(
+                        height: 200,
+                        width: double.infinity,
+                        fit: BoxFit.fill,
+                        imageUrl: event.image ?? '',
+                        placeholder:
+                            (context, url) => EventShimmerItem(
+                          isDark: context.read<LocaleCubit>().isDark,
+                        ),
+                        errorWidget:
+                            (context, url, error) => EventShimmerItem(
+                          isDark: context.read<LocaleCubit>().isDark,
+                        ),
                       ),
                     ),
                   ),
@@ -79,7 +81,7 @@ class AddEventAttendance extends StatelessWidget {
                         if(list==null){
                           return;
                         }else{
-                          cubit.onBackDone(list as List<EventAttendanceModel>);
+                          cubit.onBackDone(list as List<AttendanceEventModel>);
                         }
                       },
                       child: Text(

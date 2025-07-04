@@ -55,7 +55,35 @@ class ProfileScreen extends StatelessWidget {
                   ],
                 ),
                 Text(localize.translate('account'),style: textTheme.titleMedium,),
-
+                SizedBox(height: 8,),
+                Card(
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)
+                  ),
+                  margin: EdgeInsets.all(0),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Text("${localize.translate('name')} : ",style: textTheme.titleSmall,),
+                            Text(cubit.user.name ?? '',style: textTheme.titleMedium,),
+                          ],
+                        ),
+                        SizedBox(height: 8,),
+                        Row(
+                          children: [
+                            Text("${localize.translate('uid')} : ",style: textTheme.titleSmall,),
+                            Text(cubit.user.uid ?? '',style: textTheme.titleMedium,),
+                        ]
+                        ),
+                      ]
+                    ),
+                  ),
+                ),
+                SizedBox(height: 16,),
                 MaterialButton(onPressed: () {
                   cubit.onSignOut();
                 },

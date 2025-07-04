@@ -64,6 +64,7 @@ class CustomDrawer extends StatelessWidget {
             ),
             if(cubit.userData.isAdmin??false)SizedBox(height: 20,),
             if(cubit.userData.isAdmin??false)TextButton(onPressed: () => context.pushNamed(AppRoutes.dashBoard.name), child: Text(localize.translate("dash_board"),style: textTheme.titleLarge,)),
+            if(cubit.userData.canPreview??false)TextButton(onPressed: () => cubit.canPreview(), child: Text(localize.translate("preview_as_member"),style: textTheme.titleLarge,)),
             const Spacer(),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 24),

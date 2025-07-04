@@ -68,6 +68,25 @@ class CacheHelper{
   static Future<bool> removeServants() async {
     return await sharedPreferences!.remove('users');
   }
+  static Future<bool> saveServantsByClassId(List<UserModel?> servants,String classId) async {
+    String jsonString = jsonEncode(servants.map((servant) => servant?.toJson()).toList());
+    await sharedPreferences?.setString(classId, jsonString);
+    return true;
+  }
+
+  static Future<bool> removeServantsByClassId(String classId) async {
+    return await sharedPreferences!.remove(classId);
+  }
+
+  static List<UserModel> getServantsByClassId(String classId) {
+    String? jsonString = sharedPreferences?.getString(classId);
+    if (jsonString != null) {
+      List<dynamic> jsonList = jsonDecode(jsonString);
+      return jsonList.map((json) => UserModel.fromJson(json,json['uid'])).toList();
+    } else {
+      return [];
+    }
+  }
   static Future<bool> saveAdmins(List<UserModel?> admins) async {
     String jsonString = jsonEncode(admins.map((admin) => admin?.toJson()).toList());
     await sharedPreferences?.setString('admins', jsonString);
@@ -87,6 +106,25 @@ class CacheHelper{
     return await sharedPreferences!.remove('admins');
   }
 
+
+  static Future<bool> saveClassByClassId(ClassModel classModel,String classId) async {
+    String jsonString = jsonEncode(classModel.toJson());
+    await sharedPreferences?.setString(classId, jsonString);
+    return true;
+  }
+
+  static ClassModel getClassByClassId(String classId) {
+    String? jsonString = sharedPreferences?.getString(classId);
+    if (jsonString == null) {
+      return ClassModel(name: '', docId: '');
+    }
+    final Map<String, dynamic> json = jsonDecode(jsonString) as Map<String, dynamic>;
+    return ClassModel.fromJson(json,classId);
+  }
+
+  static Future<bool> removeClassByClassId(String classId) async {
+    return await sharedPreferences!.remove(classId);
+  }
 
   static Future<bool> saveClasses(List<ClassModel?> classes) async {
     String jsonString = jsonEncode(
@@ -109,6 +147,25 @@ class CacheHelper{
     return await sharedPreferences!.remove('classes');
   }
 
+  static Future<bool> saveMembersByClassId(List<UserModel> members, String classId) async {
+    final List<Map<String, dynamic>> jsonList = members.map((m) => m.toJson()).toList();
+    final String jsonString = jsonEncode(jsonList);
+    return await sharedPreferences!.setString(classId, jsonString);
+  }
+  static Future<bool> removeMembersByClassId(String classId) async {
+    return await sharedPreferences!.remove(classId);
+  }
+
+  static List<UserModel> getMembersByClassId(String classId) {
+    final String? jsonString = sharedPreferences?.getString(classId);
+    if (jsonString == null) {
+      return [];
+    }
+    final List<dynamic> jsonList = jsonDecode(jsonString);
+    return jsonList
+        .map((json) => UserModel.fromJson(json as Map<String, dynamic>,json['uid']))
+        .toList();
+  }
   static Future<bool> saveMembers(List<UserModel?> members) async {
     String jsonString = jsonEncode(
         members.map((memberModel) => memberModel?.toJson()).toList());
@@ -179,7 +236,10 @@ class CacheHelper{
       dynamic json = jsonDecode(jsonString);
       return ClassModel.fromJson(json,json['docId']);
     } else {
-      return ClassModel();
+      return ClassModel(
+        name: '',
+        docId: '',
+      );
     }
   }
 

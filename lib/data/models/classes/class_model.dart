@@ -1,8 +1,8 @@
 class ClassModel {
-  final String? name;
-  final String? docId;
+  final String name;
+  final String docId;
 
-  ClassModel({this.name, this.docId});
+  ClassModel({required this.name, required this.docId});
 
   factory ClassModel.fromJson(Map<String, dynamic> json,String docId){
     return ClassModel(

@@ -83,4 +83,20 @@ class EventsUseCase {
     return await eventsRepository.addNewMelodiesEvent(eventsModel)??"";
   }
 
+  Future<List<EventsModel>> getPrayEvents() async {
+    return await eventsRepository.getPrayEvents()??[];
+  }
+
+  Future<List<EventsModel>> getPraiseEvents() async {
+    return await eventsRepository.getPraiseEvents()??[];
+  }
+
+  Future<String> addNewPrayEvent(EventsModel eventsModel) async {
+    return await eventsRepository.addNewPrayEvent(eventsModel)??'';
+  }
+
+  Future<String> addNewPraiseEvent(EventsModel eventsModel) async {
+    return await eventsRepository.addNewPraiseEvent(eventsModel)??'';
+  }
+
 }

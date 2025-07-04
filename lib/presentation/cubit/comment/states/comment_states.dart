@@ -18,4 +18,18 @@ class CommentError extends CommentStates {
 
 class CommentAdded extends CommentStates {}
 
+class CommentDeleted extends CommentStates {}
+
+class CommentUpdated extends CommentStates {}
+
+class OnLoading extends CommentStates {}
+
+class OnSuccess extends CommentStates {}
+
+class OnError extends CommentStates {
+  final String message;
+
+  OnError(this.message);
+}
+
 

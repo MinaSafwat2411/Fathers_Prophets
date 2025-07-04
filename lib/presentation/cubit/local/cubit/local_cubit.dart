@@ -5,7 +5,7 @@ import '../../../../data/services/cache_helper.dart';
 import '../states/local_states.dart';
 
 class LocaleCubit extends Cubit<LocaleStates> {
-  LocaleCubit() : super(const LocaleInitial(Locale('en')));
+  LocaleCubit() : super(const LocaleInitial(Locale('ar')));
 
   static LocaleCubit get(context) => BlocProvider.of(context);
   var isDark = false;

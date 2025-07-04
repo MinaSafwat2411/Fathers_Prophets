@@ -5,8 +5,6 @@ import 'package:fathers_prophets/domain/usecases/auth/auth_use_case.dart';
 import 'package:fathers_prophets/domain/usecases/users/users_use_case.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../../core/constants/firebase_endpoints.dart';
 import '../../../../data/repositories/auth/auth_repository.dart';
 import '../states/register_states.dart';
 
@@ -48,21 +46,10 @@ class RegisterCubit extends Cubit<RegisterStates>{
           isAnyUpdate: true,
           isAdmin: false,
           isReviewed: false,
-          version: FirebaseEndpoints.version,
           classId: selectedClass,
-          volleyball: [],
-          football: [],
           profile: "",
-          quizzes: [],
-          bible: [],
           checked: false,
-          chess: [],
-          choir: [],
-          coptic: [],
-          doctrine:[],
-          melodies: [],
-          pingPong: [],
-          ritual: []
+          role: "member"
       ));
       clear();
       emit(OnSuccessState());

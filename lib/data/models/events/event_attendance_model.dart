@@ -1,14 +1,14 @@
-class EventAttendanceModel {
+class AttendanceEventModel {
   final String? userId;
   final String? name;
 
-  EventAttendanceModel({
+  AttendanceEventModel({
     this.userId,
     this.name,
 });
 
-  factory EventAttendanceModel.fromJson(Map<String, dynamic> json) {
-    return EventAttendanceModel(
+  factory AttendanceEventModel.fromJson(Map<String, dynamic> json) {
+    return AttendanceEventModel(
       userId: json['userId'],
       name: json['name'],
     );

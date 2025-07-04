@@ -11,6 +11,11 @@ class GoogleDriveUploader {
       'assets/json/fathers-prophets-458809-577830d3f74d.json';
   final String folderId = '18b8OqS14QkOxQ6KqX2cKxzJD0t8ByUYM';
 
+
+
+  Future<void> init() async {
+    await _getAuthClient();
+  }
   Future<AuthClient?> _getAuthClient() async {
     final jsonString = await rootBundle.loadString(serviceAccountJsonPath);
     final credentials =
