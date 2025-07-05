@@ -37,6 +37,9 @@ class UsersUseCase {
   Future<String?> addNewMember(UserModel memberModel)async {
     return await userRepository.addNewMember(memberModel);
   }
+  Future<String?> addNewMemberByDocId(UserModel memberModel)async {
+    return await userRepository.addNewMemberByDocId(memberModel);
+  }
   Future<void> deleteMember(String id)async {
     await userRepository.deleteMember(id);
   }

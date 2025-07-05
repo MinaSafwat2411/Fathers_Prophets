@@ -23,7 +23,7 @@ class AddMemberCubit extends Cubit<AddMemberStates>{
     emit(OnLoading());
     try{
       member = member.copyWith(name: nameController.text,classId: classId,isReviewed: true);
-      var result = await usersUseCase.addNewMember(member);
+      var result = await usersUseCase.addNewMemberByDocId(member);
       await uploader.addUserToJsonFile("13_UaD9tG4Gdo59f_WRHooGnNTzc55YmF", member.copyWith(uid: result ??""));
       nameController.clear();
       classId = "";

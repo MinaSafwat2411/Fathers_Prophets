@@ -52,6 +52,10 @@ class UserRepository {
     await FirebaseFirestore.instance.collection(FirebaseEndpoints.users).doc(memberModel.uid).set(memberModel.toJson());
     return memberModel.uid;
   }
+  Future<String?> addNewMemberByDocId(UserModel memberModel)async{
+    final snapshot = await FirebaseFirestore.instance.collection(FirebaseEndpoints.users).add(memberModel.toJson());
+    return  snapshot.id;
+  }
   Future<void> deleteMember(String id)async{
     await FirebaseFirestore.instance.collection(FirebaseEndpoints.users).doc(id).delete();
   }
