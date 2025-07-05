@@ -59,4 +59,10 @@ class UsersUseCase {
   Future<void> addEventAttendance(String uid,String eventId,String title)async{
     await userRepository.addEventAttendance(uid,eventId,title);
   }
+  Future<List<UserModel>?> getNotReviewedUsers() async {
+    return await userRepository.getNotReviewedUsers();
+  }
+  Future<List<UserModel>?> getReviewedUsers() async {
+    return await userRepository.getReviewedUsers();
+  }
 }

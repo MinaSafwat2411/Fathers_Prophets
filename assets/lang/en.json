@@ -123,5 +123,12 @@
   "email_sent": "Email sent successfully",
   "preview_as_member": "Preview as Member",
   "pray": "Pray",
-  "praise": "Praise"
+  "praise": "Praise",
+  "quizzes_table": "Quizzes Table",
+  "no_unreviewed_members": "No Unreviewed Members Found",
+  "review_user": "Review User",
+  "role": "Role",
+  "reviewed": "Reviewed",
+  "admin": "Admin",
+  "teacher": "Teacher"
 }

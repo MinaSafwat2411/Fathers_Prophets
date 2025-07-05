@@ -123,5 +123,12 @@
   "email_sent": "تم إرسال البريد الإلكتروني بنجاح",
   "preview_as_member": "معاينة كمخدوم",
   "pray": "صلاة",
-  "praise": "تسبحة"
+  "praise": "تسبحة",
+  "quizzes_table": "جدول المسابقات",
+  "no_unreviewed_members": "لا يوجد أعضاء غير مُراجَعين",
+  "review_user": "مراجعة المستخدم",
+  "role": "الدور",
+  "reviewed": "تمت المراجعة",
+  "admin": "مشرف",
+  "teacher": "خادم"
 }

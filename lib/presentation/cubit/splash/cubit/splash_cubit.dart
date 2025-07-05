@@ -4,7 +4,7 @@ import 'package:fathers_prophets/data/models/events/events_model.dart';
 import 'package:fathers_prophets/data/repositories/events/events_repository.dart';
 import 'package:fathers_prophets/data/repositories/quizzes/quizzes_repository.dart';
 import 'package:fathers_prophets/data/repositories/users/users_repository.dart';
-import 'package:fathers_prophets/data/services/read_from_json.dart';
+import 'package:intl/intl.dart';
 import 'package:fathers_prophets/domain/usecases/classes/classes_use_case.dart';
 import 'package:fathers_prophets/domain/usecases/events/events_use_case.dart';
 import 'package:fathers_prophets/domain/usecases/quizzes/quizzes_use_case.dart';
@@ -15,6 +15,7 @@ import '../../../../data/models/users/users_model.dart';
 import '../../../../data/repositories/classes/class_repository.dart';
 import '../../../../data/repositories/splash/splash_repository.dart';
 import '../../../../data/services/cache_helper.dart';
+import '../../../../data/services/google_drive_service.dart';
 import '../../../../domain/usecases/splash/splash_use_case.dart';
 import '../../../../domain/usecases/users/users_use_case.dart';
 import '../states/splash_states.dart';
@@ -22,9 +23,9 @@ import '../states/splash_states.dart';
 class SplashCubit extends Cubit<SplashStates> {
   SplashCubit() : super(SplashInitialState());
 
-  var servantList = <UserModel?>[];
+  var servantList = <UserModel>[];
   var memberList = <UserModel>[];
-  var adminList = <UserModel?>[];
+  var adminList = <UserModel>[];
   var quizzesList = <QuizzesModel?>[];
   var footballEvents = <EventsModel>[];
   var bibleEvents = <EventsModel>[];
@@ -41,6 +42,7 @@ class SplashCubit extends Cubit<SplashStates> {
   var classList = <ClassModel>[];
   var userData = UserModel();
 
+  final GoogleDriveUploader uploader = GoogleDriveUploader();
   final UsersUseCase usersUseCase = UsersUseCase(UserRepository());
   final ClassesUseCase classesUseCase = ClassesUseCase(ClassRepository());
   final QuizzesUseCase questionsUseCase = QuizzesUseCase(QuizzesRepository());
@@ -84,13 +86,15 @@ class SplashCubit extends Cubit<SplashStates> {
       await CacheHelper.removeServantsByClassId(classList[7].docId);
       await CacheHelper.removeAdmins();
       if(userData.isAdmin??false){
-        servantList = (await usersUseCase.getAllServants()??[]);
-        memberList = (await ReadFromJson().getMembersJsonData());
-        adminList = (await usersUseCase.getAllAdmins()??[]);
+        memberList = (await uploader.getUsersFromFileById("13_UaD9tG4Gdo59f_WRHooGnNTzc55YmF"));
+        memberList.sort((a, b) => (a.name??"").compareTo(b.name??""));
+        servantList = (await uploader.getUsersFromFileById("1ZRKteCLH4oh2LRhqCmh3Sz7ZdCfSpFIm"));
+        servantList.sort((a, b) => (a.name??"").compareTo(b.name??""));
+        adminList = (await uploader.getUsersFromFileById("1e8uAyL3twahG6B-odWAxjpAo4VmAYDEc"));
+        adminList.sort((a, b) => (a.name??"").compareTo(b.name??""));
       }
       switch(userData.role){
         case 'admin':
-          quizzesList = (await questionsUseCase.getAllQuizzes()??[]);
           footballEvents = (await eventsUseCase.getFootballEvents());
           bibleEvents = (await eventsUseCase.getBibleEvents());
           pingPongEvents = (await eventsUseCase.getPingPongEvents());
@@ -141,14 +145,14 @@ class SplashCubit extends Cubit<SplashStates> {
       if(userData.isAdmin??false){
         if(servantList.isNotEmpty) {
           await CacheHelper.saveServants(servantList);
-          await CacheHelper.saveServantsByClassId(servantList.where((element) => element?.classId == classList[0].docId).toList(), classList[0].docId);
-          await CacheHelper.saveServantsByClassId(servantList.where((element) => element?.classId == classList[1].docId).toList(), classList[1].docId);
-          await CacheHelper.saveServantsByClassId(servantList.where((element) => element?.classId == classList[2].docId).toList(), classList[2].docId);
-          await CacheHelper.saveServantsByClassId(servantList.where((element) => element?.classId == classList[3].docId).toList(), classList[3].docId);
-          await CacheHelper.saveServantsByClassId(servantList.where((element) => element?.classId == classList[4].docId).toList(), classList[4].docId);
-          await CacheHelper.saveServantsByClassId(servantList.where((element) => element?.classId == classList[5].docId).toList(), classList[5].docId);
-          await CacheHelper.saveServantsByClassId(servantList.where((element) => element?.classId == classList[6].docId).toList(), classList[6].docId);
-          await CacheHelper.saveServantsByClassId(servantList.where((element) => element?.classId == classList[7].docId).toList(), classList[7].docId);
+          await CacheHelper.saveServantsByClassId(servantList.where((element) => element.classId == classList[0].docId).toList(), classList[0].docId);
+          await CacheHelper.saveServantsByClassId(servantList.where((element) => element.classId == classList[1].docId).toList(), classList[1].docId);
+          await CacheHelper.saveServantsByClassId(servantList.where((element) => element.classId == classList[2].docId).toList(), classList[2].docId);
+          await CacheHelper.saveServantsByClassId(servantList.where((element) => element.classId == classList[3].docId).toList(), classList[3].docId);
+          await CacheHelper.saveServantsByClassId(servantList.where((element) => element.classId == classList[4].docId).toList(), classList[4].docId);
+          await CacheHelper.saveServantsByClassId(servantList.where((element) => element.classId == classList[5].docId).toList(), classList[5].docId);
+          await CacheHelper.saveServantsByClassId(servantList.where((element) => element.classId == classList[6].docId).toList(), classList[6].docId);
+          await CacheHelper.saveServantsByClassId(servantList.where((element) => element.classId == classList[7].docId).toList(), classList[7].docId);
         }
         if (memberList.isNotEmpty) {
           await CacheHelper.saveMembers(memberList);
@@ -178,6 +182,7 @@ class SplashCubit extends Cubit<SplashStates> {
       if(praiseEvents.isNotEmpty) await CacheHelper.saveEvents(praiseEvents, 'praise');
 
     }catch(e){
+      print(e.toString());
       rethrow;
     }
   }

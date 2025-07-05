@@ -1,0 +1,63 @@
+import 'package:fathers_prophets/data/services/cache_helper.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../../data/models/users/users_model.dart';
+import '../../../../data/repositories/users/users_repository.dart';
+import '../../../../data/services/google_drive_service.dart';
+import '../../../../domain/usecases/users/users_use_case.dart';
+import '../states/review_user_states.dart';
+
+class ReviewUserCubit extends Cubit<ReviewUserStates>{
+  ReviewUserCubit() : super(InitialState());
+
+  static ReviewUserCubit get(context) => BlocProvider.of(context);
+  var user = UserModel();
+  var classId = "";
+  var className = "";
+  TextEditingController nameController = TextEditingController();
+  TextEditingController role = TextEditingController();
+  UsersUseCase usersUseCase = UsersUseCase(UserRepository());
+  final GoogleDriveUploader uploader = GoogleDriveUploader();
+
+  void onReviewUser()async{
+    emit(OnLoadingState());
+    try{
+      user = user.copyWith(name: nameController.text,role: role.text);
+      await usersUseCase.updateUser(user);
+      if(user.isReviewed??false){
+        await uploader.updateUserInJsonFile("13_UaD9tG4Gdo59f_WRHooGnNTzc55YmF",user);
+        var members = CacheHelper.getMembersByClassId(user.classId??"");
+        members.add(user);
+        members.sort((a, b) => a.name!.compareTo(b.name!));
+        await CacheHelper.saveMembersByClassId(members, user.classId??"");
+        members = CacheHelper.getMembers();
+        members.add(user);
+        members.sort((a, b) => a.name!.compareTo(b.name!));
+        await CacheHelper.saveMembers(members);
+      }
+      emit(OnSuccessState());
+    }catch(e) {
+      emit(OnErrorState(e.toString()));
+    }
+  }
+
+  void onReview(bool value){
+    user = user.copyWith(isReviewed: value);
+    emit(OnReviewState());
+  }
+  void onAdmin(bool value){
+    user = user.copyWith(isAdmin: value);
+    emit(OnReviewState());
+  }
+
+  void onTeacher(bool value){
+    user = user.copyWith(isTeacher: value);
+    emit(OnReviewState());
+  }
+
+  void onClassSelected(String value){
+    user = user.copyWith(classId: value);
+    emit(OnClassSelectedState());
+  }
+}

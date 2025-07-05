@@ -78,6 +78,8 @@ class HomeScreen extends StatelessWidget {
         HomeScreenItem(events: cubit.pingPongEvents,title: 'pingPong',),
         HomeScreenItem(events: cubit.volleyballEvents,title: 'volleyball',),
         HomeScreenItem(events: cubit.ritualEvents,title: 'ritual',),
+        HomeScreenItem(events: cubit.prayEvents,title: 'pray',),
+        HomeScreenItem(events: cubit.praiseEvents,title: 'praise',),
       ],
     );
   }

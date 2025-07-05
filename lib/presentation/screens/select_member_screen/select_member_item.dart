@@ -25,9 +25,9 @@ class SelectMemberItem extends StatelessWidget {
               itemBuilder: (context, index) => GestureDetector(
                 onTap:(){
                   if(members.elementAt(index).checked??false){
-                    cubit.onRemoveMember(members.elementAt(index),index);
+                    cubit.onRemoveMember(members.elementAt(index));
                   }else{
-                    cubit.onAddMember(members.elementAt(index),index);
+                    cubit.onAddMember(members.elementAt(index));
                   }
                 } ,
                 child: Card(
@@ -40,12 +40,12 @@ class SelectMemberItem extends StatelessWidget {
                         child: Text(members.elementAt(index).name??"",style: textTheme.titleMedium),
                       ),
                       Checkbox(
-                        value: members.elementAt(index).checked??false,
+                        value: cubit.selectedMembers.any((element) => element.userId == members.elementAt(index).uid),
                         onChanged: (value) {
                           if(value??false){
-                            cubit.onAddMember(members.elementAt(index),index);
+                            cubit.onAddMember(members.elementAt(index));
                           }else{
-                            cubit.onRemoveMember(members.elementAt(index),index);
+                            cubit.onRemoveMember(members.elementAt(index));
                           }
                         },
                         checkColor: AppColors.white,

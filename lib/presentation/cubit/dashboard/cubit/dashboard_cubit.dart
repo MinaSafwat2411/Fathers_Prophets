@@ -1,6 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../data/models/users/users_model.dart';
+import '../../../../data/repositories/users/users_repository.dart';
 import '../../../../data/services/cache_helper.dart';
+import '../../../../domain/usecases/users/users_use_case.dart';
 import '../states/dashboard_states.dart';
 
 class DashboardCubit extends Cubit<DashboardStates> {
@@ -10,6 +12,9 @@ class DashboardCubit extends Cubit<DashboardStates> {
 
   UserModel userData = UserModel();
   List<UserModel> members = <UserModel>[];
+  List<UserModel> unReviewedMembers = <UserModel>[];
+  final UsersUseCase usersUseCase = UsersUseCase(UserRepository());
+
   var list = <String>[
     'bible',
     'coptic',
@@ -23,16 +28,24 @@ class DashboardCubit extends Cubit<DashboardStates> {
     'doctrine',
     'quizzes',
   ];
-  void getAllData() {
+  void getAllData()async {
     emit(OnLoading());
     userData = CacheHelper.getUserData();
     members = [];
-    // selectedClassName = CacheHelper.getClassByClassId(userData.classId??'').name;
+    await getUnReviewedMembers();
     emit(OnSuccess());
   }
   void onSelectClass(String id){
     emit(OnLoading());
     members = CacheHelper.getMembersByClassId(id);
     emit(OnSuccess());
+  }
+
+  Future<void> getUnReviewedMembers()async{
+    try{
+      unReviewedMembers = (await usersUseCase.getNotReviewedUsers()??[]);
+    }catch(e){
+      emit(OnError(e.toString()));
+    }
   }
 }

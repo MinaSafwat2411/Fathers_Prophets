@@ -111,6 +111,12 @@ class LayoutScreen extends StatelessWidget {
                         }
                     }
                   },
+                ),
+                if(cubit.currentIndex == 2 && (cubit.userData.isAdmin??false)) GestureDetector(
+                  child: const Icon(Icons.table_chart_outlined),
+                  onTap: () {
+                    context.pushNamed(AppRoutes.quizzesScoreTable.name);
+                  },
                 )
               ],
               centerTitle: false,

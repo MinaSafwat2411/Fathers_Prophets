@@ -7,8 +7,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../data/models/comment/comment_model.dart';
 import '../../../../data/models/eventattendance/event_attendance_model.dart';
+import '../../../../data/models/users/users_model.dart';
 import '../../../../data/repositories/eventattendance/event_attendance_repository.dart';
+import '../../../../data/repositories/users/users_repository.dart';
 import '../../../../domain/usecases/eventattendance/event_attendance_use_case.dart';
+import '../../../../domain/usecases/users/users_use_case.dart';
 import '../states/comment_states.dart';
 
 class CommentCubit extends Cubit<CommentStates> {
@@ -24,7 +27,21 @@ class CommentCubit extends Cubit<CommentStates> {
   List<ClassModel> classes = <ClassModel>[];
   EventAttendanceModel attendance= EventAttendanceModel();
   List<CommentModel> comments = <CommentModel>[];
+  UsersUseCase usersUseCase = UsersUseCase(UserRepository());
+  var user = UserModel();
 
+  void getUserData(String uid)async{
+    emit(OnLoading());
+    try{
+      user = (await usersUseCase.getUserData(uid)??UserModel());
+      getAttendance(uid);
+      listenToComments(uid);
+      emit(OnSuccess());
+    }catch(e){
+      emit(OnError(e.toString()));
+    }
+    emit(OnSuccess());
+  }
   void listenToComments(String userId) {
     classes = CacheHelper.getClasses();
     emit(CommentLoading());

@@ -34,7 +34,6 @@ class EventsCubit extends Cubit<EventsStates> {
   List<UserModel> members = <UserModel>[];
   List<UserModel> servants = <UserModel>[];
   List<UserModel> admins = <UserModel>[];
-  Map<String,List<UserModel>> group = {};
   TextEditingController titleController = TextEditingController();
   TextEditingController searchController = TextEditingController();
   File? image;
@@ -49,70 +48,32 @@ class EventsCubit extends Cubit<EventsStates> {
   final UsersUseCase usersUseCase = UsersUseCase(UserRepository());
 
   void getAllMembers() async{
-    members = CacheHelper.getMembers();
-    servants = CacheHelper.getServants();
-    admins = CacheHelper.getAdmins();
     classes = CacheHelper.getClasses();
     userData = CacheHelper.getUserData();
-    group = groupBy();
     selectedMembers.clear();
     emit(GetAllMembersState());
   }
 
+  List<UserModel> getMembers(String id){
+    return CacheHelper.getMembersByClassId(id);
+  }
+
   void onRest(){
     selectedMembers.clear();
-    group.values.elementAt(0).forEach((element) {
-      element.checked = false;
-    });
-    group.values.elementAt(1).forEach((element) {
-      element.checked = false;
-    });
-    group.values.elementAt(2).forEach((element) {
-      element.checked = false;
-    });
-    group.values.elementAt(3).forEach((element) {
-      element.checked = false;
-      });
-    group.values.elementAt(4).forEach((element) {
-      element.checked = false;
-    });
-    group.values.elementAt(5).forEach((element) {
-      element.checked = false;
-      });
-    group.values.elementAt(6).forEach((element) {
-      element.checked = false;
-    });
-    group.values.elementAt(7).forEach((element) {
-      element.checked = false;
-    });
     emit(OnRest());
   }
   void onSelectEvent(value) {
     selectedEvent = value;
     emit(SelectEventState());
   }
-  void onAddMember(UserModel member,int index){
-    group.values.elementAt(currentIndex)[index].checked = true;
+  void onAddMember(UserModel member){
     selectedMembers.add(AttendanceEventModel(userId: member.uid, name: member.name));
     emit(OnAddMember());
   }
 
-  void onRemoveMember(UserModel member,int index){
-    group.values.elementAt(currentIndex)[index].checked = false;
+  void onRemoveMember(UserModel member){
     selectedMembers.removeAt(selectedMembers.indexWhere((element) => element.userId == member.uid));
     emit(OnAddMember());
-  }
-
-  Map<String,List<UserModel>> groupBy(){
-    Map<String,List<UserModel>> map = {};
-    for (var element in members) {
-      if(map.containsKey(element.classId)){
-        map[element.classId??""]?.add(element);
-      }else{
-        map[element.classId??""] = [element];
-      }
-    }
-    return map;
   }
 
   void onBackDone(List<AttendanceEventModel> selectedMembers) {

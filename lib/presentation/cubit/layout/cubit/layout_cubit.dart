@@ -197,11 +197,12 @@ class LayoutCubit extends Cubit<LayoutStates> {
     }
   }
 
-  void canPreview(){
+  void canPreview()async{
     userData = userData.copyWith(
       isAdmin: !(userData.isAdmin??false),
       isTeacher: !(userData.isTeacher??false)
     );
+    await CacheHelper.saveUserData(userData);
     emit(CanPreviewState());
   }
 }

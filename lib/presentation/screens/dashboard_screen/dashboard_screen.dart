@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/localization/app_localizations.dart';
+import '../../../core/widgets/custom_snackbar.dart';
 import '../../cubit/dashboard/cubit/dashboard_cubit.dart';
 import '../../cubit/dashboard/states/dashboard_states.dart';
 import '../../routes.dart';
@@ -95,8 +96,8 @@ class DashboardScreen extends StatelessWidget {
                     state is! OnLoading? Expanded(
                       child: ListView(
                         children: [
-                          for(var item in cubit.members) TextButton(onPressed: () {
-                            context.pushNamed(AppRoutes.userDetails.name, extra: {'user':item,
+                          for(var item in cubit.members) TextButton(onPressed: ()async {
+                            var res= await context.pushNamed(AppRoutes.userDetails.name, extra: {'user':item.copyWith(isReviewed: true),
                               'football':context.read<LayoutCubit>().footballEvents.length,
                               'volleyball':context.read<LayoutCubit>().volleyballEvents.length,
                               'pingPong':context.read<LayoutCubit>().pingPongEvents.length,
@@ -110,6 +111,9 @@ class DashboardScreen extends StatelessWidget {
                               'pray':context.read<LayoutCubit>().prayEvents.length,
                               'praise':context.read<LayoutCubit>().praiseEvents.length,
                             });
+                            if(res != null){
+                              cubit.getAllData();
+                            }
                           }, child: Card(child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Row(
@@ -134,10 +138,69 @@ class DashboardScreen extends StatelessWidget {
                     )
                   ],
                 ),
+                state is! OnLoading? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    cubit.unReviewedMembers.isNotEmpty? Expanded(
+                      child: ListView(
+                          children: [
+                            for(var item in cubit.unReviewedMembers) TextButton(onPressed: ()async {
+                              var res = await context.pushNamed(AppRoutes.userDetails.name, extra: {'user':item.copyWith(isReviewed: false),
+                                'football':context.read<LayoutCubit>().footballEvents.length,
+                                'volleyball':context.read<LayoutCubit>().volleyballEvents.length,
+                                'pingPong':context.read<LayoutCubit>().pingPongEvents.length,
+                                'chess':context.read<LayoutCubit>().chessEvents.length,
+                                'melodies':context.read<LayoutCubit>().melodiesEvents.length,
+                                'choir':context.read<LayoutCubit>().choirEvents.length,
+                                'ritual':context.read<LayoutCubit>().ritualEvents.length,
+                                'coptic':context.read<LayoutCubit>().copticEvents.length,
+                                'doctrine':context.read<LayoutCubit>().doctrineEvents.length,
+                                'bible':context.read<LayoutCubit>().bibleEvents.length,
+                                'pray':context.read<LayoutCubit>().prayEvents.length,
+                                'praise':context.read<LayoutCubit>().praiseEvents.length,
+                              });
+                              if(res != null){
+                                cubit.getAllData();
+                              }
+                            }, child: Card(child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.max,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(item.name??'', style: textTheme.bodyLarge,),
+                                ],
+                              ),
+                            )))
+                          ]
+                      ),
+                    ):Expanded(child: Center(child: Text(localize.translate("no_unreviewed_members"),style: textTheme.titleMedium,))),
+                  ]
+                ) :  Expanded(
+                  child: Center(
+                    child: CircularProgressIndicator(
+                        strokeWidth: 1,
+                        backgroundColor: AppColors.transparent,
+                        color: context.read<LocaleCubit>().isDark? AppColors.white: AppColors.mirage
+                    ),
+                  ),
+                )
               ],
             ),
+            floatingActionButton: FloatingActionButton(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(50),
+              ),
+              onPressed: (){
+                context.pushNamed(AppRoutes.addMember.name);
+              },
+              child: const Icon(Icons.add),
+            ),
           ),
-      listener: (context, state) {},
+      listener: (context, state) {
+        if(state is OnError){showCustomSnackBar(context, state.message,color: AppColors.red,icon: Icons.error_outline);}
+      },
       buildWhen:
           (previous, current) =>
               current is OnFilter ||

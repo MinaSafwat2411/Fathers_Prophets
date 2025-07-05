@@ -3,6 +3,7 @@ import 'package:fathers_prophets/data/models/users/users_model.dart';
 import 'package:fathers_prophets/presentation/screens/add_attendance_screen/add_attendance_screen.dart';
 import 'package:fathers_prophets/presentation/screens/add_event_attendance/add_event_attendance.dart';
 import 'package:fathers_prophets/presentation/screens/add_event_screen/add_event_screen.dart';
+import 'package:fathers_prophets/presentation/screens/add_member_screen/add_member_screen.dart';
 import 'package:fathers_prophets/presentation/screens/add_quizzes_screen/add_quiz_screen.dart';
 import 'package:fathers_prophets/presentation/screens/attendance_details_screen/attendance_details_screen.dart';
 import 'package:fathers_prophets/presentation/screens/dashboard_screen/dashboard_screen.dart';
@@ -13,8 +14,10 @@ import 'package:fathers_prophets/presentation/screens/login_screen/login_screen.
 import 'package:fathers_prophets/presentation/screens/onboarding_screen/onboarding_screen.dart';
 import 'package:fathers_prophets/presentation/screens/profile_screen/profile_screen.dart';
 import 'package:fathers_prophets/presentation/screens/quizzes_details_screen/quizzes_details_screen.dart';
+import 'package:fathers_prophets/presentation/screens/quizzes_score_table_screen/quizzes_score_table_screen.dart';
 import 'package:fathers_prophets/presentation/screens/register_screen/register_screen.dart';
 import 'package:fathers_prophets/presentation/screens/review_screen/review_screen.dart';
+import 'package:fathers_prophets/presentation/screens/review_user_screen/review_user_screen.dart';
 import 'package:fathers_prophets/presentation/screens/select_member_screen/select_member_screen.dart';
 import 'package:fathers_prophets/presentation/screens/setting_screen/setting_screen.dart';
 import 'package:fathers_prophets/presentation/screens/splash_screen/splash_screen.dart';
@@ -50,7 +53,10 @@ enum AppRoutes {
   selectMember,
   dashBoard,
   userDetails,
-  review
+  review,
+  quizzesScoreTable,
+  addMember,
+  reviewUser
 }
 
 final GoRouter router = GoRouter(
@@ -218,6 +224,23 @@ final GoRouter router = GoRouter(
       name: AppRoutes.review.name,
       builder: (context, state) => const ReviewScreen(),
     ),
+    GoRoute(
+      path: AppRoutePaths.quizzesScoreTable,
+      name: AppRoutes.quizzesScoreTable.name,
+      builder: (context, state) =>const QuizzesScoreTableScreen(),
+    ),
+    GoRoute(
+      path: AppRoutePaths.addMember,
+      name: AppRoutes.addMember.name,
+      builder: (context, state) => const AddMemberScreen(),
+    ),
+    GoRoute(
+      path: AppRoutePaths.reviewUser,
+      name: AppRoutes.reviewUser.name,
+      builder: (context, state) => ReviewUserScreen(
+        user: state.extra as UserModel,
+      ),
+    ),
   ],
 );
 
@@ -248,4 +271,7 @@ abstract class AppRoutePaths {
   static const String dashBoard = '/dashboard';
   static const String userDetails = '/user-details';
   static const String review = '/review_screen';
+  static const String quizzesScoreTable = '/quizzes_score_table';
+  static const String addMember = '/add_member';
+  static const String reviewUser = '/review_user';
 }

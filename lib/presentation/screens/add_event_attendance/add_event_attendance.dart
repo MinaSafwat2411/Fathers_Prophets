@@ -11,6 +11,7 @@ import '../../../core/widgets/event_shimmer_item.dart';
 import '../../../data/models/events/event_attendance_model.dart';
 import '../../cubit/events/cubit/events_cubit.dart';
 import '../../cubit/events/states/events_states.dart';
+import '../../cubit/layout/cubit/layout_cubit.dart';
 import '../../cubit/local/cubit/local_cubit.dart';
 
 class AddEventAttendance extends StatelessWidget {
@@ -73,7 +74,7 @@ class AddEventAttendance extends StatelessWidget {
                       ),
                     ),
                   ),
-                  if(cubit.userData.isAdmin??false)Padding(
+                  if(context.read<LayoutCubit>().userData.isAdmin??false)Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TextButton(
                       onPressed: ()async {
@@ -111,7 +112,7 @@ class AddEventAttendance extends StatelessWidget {
             ),
           ),
           floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-          floatingActionButton: (cubit.userData.isAdmin??false) ?Padding(
+          floatingActionButton: (context.read<LayoutCubit>().userData.isAdmin??false) ?Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: CustomButton(
               onPressed: () {

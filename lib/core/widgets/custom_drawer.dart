@@ -1,3 +1,5 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:fathers_prophets/core/widgets/profile_loading_image.dart';
 import 'package:fathers_prophets/presentation/cubit/layout/cubit/layout_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -32,7 +34,7 @@ class CustomDrawer extends StatelessWidget {
                   const SizedBox(
                     height: 40,
                   ),
-                  cubit.userData.uid !=''?ClipOval(
+                  cubit.userData.profile == ''?ClipOval(
                     child: Image.asset(
                             context.read<LocaleCubit>().isDark? 'assets/images/logo_dark.png': 'assets/images/logo_light.png',
                             fit: BoxFit.fill,
@@ -40,11 +42,19 @@ class CustomDrawer extends StatelessWidget {
                             height: 100,
                           )
 
-                  ):Image.asset(
-                    context.read<LocaleCubit>().isDark? 'assets/images/logo_dark.png': 'assets/images/logo_light.png',
-                    fit: BoxFit.fill,
-                    width: 100,
-                    height: 100,
+                  ):ClipOval(
+                      child: CachedNetworkImage(
+                        width: 100,
+                        height: 100,
+                        fit: BoxFit.fill,
+                        imageUrl: cubit.userData.profile??"",
+                        placeholder: (context, imageProvider) => ProfileLoadingImage(
+                          isDark: context.read<LocaleCubit>().isDark,
+                        ),
+                        errorWidget: (context, url, error) =>  ProfileLoadingImage(
+                          isDark: context.read<LocaleCubit>().isDark,
+                        ),
+                      )
                   ),
                   const SizedBox(
                     height: 5,
@@ -62,9 +72,34 @@ class CustomDrawer extends StatelessWidget {
                 ],
               ),
             ),
-            if(cubit.userData.isAdmin??false)SizedBox(height: 20,),
-            if(cubit.userData.isAdmin??false)TextButton(onPressed: () => context.pushNamed(AppRoutes.dashBoard.name), child: Text(localize.translate("dash_board"),style: textTheme.titleLarge,)),
-            if(cubit.userData.canPreview??false)TextButton(onPressed: () => cubit.canPreview(), child: Text(localize.translate("preview_as_member"),style: textTheme.titleLarge,)),
+            SizedBox(height: 16,),
+            if(cubit.userData.isAdmin??false)MaterialButton(
+              onPressed: () {
+                context.pushNamed(AppRoutes.dashBoard.name);
+              },
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.dashboard_customize_outlined,color: iconTheme.color,size: 32,),
+                  SizedBox(width: 8,),
+                  Text(localize.translate("dash_board"),style: textTheme.titleLarge,),
+                ],
+              ),
+            ),
+            SizedBox(height: 16,),
+            if(cubit.userData.canPreview??false)MaterialButton(
+              onPressed: ()=>cubit.canPreview(),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.remove_red_eye_outlined,color: iconTheme.color,size: 32,),
+                  SizedBox(width: 8,),
+                  Text(localize.translate("preview_as_member"),style: textTheme.titleLarge,),
+                ],
+              ),
+            ),
             const Spacer(),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 24),

@@ -13,6 +13,7 @@ import '../../../../data/repositories/quizzes/quizzes_repository.dart';
 import '../../../../data/repositories/splash/splash_repository.dart';
 import '../../../../data/repositories/users/users_repository.dart';
 import '../../../../data/services/cache_helper.dart';
+import '../../../../data/services/google_drive_service.dart';
 import '../../../../data/services/read_from_json.dart';
 import '../../../../domain/usecases/auth/auth_use_case.dart';
 import '../../../../domain/usecases/classes/classes_use_case.dart';
@@ -49,6 +50,7 @@ class LoginCubit extends Cubit<LoginStates>  {
   final QuizzesUseCase questionsUseCase = QuizzesUseCase(QuizzesRepository());
   final EventsUseCase eventsUseCase = EventsUseCase(EventsRepository());
   final SplashUseCase splashUseCase = SplashUseCase(SplashRepository());
+  final GoogleDriveUploader uploader = GoogleDriveUploader();
 
   static LoginCubit get(context) => BlocProvider.of(context);
 
@@ -159,9 +161,9 @@ class LoginCubit extends Cubit<LoginStates>  {
       await CacheHelper.removeServantsByClassId(classList[7].docId);
       await CacheHelper.removeAdmins();
       if(userData.isAdmin??false){
-        servantList = (await usersUseCase.getAllServants()??[]);
-        memberList = (await ReadFromJson().getMembersJsonData());
-        adminList = (await usersUseCase.getAllAdmins()??[]);
+        memberList = (await uploader.getUsersFromFileById("13_UaD9tG4Gdo59f_WRHooGnNTzc55YmF"));
+        servantList = (await uploader.getUsersFromFileById("1ZRKteCLH4oh2LRhqCmh3Sz7ZdCfSpFIm"));
+        adminList = (await uploader.getUsersFromFileById("1e8uAyL3twahG6B-odWAxjpAo4VmAYDEc"));
       }
       switch(userData.role){
         case 'admin':

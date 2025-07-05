@@ -88,4 +88,19 @@ class UserRepository {
     });
     }
   }
+
+  Future<List<UserModel>?> getNotReviewedUsers() async {
+    final snapshot =
+    await FirebaseFirestore.instance.collection(FirebaseEndpoints.users).where(FirebaseEndpoints.isReviewed,isEqualTo: false).get();
+    return snapshot.docs
+        .map((doc) => UserModel.fromJson(doc.data(), doc.id))
+        .toList();
+  }
+
+  Future<List<UserModel>?> getReviewedUsers() async {
+    final snapshot =
+    await FirebaseFirestore.instance.collection(FirebaseEndpoints.users).where(FirebaseEndpoints.isReviewed,isEqualTo: true).get();
+    return snapshot.docs
+        .map((doc) => UserModel.fromJson(doc.data(), doc.id)).toList();
+  }
 }

@@ -84,7 +84,6 @@ class UserModel {
       'isAdmin':isAdmin,
       'uid':uid,
       "isAnyUpdate": isAnyUpdate,
-      "checked": checked,
       "isReviewed": isReviewed,
       "role": role,
     };

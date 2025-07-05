@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fathers_prophets/core/widgets/custom_big_textfield.dart';
 import 'package:fathers_prophets/data/models/users/users_model.dart';
 import 'package:fathers_prophets/presentation/cubit/local/cubit/local_cubit.dart';
@@ -9,10 +10,13 @@ import 'package:shimmer/shimmer.dart';
 import '../../../core/localization/app_localizations.dart';
 import '../../../core/utils/app_colors.dart';
 import '../../../core/widgets/custom_snackbar.dart';
+import '../../../core/widgets/profile_loading_image.dart';
 import '../../../data/models/comment/comment_model.dart';
 import '../../cubit/comment/cubit/comment_cubit.dart';
 import '../../cubit/comment/states/comment_states.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+
+import '../../routes.dart';
 
 
 class UserDetailsScreen extends StatelessWidget {
@@ -49,7 +53,7 @@ class UserDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var cubit = CommentCubit.get(context)..getAttendance(user.uid ?? "")..listenToComments(user.uid ?? "");
+    var cubit = CommentCubit.get(context)..getUserData(user.uid ?? "");
     final localize = AppLocalizations.of(context);
     var textTheme = Theme.of(context).textTheme;
     return BlocConsumer<CommentCubit, CommentStates>(
@@ -69,31 +73,51 @@ class UserDetailsScreen extends StatelessWidget {
               title: Text(localize.translate("user_details")),
               leading: IconButton(
                 onPressed: () {
-                  context.pop();
+                  context.pop(true);
                 },
                 icon: Icon(Icons.arrow_back_ios_new_outlined),
               ),
+              actions: [
+                TextButton(onPressed: () async{
+                  var result  = await context.pushNamed(AppRoutes.reviewUser.name,extra: cubit.user);
+                  if(result!=null){
+                    cubit.user = result as UserModel;
+                    cubit.getAttendance(cubit.user.uid ?? "");
+                  }
+                }, child: Text(localize.translate('edit'),style: textTheme.titleMedium,))
+              ],
             ),
             body: ListView(
               children: [
                 Column(
                   children: [
                     const SizedBox(height: 20),
-                    ClipOval(
-                      child: Image.asset(
-                        context.read<LocaleCubit>().isDark
-                            ? 'assets/images/logo_dark.png'
-                            : 'assets/images/logo_light.png',
-                        fit: BoxFit.fill,
-                        width: 100,
-                        height: 100,
-                      ),
+                    cubit.user.profile == ''?ClipOval(
+                        child: Image.asset(
+                          context.read<LocaleCubit>().isDark? 'assets/images/logo_dark.png': 'assets/images/logo_light.png',
+                          fit: BoxFit.fill,
+                          width: 100,
+                          height: 100,
+                        )
+                    ):ClipOval(
+                        child: CachedNetworkImage(
+                          width: 100,
+                          height: 100,
+                          fit: BoxFit.fill,
+                          imageUrl: cubit.user.profile??"",
+                          placeholder: (context, imageProvider) => ProfileLoadingImage(
+                            isDark: context.read<LocaleCubit>().isDark,
+                          ),
+                          errorWidget: (context, url, error) =>  ProfileLoadingImage(
+                            isDark: context.read<LocaleCubit>().isDark,
+                          ),
+                        )
                     ),
                     const SizedBox(height: 5),
-                    Text(user.name ?? "", style: textTheme.titleLarge),
+                    Text(cubit.user.name ?? "", style: textTheme.titleLarge),
                   ],
                 ),
-                (state is! OnLoading)?Card(
+                (state is! OnLoading )?Card(
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Column(
@@ -107,7 +131,7 @@ class UserDetailsScreen extends StatelessWidget {
                               Icon(Icons.account_circle_outlined),
                               SizedBox(width: 8,),
                               Text(
-                                "UID : ${user.uid ?? ""}",
+                                "UID : ${cubit.user.uid ?? ""}",
                                 style: textTheme.titleMedium,
                               )
                             ],
@@ -122,7 +146,7 @@ class UserDetailsScreen extends StatelessWidget {
                               Icon(Icons.people_alt_outlined),
                               SizedBox(width: 8,),
                               Text(
-                                "${localize.translate('class')} : ${cubit.classes.firstWhere((element) => element.docId==user.classId,).name}",
+                                "${localize.translate('class')} : ${cubit.classes.firstWhere((element) => element.docId==cubit.user.classId,).name}",
                                 style: textTheme.titleMedium,
                               )
                             ],
@@ -268,7 +292,7 @@ class UserDetailsScreen extends StatelessWidget {
                           () => cubit.addComment(
                             CommentModel(
                               content: cubit.commentController.text,
-                              authorId: user.uid ?? "",
+                              authorId: cubit.user.uid ?? "",
                               timestamp: DateTime.now().millisecondsSinceEpoch,
                             ),
                           ),

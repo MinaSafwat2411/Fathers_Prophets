@@ -6,6 +6,8 @@ import 'package:googleapis_auth/auth_io.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
 
+import '../models/users/users_model.dart';
+
 class GoogleDriveUploader {
   final String serviceAccountJsonPath =
       'assets/json/fathers-prophets-458809-577830d3f74d.json';
@@ -116,5 +118,126 @@ class GoogleDriveUploader {
     final driveApi = drive.DriveApi(authClient);
     await driveApi.files.delete(fileId);
     return "File deleted successfully";
+  }
+  Future<List<UserModel>> getUsersFromFileById(String fileId) async {
+    final authClient = await _getAuthClient();
+    if (authClient == null) return [];
+
+    final driveApi = drive.DriveApi(authClient);
+
+    final media = await driveApi.files.get(
+      fileId,
+      downloadOptions: drive.DownloadOptions.fullMedia,
+      supportsAllDrives: true,
+    ) as drive.Media;
+
+    final content = await media.stream.transform(utf8.decoder).join();
+
+    final List<dynamic> jsonList = json.decode(content);
+
+    final List<UserModel> users = jsonList.map((userJson) {
+      final uid = userJson['uid'] ?? DateTime.now().millisecondsSinceEpoch.toString();
+      return UserModel.fromJson(userJson, uid);
+    }).toList();
+
+    return users;
+  }
+  Future<void> addUserToJsonFile(String fileId, UserModel newUser) async {
+    final authClient = await _getAuthClient();
+    if (authClient == null) return;
+
+    final driveApi = drive.DriveApi(authClient);
+
+    // Step 1: Get current content
+    final media = await driveApi.files.get(
+      fileId,
+      downloadOptions: drive.DownloadOptions.fullMedia,
+      supportsAllDrives: true,
+    ) as drive.Media;
+
+    final content = await media.stream.transform(utf8.decoder).join();
+    final List<dynamic> jsonList = json.decode(content);
+
+    // Step 2: Add the new user
+    jsonList.add(newUser.toJson());
+
+    // Step 3: Convert to JSON bytes
+    final updatedJsonString = json.encode(jsonList);
+    final List<int> bytes = utf8.encode(updatedJsonString);
+
+    final mediaUpload = drive.Media(
+      Stream.fromIterable([bytes]),
+      bytes.length,
+    );
+
+    await driveApi.files.update(
+      drive.File(), // no changes to metadata
+      fileId,
+      uploadMedia: mediaUpload,
+    );
+  }
+
+  Future<void> uploadInitialUsersFile() async {
+    final authClient = await _getAuthClient();
+    if (authClient == null) return;
+
+    final driveApi = drive.DriveApi(authClient);
+
+    final content = await rootBundle.loadString('assets/users/admins.json');
+    final fileBytes = utf8.encode(content);
+    final media = drive.Media(Stream.value(fileBytes), fileBytes.length);
+
+    final driveFile = drive.File()
+      ..name = 'admins.json'
+      ..parents = [folderId]; // your shared folder ID
+
+    final uploadedFile = await driveApi.files.create(driveFile, uploadMedia: media);
+
+    // Make it public (optional)
+    await driveApi.permissions.create(
+      drive.Permission(type: "anyone", role: "reader"),
+      uploadedFile.id!,
+    );
+
+    print("✅ File uploaded with ID: ${uploadedFile.id}");
+  }
+
+  Future<void> updateUserInJsonFile(String fileId, UserModel updatedUser) async {
+    final authClient = await _getAuthClient();
+    if (authClient == null) return;
+
+    final driveApi = drive.DriveApi(authClient);
+
+    // Step 1: Download existing JSON file
+    final media = await driveApi.files.get(
+      fileId,
+      downloadOptions: drive.DownloadOptions.fullMedia,
+      supportsAllDrives: true,
+    ) as drive.Media;
+
+    final content = await media.stream.transform(utf8.decoder).join();
+    final List<dynamic> jsonList = json.decode(content);
+
+    // Step 2: Find user by uid and update
+    final index = jsonList.indexWhere((u) => u['uid'] == updatedUser.uid);
+    if (index != -1) {
+      jsonList[index] = updatedUser.toJson();
+    } else {
+      print("❌ User with uid '${updatedUser.uid}' not found.");
+      return;
+    }
+
+    // Step 3: Upload updated JSON file
+    final updatedJsonString = json.encode(jsonList);
+    final List<int> bytes = utf8.encode(updatedJsonString);
+    final mediaUpload = drive.Media(Stream.fromIterable([bytes]), bytes.length);
+
+    await driveApi.files.update(
+      drive.File(), // No metadata change
+      fileId,
+      uploadMedia: mediaUpload,
+    );
+
+    print("✅ User '${updatedUser.uid}' updated successfully.");
   }
 }
