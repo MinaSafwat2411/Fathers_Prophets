@@ -178,9 +178,8 @@ class LoginScreen extends StatelessWidget {
           );
         }
       },
-      listenWhen: (previous, current) => current is LoginErrorState || current is LoginSuccessState || current is ToReviewState ||current is OnRequestUpToDate ||current is LoginErrorState,
-      buildWhen: (previous, current) =>
-           current is LoginLoadingState || current is OnObscureText,
+      listenWhen: (previous, current) => current is! LoginInitialState,
+      buildWhen: (previous, current) =>current is! LoginInitialState,
     );
   }
 }
