@@ -1,5 +1,3 @@
-import 'package:fathers_prophets/data/models/quizzes_score/quizzes_score_model.dart';
-import 'package:fathers_prophets/data/services/read_from_json.dart';
 import 'package:fathers_prophets/presentation/cubit/add_attendance/cubit/add_attendance_cubit.dart';
 import 'package:fathers_prophets/presentation/cubit/add_member/cubit/add_member_cubit.dart';
 import 'package:fathers_prophets/presentation/cubit/attendance/cubit/attendance_cubit.dart';
@@ -27,12 +25,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'core/localization/app_localizations.dart';
 import 'core/utils/app_themes.dart';
-import 'data/repositories/quizzes_score/quizzes_score_repository.dart';
 import 'data/services/bloc_observer.dart';
 import 'data/services/cache_helper.dart';
 import 'data/services/notification_services.dart';
 import 'data/firebase/firebase_options.dart';
-import 'domain/usecases/quizzes_score/quizzes_score_use_case.dart';
 
 
 
