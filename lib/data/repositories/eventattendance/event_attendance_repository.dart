@@ -25,9 +25,9 @@ class EventAttendanceRepository {
 
   Future<void> addEventAttendance(String uid,String eventId,String event)async {
     if (uid.isNotEmpty) {
-      await FirebaseFirestore.instance.collection(FirebaseEndpoints.eventAttendance).doc(uid).update({
-        event: FieldValue.arrayUnion([eventId])
-      });
+      await FirebaseFirestore.instance.collection(FirebaseEndpoints.eventAttendance).doc(uid).set({
+        event: FieldValue.arrayUnion([eventId]),
+      },SetOptions(merge: true));
     }
   }
 

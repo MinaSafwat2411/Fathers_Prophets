@@ -27,4 +27,6 @@ class OnGetMembers extends AttendanceStates{}
 
 class OnGetServants extends AttendanceStates{}
 
+class OnDeleteAttendanceItem extends AttendanceStates{}
+
 

@@ -130,5 +130,6 @@
   "role": "Role",
   "reviewed": "Reviewed",
   "admin": "Admin",
-  "teacher": "Teacher"
+  "teacher": "Teacher",
+  "no_member_done_quiz": "No Member Done Quiz"
 }

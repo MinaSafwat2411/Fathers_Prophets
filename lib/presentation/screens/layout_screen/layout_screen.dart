@@ -112,11 +112,14 @@ class LayoutScreen extends StatelessWidget {
                     }
                   },
                 ),
-                if(cubit.currentIndex == 2 && (cubit.userData.isAdmin??false)) GestureDetector(
-                  child: const Icon(Icons.table_chart_outlined),
-                  onTap: () {
-                    context.pushNamed(AppRoutes.quizzesScoreTable.name);
-                  },
+                if(cubit.currentIndex == 2 && (cubit.userData.isAdmin??false)) Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                  child: GestureDetector(
+                    child: const Icon(Icons.table_chart_outlined),
+                    onTap: () {
+                      context.pushNamed(AppRoutes.quizzesScoreTable.name);
+                    },
+                  ),
                 )
               ],
               centerTitle: false,
@@ -157,10 +160,9 @@ class LayoutScreen extends StatelessWidget {
                   case 3: {
                     var attendance = await context.pushNamed(AppRoutes.addAttendance.name);
                     if (!context.mounted) return;
-
                     if (attendance != null) {
                       cubit.attendance.add(attendance as AttendanceModel);
-                      cubit.sortAttendance();
+                      cubit.sortAttendance(context.read<LocaleCubit>().lang);
                       context.read<AddAttendanceCubit>().onRest();
                     }
                     break;
@@ -180,7 +182,7 @@ class LayoutScreen extends StatelessWidget {
 
                 if (attendance != null) {
                   cubit.attendance.add(attendance as AttendanceModel);
-                  cubit.sortAttendance();
+                  cubit.sortAttendance(context.read<LocaleCubit>().lang);
                   context.read<AddAttendanceCubit>().onRest();
                 }
               },
@@ -226,7 +228,7 @@ class LayoutScreen extends StatelessWidget {
             ),
             body: PageView(
               controller: cubit.pageController,
-              physics: NeverScrollableScrollPhysics(),
+              physics: (cubit.userData.isAdmin??false)? NeverScrollableScrollPhysics():BouncingScrollPhysics(),
               children: [
                 if(cubit.allEvents.isNotEmpty) HomeScreen() else Center(
                   child: Text(

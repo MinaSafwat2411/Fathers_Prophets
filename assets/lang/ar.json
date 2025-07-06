@@ -130,5 +130,6 @@
   "role": "الدور",
   "reviewed": "تمت المراجعة",
   "admin": "مشرف",
-  "teacher": "خادم"
+  "teacher": "خادم",
+  "no_member_done_quiz": "لا يوجد مخدوم أكمل مسابقة"
 }

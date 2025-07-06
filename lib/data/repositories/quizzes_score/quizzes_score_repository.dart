@@ -34,8 +34,9 @@ class QuizzesScoreRepository {
     if (uid.isNotEmpty) {
       await FirebaseFirestore.instance.collection(FirebaseEndpoints.quizzesScore).doc(uid).update(
           {
-            'quizzes': FieldValue.arrayUnion([quizzesScoreModel.quizzes]),
+            'quizzes': FieldValue.arrayUnion(quizzesScoreModel.quizzes??[]),
             'score': FieldValue.increment(quizzesScoreModel.score??0),
+            'name': quizzesScoreModel.name,
           }
       );
     }

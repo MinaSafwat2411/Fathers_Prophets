@@ -1,5 +1,6 @@
 import 'package:fathers_prophets/core/widgets/custom_button.dart';
 import 'package:fathers_prophets/core/widgets/custom_loading.dart';
+import 'package:fathers_prophets/presentation/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -46,6 +47,15 @@ class AttendanceDetailsScreen extends StatelessWidget {
                   icon: Icon(Icons.arrow_back_ios),
                 ),
                 title: Text(cubit.attendance.dateView ?? ""),
+                actions: [
+                  IconButton(onPressed: ()async {
+                    var  result = await context.pushNamed(AppRoutes.pin.name,extra: AppRoutes.attendanceDetails.name);
+                    result as bool;
+                    if(result==true){
+                      cubit.onDelete(attendance);
+                    }
+                  }, icon: Icon(Icons.delete_outline))
+                ],
               ),
               body: Stack(
                 children: [
@@ -226,6 +236,7 @@ class AttendanceDetailsScreen extends StatelessWidget {
         listener: (context, state) {
           switch(state){
             case OnSuccess() : context.pop(cubit.attendance);
+            case OnDeleteAttendanceItem() : context.pop(true);
           }
         },
         buildWhen: (previous, current) => current is! InitialState,

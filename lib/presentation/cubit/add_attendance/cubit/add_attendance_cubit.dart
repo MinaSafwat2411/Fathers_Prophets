@@ -107,19 +107,9 @@ class AddAttendanceCubit extends Cubit<AddAttendanceStates> {
     isUpdate = false;
     try {
       emit(OnLoading());
-      await useCase.addNewAttendance(
-        attendance.copyWith(
-          attendance:
-              attendance.attendance
-                  ?.where(
-                    (element) =>
-                        (element?.shmas ?? false) ||
-                        (element?.tnawel ?? false) ||
-                        (element?.odas ?? false) ||
-                        (element?.sundaySchool ?? false),
-                  )
-                  .toList(),
-        ),
+      var id = await useCase.addNewAttendance(attendance);
+      attendance = attendance.copyWith(
+          id: id
       );
       emit(OnSuccess());
     } catch (e) {

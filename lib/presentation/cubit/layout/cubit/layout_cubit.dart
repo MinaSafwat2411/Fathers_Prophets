@@ -79,14 +79,19 @@ class LayoutCubit extends Cubit<LayoutStates> {
       }else if(userData.isTeacher??false){
         attendance = await attendanceUseCase.getAttendanceByClass(userData.classId??'');
       }
-      for (var element in attendance) {
-        element.dateView = formatDate(element.date?? DateTime.now(), lang);
-      }
-      attendance.sort((a, b) => (b.date?? DateTime.now()).compareTo(a.date?? DateTime.now()));
+      sortAttendance(lang);
       emit(SuccessState());
     } catch (e) {
       emit(ErrorState(e.toString()));
     }
+  }
+
+  void sortAttendance(String lang){
+    for (var element in attendance) {
+      element.dateView = formatDate(element.date?? DateTime.now(), lang);
+    }
+    attendance.sort((a, b) => (b.date?? DateTime.now()).compareTo(a.date?? DateTime.now()));
+    emit((SortAttendanceState()));
   }
   void getNewThemes(String lang) async {
     for (var element in attendance) {
@@ -148,10 +153,6 @@ class LayoutCubit extends Cubit<LayoutStates> {
     userData = CacheHelper.getUserData();
     quizzesDone = await quizzesScoreUseCase.getQuizzesScoreById(userData.uid??'').then((value) => value?.quizzes??[]);
     emit(SuccessState());
-  }
-  void sortAttendance(){
-    attendance.sort((a, b) => (b.date?? DateTime.now()).compareTo(a.date?? DateTime.now()));
-    emit((SortAttendanceState()));
   }
   void sortQuizzes(){
     quizzes.sort((a, b) => (b.number??-1).compareTo(a.number??-1));

@@ -1,3 +1,4 @@
+import 'package:fathers_prophets/presentation/cubit/local/cubit/local_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -44,6 +45,12 @@ class AttendanceItem extends StatelessWidget {
                       child: Text(attendanceList[parentIndex].dateView??"",style: textTheme.titleMedium,),
                       onTap: () async{
                         var attendance = await context.pushNamed(AppRoutes.attendanceDetails.name,extra: attendanceList[parentIndex]);
+                        if (!context.mounted) return;
+                        if(attendance == true){
+                          cubit.attendance.removeWhere((element) => element.id == attendanceList[parentIndex].id,);
+                          cubit.sortAttendance(context.read<LocaleCubit>().lang);
+                          return;
+                        }
                         if(attendance == null) {
                           return ;
                         } else{

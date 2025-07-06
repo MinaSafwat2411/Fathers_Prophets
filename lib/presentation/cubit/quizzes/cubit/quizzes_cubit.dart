@@ -244,6 +244,7 @@ class QuizzesCubit extends Cubit<QuizzesStates> {
       await quizzesScoreUseCase.updateQuizzesScore(userData.uid??"", QuizzesScoreModel(
         score: score,
         quizzes: [quiz.docId??""],
+        name: userData.name
       ));
       emit(OnSubmit());
     } catch (e) {

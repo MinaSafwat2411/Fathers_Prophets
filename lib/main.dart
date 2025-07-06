@@ -1,3 +1,5 @@
+import 'package:fathers_prophets/data/models/quizzes_score/quizzes_score_model.dart';
+import 'package:fathers_prophets/data/services/read_from_json.dart';
 import 'package:fathers_prophets/presentation/cubit/add_attendance/cubit/add_attendance_cubit.dart';
 import 'package:fathers_prophets/presentation/cubit/add_member/cubit/add_member_cubit.dart';
 import 'package:fathers_prophets/presentation/cubit/attendance/cubit/attendance_cubit.dart';
@@ -12,6 +14,7 @@ import 'package:fathers_prophets/presentation/cubit/login/cubit/login_cubit.dart
 import 'package:fathers_prophets/presentation/cubit/onboarding/cubit/onboarding_cubit.dart';
 import 'package:fathers_prophets/presentation/cubit/pin/cubit/pin_cubit.dart';
 import 'package:fathers_prophets/presentation/cubit/profile/cubit/profile_cubit.dart';
+import 'package:fathers_prophets/presentation/cubit/quiz_table/cubit/quiz_table_cubit.dart';
 import 'package:fathers_prophets/presentation/cubit/quizzes/cubit/quizzes_cubit.dart';
 import 'package:fathers_prophets/presentation/cubit/register/cubit/register_cubit.dart';
 import 'package:fathers_prophets/presentation/cubit/review_user/cubit/review_user_cubit.dart';
@@ -24,10 +27,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'core/localization/app_localizations.dart';
 import 'core/utils/app_themes.dart';
+import 'data/repositories/quizzes_score/quizzes_score_repository.dart';
 import 'data/services/bloc_observer.dart';
 import 'data/services/cache_helper.dart';
 import 'data/services/notification_services.dart';
 import 'data/firebase/firebase_options.dart';
+import 'domain/usecases/quizzes_score/quizzes_score_use_case.dart';
 
 
 
@@ -37,6 +42,15 @@ void main() async {
   await CacheHelper.init();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await NotificationService.init();
+  final QuizzesScoreUseCase quizzesScoreUseCase = QuizzesScoreUseCase(QuizzesScoreRepository());
+  for(var item in await ReadFromJson().getMembersJsonData()){
+    quizzesScoreUseCase.updateQuizzesScore(item.uid??"", QuizzesScoreModel(
+      quizzes: [],
+      score: 0,
+      name: item.name
+    ));
+  }
+
   if (kDebugMode) Bloc.observer = MyBlocObserver();
   bool isDark = await CacheHelper.getData(key: 'isDark') ?? false;
   String lang = await CacheHelper.getData(key: 'lang') ?? 'en';
@@ -72,7 +86,8 @@ class MyApp extends StatelessWidget {
           BlocProvider(create: (context) => ForgotPasswordCubit(),),
           BlocProvider(create: (context) => AddMemberCubit(),),
           BlocProvider(create: (context) => ReviewUserCubit(),),
-          BlocProvider(create: (context) => PinCubit(),)
+          BlocProvider(create: (context) => PinCubit(),),
+          BlocProvider(create: (context) => QuizTableCubit()..getAllQuizzesScore(),)
         ],
         child: BlocConsumer<LocaleCubit, LocaleStates>(
           builder: (context, state) => MaterialApp.router(

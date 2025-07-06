@@ -5,7 +5,7 @@ import '../../../../data/models/users/users_model.dart';
 import '../../../../data/repositories/attendance/attendance_repository.dart';
 import '../../../../domain/usecases/attendance/attendance_use_case.dart';
 
-class AttendanceCubit extends Cubit<AttendanceStates>{
+class AttendanceCubit extends Cubit<AttendanceStates> {
   AttendanceCubit() : super(InitialState());
 
   var isUpdate = true;
@@ -17,26 +17,37 @@ class AttendanceCubit extends Cubit<AttendanceStates>{
 
   static AttendanceCubit get(context) => BlocProvider.of(context);
 
-  void onRest(){
+  void onRest() {
     isUpdate = false;
     attendance = AttendanceModel();
     selectedDate = null;
     emit(OnRest());
   }
-  void onUpdateItem(){
+
+  void onUpdateItem() {
     isUpdate = true;
     emit(OnUpdateAttendance());
   }
 
-  void onSave(AttendanceModel attendance)async{
-    try{
+  void onSave(AttendanceModel attendance) async {
+    try {
       emit(OnLoading());
       await useCase.updateAttendance(attendance);
       emit(OnSuccess());
-    }catch(e){
+    } catch (e) {
       emit(OnError(e.toString()));
     }
     isUpdate = false;
     emit(OnUpdateAttendance());
+  }
+
+  void onDelete(AttendanceModel attendance) async {
+    try {
+      emit(OnLoading());
+      await useCase.deleteAttendance(attendance.id ?? "");
+      emit(OnDeleteAttendanceItem());
+    } catch (e) {
+      emit(OnError(e.toString()));
+    }
   }
 }
