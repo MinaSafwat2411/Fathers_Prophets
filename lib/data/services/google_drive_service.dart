@@ -177,31 +177,6 @@ class GoogleDriveUploader {
     );
   }
 
-  Future<void> uploadInitialUsersFile() async {
-    final authClient = await _getAuthClient();
-    if (authClient == null) return;
-
-    final driveApi = drive.DriveApi(authClient);
-
-    final content = await rootBundle.loadString('assets/users/admins.json');
-    final fileBytes = utf8.encode(content);
-    final media = drive.Media(Stream.value(fileBytes), fileBytes.length);
-
-    final driveFile = drive.File()
-      ..name = 'admins.json'
-      ..parents = [folderId]; // your shared folder ID
-
-    final uploadedFile = await driveApi.files.create(driveFile, uploadMedia: media);
-
-    // Make it public (optional)
-    await driveApi.permissions.create(
-      drive.Permission(type: "anyone", role: "reader"),
-      uploadedFile.id!,
-    );
-
-    print("✅ File uploaded with ID: ${uploadedFile.id}");
-  }
-
   Future<void> updateUserInJsonFile(String fileId, UserModel updatedUser) async {
     final authClient = await _getAuthClient();
     if (authClient == null) return;
@@ -223,7 +198,7 @@ class GoogleDriveUploader {
     if (index != -1) {
       jsonList[index] = updatedUser.toJson();
     } else {
-      print("❌ User with uid '${updatedUser.uid}' not found.");
+      await addUserToJsonFile(fileId, updatedUser);
       return;
     }
 
@@ -239,5 +214,45 @@ class GoogleDriveUploader {
     );
 
     print("✅ User '${updatedUser.uid}' updated successfully.");
+  }
+
+  Future<void> deleteUserFromJsonFile(String fileId, String uidToDelete) async {
+    final authClient = await _getAuthClient();
+    if (authClient == null) return;
+
+    final driveApi = drive.DriveApi(authClient);
+
+    // Step 1: Download existing JSON file
+    final media = await driveApi.files.get(
+      fileId,
+      downloadOptions: drive.DownloadOptions.fullMedia,
+      supportsAllDrives: true,
+    ) as drive.Media;
+
+    final content = await media.stream.transform(utf8.decoder).join();
+    final List<dynamic> jsonList = json.decode(content);
+
+    // Step 2: Remove user by uid
+    final initialLength = jsonList.length;
+    jsonList.removeWhere((user) => user['uid'] == uidToDelete);
+
+    // Step 3: If no user was removed, exit
+    if (jsonList.length == initialLength) {
+      print("❌ No user with uid '$uidToDelete' found.");
+      return;
+    }
+
+    // Step 4: Upload updated JSON file
+    final updatedJsonString = json.encode(jsonList);
+    final List<int> bytes = utf8.encode(updatedJsonString);
+    final mediaUpload = drive.Media(Stream.fromIterable([bytes]), bytes.length);
+
+    await driveApi.files.update(
+      drive.File(),
+      fileId,
+      uploadMedia: mediaUpload,
+    );
+
+    print("🗑️ User with uid '$uidToDelete' deleted successfully.");
   }
 }

@@ -114,6 +114,53 @@ class LoginCubit extends Cubit<LoginStates>  {
           ];
           await CacheHelper.saveClasses(classList);
           if((userData.isReviewed??false)) {
+            await CacheHelper.removeMembers();
+            await CacheHelper.removeMembersByClassId(classList[0].docId);
+            await CacheHelper.removeMembersByClassId(classList[1].docId);
+            await CacheHelper.removeMembersByClassId(classList[2].docId);
+            await CacheHelper.removeMembersByClassId(classList[3].docId);
+            await CacheHelper.removeMembersByClassId(classList[4].docId);
+            await CacheHelper.removeMembersByClassId(classList[5].docId);
+            await CacheHelper.removeMembersByClassId(classList[6].docId);
+            await CacheHelper.removeMembersByClassId(classList[7].docId);
+            await CacheHelper.removeServants();
+            await CacheHelper.removeServantsByClassId(classList[0].docId);
+            await CacheHelper.removeServantsByClassId(classList[1].docId);
+            await CacheHelper.removeServantsByClassId(classList[2].docId);
+            await CacheHelper.removeServantsByClassId(classList[3].docId);
+            await CacheHelper.removeServantsByClassId(classList[4].docId);
+            await CacheHelper.removeServantsByClassId(classList[5].docId);
+            await CacheHelper.removeServantsByClassId(classList[6].docId);
+            await CacheHelper.removeServantsByClassId(classList[7].docId);
+            await CacheHelper.removeAdmins();
+            if(userData.isAdmin??false){
+              memberList = (await uploader.getUsersFromFileById("13_UaD9tG4Gdo59f_WRHooGnNTzc55YmF"));
+              servantList = (await uploader.getUsersFromFileById("1ZRKteCLH4oh2LRhqCmh3Sz7ZdCfSpFIm"));
+              adminList = (await uploader.getUsersFromFileById("1e8uAyL3twahG6B-odWAxjpAo4VmAYDEc"));
+            }
+            if(servantList.isNotEmpty) {
+              await CacheHelper.saveServants(servantList);
+              await CacheHelper.saveServantsByClassId(servantList.where((element) => element?.classId == classList[0].docId).toList(), classList[0].docId);
+              await CacheHelper.saveServantsByClassId(servantList.where((element) => element?.classId == classList[1].docId).toList(), classList[1].docId);
+              await CacheHelper.saveServantsByClassId(servantList.where((element) => element?.classId == classList[2].docId).toList(), classList[2].docId);
+              await CacheHelper.saveServantsByClassId(servantList.where((element) => element?.classId == classList[3].docId).toList(), classList[3].docId);
+              await CacheHelper.saveServantsByClassId(servantList.where((element) => element?.classId == classList[4].docId).toList(), classList[4].docId);
+              await CacheHelper.saveServantsByClassId(servantList.where((element) => element?.classId == classList[5].docId).toList(), classList[5].docId);
+              await CacheHelper.saveServantsByClassId(servantList.where((element) => element?.classId == classList[6].docId).toList(), classList[6].docId);
+              await CacheHelper.saveServantsByClassId(servantList.where((element) => element?.classId == classList[7].docId).toList(), classList[7].docId);
+            }
+            if (memberList.isNotEmpty) {
+              await CacheHelper.saveMembers(memberList);
+              await CacheHelper.saveMembersByClassId(memberList.where((element) => element.classId == classList[0].docId).toList(), classList[0].docId);
+              await CacheHelper.saveMembersByClassId(memberList.where((element) => element.classId == classList[1].docId).toList(), classList[1].docId);
+              await CacheHelper.saveMembersByClassId(memberList.where((element) => element.classId == classList[2].docId).toList(), classList[2].docId);
+              await CacheHelper.saveMembersByClassId(memberList.where((element) => element.classId == classList[3].docId).toList(), classList[3].docId);
+              await CacheHelper.saveMembersByClassId(memberList.where((element) => element.classId == classList[4].docId).toList(), classList[4].docId);
+              await CacheHelper.saveMembersByClassId(memberList.where((element) => element.classId == classList[5].docId).toList(), classList[5].docId);
+              await CacheHelper.saveMembersByClassId(memberList.where((element) => element.classId == classList[6].docId).toList(), classList[6].docId);
+              await CacheHelper.saveMembersByClassId(memberList.where((element) => element.classId == classList[7].docId).toList(), classList[7].docId);
+            }
+            if(adminList.isNotEmpty) await CacheHelper.saveAdmins(adminList);
             await getAllFirebaseDate();
             Future.delayed(Duration(seconds: 1),() => emit(LoginSuccessState()),);
           }else{
@@ -128,15 +175,6 @@ class LoginCubit extends Cubit<LoginStates>  {
   }
   Future<void> getAllFirebaseDate()async{
     try{
-      await CacheHelper.removeMembers();
-      await CacheHelper.removeMembersByClassId(classList[0].docId);
-      await CacheHelper.removeMembersByClassId(classList[1].docId);
-      await CacheHelper.removeMembersByClassId(classList[2].docId);
-      await CacheHelper.removeMembersByClassId(classList[3].docId);
-      await CacheHelper.removeMembersByClassId(classList[4].docId);
-      await CacheHelper.removeMembersByClassId(classList[5].docId);
-      await CacheHelper.removeMembersByClassId(classList[6].docId);
-      await CacheHelper.removeMembersByClassId(classList[7].docId);
       await CacheHelper.removeQuizzes();
       await CacheHelper.removeEvents('bible');
       await CacheHelper.removeEvents('football');
@@ -150,21 +188,6 @@ class LoginCubit extends Cubit<LoginStates>  {
       await CacheHelper.removeEvents('chess');
       await CacheHelper.removeEvents('pray');
       await CacheHelper.removeEvents('praise');
-      await CacheHelper.removeServants();
-      await CacheHelper.removeServantsByClassId(classList[0].docId);
-      await CacheHelper.removeServantsByClassId(classList[1].docId);
-      await CacheHelper.removeServantsByClassId(classList[2].docId);
-      await CacheHelper.removeServantsByClassId(classList[3].docId);
-      await CacheHelper.removeServantsByClassId(classList[4].docId);
-      await CacheHelper.removeServantsByClassId(classList[5].docId);
-      await CacheHelper.removeServantsByClassId(classList[6].docId);
-      await CacheHelper.removeServantsByClassId(classList[7].docId);
-      await CacheHelper.removeAdmins();
-      if(userData.isAdmin??false){
-        memberList = (await uploader.getUsersFromFileById("13_UaD9tG4Gdo59f_WRHooGnNTzc55YmF"));
-        servantList = (await uploader.getUsersFromFileById("1ZRKteCLH4oh2LRhqCmh3Sz7ZdCfSpFIm"));
-        adminList = (await uploader.getUsersFromFileById("1e8uAyL3twahG6B-odWAxjpAo4VmAYDEc"));
-      }
       switch(userData.role){
         case 'admin':
           footballEvents = (await eventsUseCase.getFootballEvents());
@@ -214,31 +237,6 @@ class LoginCubit extends Cubit<LoginStates>  {
       await usersUseCase.updateUser(userData.copyWith(
           isAnyUpdate: false
       ));
-      if(userData.isAdmin??false){
-        if(servantList.isNotEmpty) {
-          await CacheHelper.saveServants(servantList);
-          await CacheHelper.saveServantsByClassId(servantList.where((element) => element?.classId == classList[0].docId).toList(), classList[0].docId);
-          await CacheHelper.saveServantsByClassId(servantList.where((element) => element?.classId == classList[1].docId).toList(), classList[1].docId);
-          await CacheHelper.saveServantsByClassId(servantList.where((element) => element?.classId == classList[2].docId).toList(), classList[2].docId);
-          await CacheHelper.saveServantsByClassId(servantList.where((element) => element?.classId == classList[3].docId).toList(), classList[3].docId);
-          await CacheHelper.saveServantsByClassId(servantList.where((element) => element?.classId == classList[4].docId).toList(), classList[4].docId);
-          await CacheHelper.saveServantsByClassId(servantList.where((element) => element?.classId == classList[5].docId).toList(), classList[5].docId);
-          await CacheHelper.saveServantsByClassId(servantList.where((element) => element?.classId == classList[6].docId).toList(), classList[6].docId);
-          await CacheHelper.saveServantsByClassId(servantList.where((element) => element?.classId == classList[7].docId).toList(), classList[7].docId);
-        }
-        if (memberList.isNotEmpty) {
-          await CacheHelper.saveMembers(memberList);
-          await CacheHelper.saveMembersByClassId(memberList.where((element) => element.classId == classList[0].docId).toList(), classList[0].docId);
-          await CacheHelper.saveMembersByClassId(memberList.where((element) => element.classId == classList[1].docId).toList(), classList[1].docId);
-          await CacheHelper.saveMembersByClassId(memberList.where((element) => element.classId == classList[2].docId).toList(), classList[2].docId);
-          await CacheHelper.saveMembersByClassId(memberList.where((element) => element.classId == classList[3].docId).toList(), classList[3].docId);
-          await CacheHelper.saveMembersByClassId(memberList.where((element) => element.classId == classList[4].docId).toList(), classList[4].docId);
-          await CacheHelper.saveMembersByClassId(memberList.where((element) => element.classId == classList[5].docId).toList(), classList[5].docId);
-          await CacheHelper.saveMembersByClassId(memberList.where((element) => element.classId == classList[6].docId).toList(), classList[6].docId);
-          await CacheHelper.saveMembersByClassId(memberList.where((element) => element.classId == classList[7].docId).toList(), classList[7].docId);
-        }
-        if(adminList.isNotEmpty) await CacheHelper.saveAdmins(adminList);
-      }
       if(quizzesList.isNotEmpty) await CacheHelper.saveQuizzes(quizzesList);
       if(bibleEvents.isNotEmpty) await CacheHelper.saveEvents(bibleEvents, 'bible');
       if(footballEvents.isNotEmpty) await CacheHelper.saveEvents(footballEvents, 'football');

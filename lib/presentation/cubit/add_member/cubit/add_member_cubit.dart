@@ -24,9 +24,8 @@ class AddMemberCubit extends Cubit<AddMemberStates>{
     try{
       member = member.copyWith(name: nameController.text,classId: classId,isReviewed: true);
       var result = await usersUseCase.addNewMemberByDocId(member);
-      await uploader.addUserToJsonFile("13_UaD9tG4Gdo59f_WRHooGnNTzc55YmF", member.copyWith(uid: result ??""));
-      nameController.clear();
-      classId = "";
+      member = member.copyWith(uid: result ??"");
+      await uploader.addUserToJsonFile("13_UaD9tG4Gdo59f_WRHooGnNTzc55YmF", member);
       var members = CacheHelper.getMembersByClassId(classId);
       members.add(member);
       members.sort((a, b) => (a.name??"").compareTo(b.name??""));
@@ -35,6 +34,9 @@ class AddMemberCubit extends Cubit<AddMemberStates>{
       members.add(member);
       members.sort((a, b) => (a.name??"").compareTo(b.name??""));
       CacheHelper.saveMembers(members);
+      nameController.clear();
+      classId = "";
+      await usersUseCase.updateApplyToAll(CacheHelper.getAdmins());
       emit(OnSuccess());
     }catch(e){
       emit(OnError(e.toString()));

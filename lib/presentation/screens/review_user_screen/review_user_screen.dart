@@ -32,6 +32,9 @@ class ReviewUserScreen extends StatelessWidget {
             leading: IconButton(onPressed: () {
               context.pop();
             }, icon: Icon(Icons.arrow_back_ios_new_outlined)),
+            actions: [
+              IconButton(onPressed: () => cubit.onDelete(), icon: Icon(Icons.delete_outline))
+            ],
           ),
           body: Stack(
             alignment:  Alignment.center,
@@ -201,6 +204,9 @@ class ReviewUserScreen extends StatelessWidget {
         listener: (context, state) {
           if(state is OnSuccessState){
             context.pop(cubit.user);
+          }
+          if(state is OnDeleteUser){
+            context.pop(true);
           }
           if(state is OnErrorState){
             showCustomSnackBar(context, state.error,color: AppColors.red, icon:Icons.error_outline);

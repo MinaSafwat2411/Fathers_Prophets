@@ -193,7 +193,7 @@ class DashboardScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(50),
               ),
               onPressed: (){
-                context.pushNamed(AppRoutes.addMember.name);
+                context.pushNamed(AppRoutes.pin.name,extra: AppRoutes.addMember.name);
               },
               child: const Icon(Icons.add),
             ),

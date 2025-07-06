@@ -12,6 +12,7 @@ import 'package:fathers_prophets/presentation/screens/forgot_password_screen/for
 import 'package:fathers_prophets/presentation/screens/layout_screen/layout_screen.dart';
 import 'package:fathers_prophets/presentation/screens/login_screen/login_screen.dart';
 import 'package:fathers_prophets/presentation/screens/onboarding_screen/onboarding_screen.dart';
+import 'package:fathers_prophets/presentation/screens/pin_screen/pin_screen.dart';
 import 'package:fathers_prophets/presentation/screens/profile_screen/profile_screen.dart';
 import 'package:fathers_prophets/presentation/screens/quizzes_details_screen/quizzes_details_screen.dart';
 import 'package:fathers_prophets/presentation/screens/quizzes_score_table_screen/quizzes_score_table_screen.dart';
@@ -56,7 +57,8 @@ enum AppRoutes {
   review,
   quizzesScoreTable,
   addMember,
-  reviewUser
+  reviewUser,
+  pin
 }
 
 final GoRouter router = GoRouter(
@@ -241,6 +243,13 @@ final GoRouter router = GoRouter(
         user: state.extra as UserModel,
       ),
     ),
+    GoRoute(
+      path: AppRoutePaths.pin,
+      name: AppRoutes.pin.name,
+      builder: (context, state) => PinScreen(
+        nextScreen: state.extra as String,
+      ),
+    ),
   ],
 );
 
@@ -274,4 +283,5 @@ abstract class AppRoutePaths {
   static const String quizzesScoreTable = '/quizzes_score_table';
   static const String addMember = '/add_member';
   static const String reviewUser = '/review_user';
+  static const String pin = '/pin';
 }

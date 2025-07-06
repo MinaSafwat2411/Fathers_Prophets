@@ -26,15 +26,32 @@ class ReviewUserCubit extends Cubit<ReviewUserStates>{
       user = user.copyWith(name: nameController.text,role: role.text);
       await usersUseCase.updateUser(user);
       if(user.isReviewed??false){
-        await uploader.updateUserInJsonFile("13_UaD9tG4Gdo59f_WRHooGnNTzc55YmF",user);
-        var members = CacheHelper.getMembersByClassId(user.classId??"");
-        members.add(user);
-        members.sort((a, b) => a.name!.compareTo(b.name!));
-        await CacheHelper.saveMembersByClassId(members, user.classId??"");
-        members = CacheHelper.getMembers();
-        members.add(user);
-        members.sort((a, b) => a.name!.compareTo(b.name!));
-        await CacheHelper.saveMembers(members);
+        if(user.isTeacher??false){
+          await uploader.updateUserInJsonFile("1ZRKteCLH4oh2LRhqCmh3Sz7ZdCfSpFIm",user);
+          var servants = CacheHelper.getServantsByClassId(user.classId??"");
+          servants.add(user);
+          servants.sort((a, b) => a.name!.compareTo(b.name!));
+          if(user.isAdmin??false){
+            await uploader.updateUserInJsonFile("1e8uAyL3twahG6B-odWAxjpAo4VmAYDEc",user);
+            var admins = CacheHelper.getAdmins();
+            admins.add(user);
+            admins.sort((a, b) => a.name!.compareTo(b.name!));
+            await CacheHelper.saveAdmins(admins);
+          }else{
+            await uploader.deleteUserFromJsonFile("1e8uAyL3twahG6B-odWAxjpAo4VmAYDEc",user.uid??"");
+          }
+        }else{
+          await uploader.deleteUserFromJsonFile("1ZRKteCLH4oh2LRhqCmh3Sz7ZdCfSpFIm",user.uid??"");
+          await uploader.updateUserInJsonFile("13_UaD9tG4Gdo59f_WRHooGnNTzc55YmF",user);
+          var members = CacheHelper.getMembersByClassId(user.classId??"");
+          members.add(user);
+          members.sort((a, b) => a.name!.compareTo(b.name!));
+          await CacheHelper.saveMembersByClassId(members, user.classId??"");
+          members = CacheHelper.getMembers();
+          members.add(user);
+          members.sort((a, b) => a.name!.compareTo(b.name!));
+          await CacheHelper.saveMembers(members);
+        }
       }
       emit(OnSuccessState());
     }catch(e) {
@@ -59,5 +76,31 @@ class ReviewUserCubit extends Cubit<ReviewUserStates>{
   void onClassSelected(String value){
     user = user.copyWith(classId: value);
     emit(OnClassSelectedState());
+  }
+
+  void onDelete()async{
+    emit(OnLoadingState());
+    try{
+      await usersUseCase.deleteMember(user.uid??"");
+      if(user.isTeacher??false) await uploader.deleteUserFromJsonFile("1ZRKteCLH4oh2LRhqCmh3Sz7ZdCfSpFIm",user.uid??"");
+      if(user.isAdmin??false) await uploader.deleteUserFromJsonFile("1e8uAyL3twahG6B-odWAxjpAo4VmAYDEc",user.uid??"");
+      if(user.isReviewed??false) await uploader.deleteUserFromJsonFile("13_UaD9tG4Gdo59f_WRHooGnNTzc55YmF",user.uid??"");
+      var members = CacheHelper.getMembers();
+      members.removeWhere((element) => element.uid == user.uid);
+      await CacheHelper.saveMembers(members);
+      var servants = CacheHelper.getServantsByClassId(user.classId??"");
+      servants.removeWhere((element) => element.uid == user.uid);
+      await CacheHelper.saveServantsByClassId(servants, user.classId??"");
+      var admins = CacheHelper.getAdmins();
+      admins.removeWhere((element) => element.uid == user.uid);
+      await CacheHelper.saveAdmins(admins);
+      members = CacheHelper.getMembersByClassId(user.classId??"");
+      members.removeWhere((element) => element.uid == user.uid);
+      await CacheHelper.saveMembersByClassId(members, user.classId??"");
+      emit(OnDeleteUser());
+    }catch(e){
+      emit(OnErrorState(e.toString()));
+    }
+
   }
 }

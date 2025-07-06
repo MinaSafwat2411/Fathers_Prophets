@@ -10,6 +10,7 @@ import 'package:fathers_prophets/presentation/cubit/local/cubit/local_cubit.dart
 import 'package:fathers_prophets/presentation/cubit/local/states/local_states.dart';
 import 'package:fathers_prophets/presentation/cubit/login/cubit/login_cubit.dart';
 import 'package:fathers_prophets/presentation/cubit/onboarding/cubit/onboarding_cubit.dart';
+import 'package:fathers_prophets/presentation/cubit/pin/cubit/pin_cubit.dart';
 import 'package:fathers_prophets/presentation/cubit/profile/cubit/profile_cubit.dart';
 import 'package:fathers_prophets/presentation/cubit/quizzes/cubit/quizzes_cubit.dart';
 import 'package:fathers_prophets/presentation/cubit/register/cubit/register_cubit.dart';
@@ -70,7 +71,8 @@ class MyApp extends StatelessWidget {
           BlocProvider(create: (context) => DashboardCubit()..getAllData()),
           BlocProvider(create: (context) => ForgotPasswordCubit(),),
           BlocProvider(create: (context) => AddMemberCubit(),),
-          BlocProvider(create: (context) => ReviewUserCubit(),)
+          BlocProvider(create: (context) => ReviewUserCubit(),),
+          BlocProvider(create: (context) => PinCubit(),)
         ],
         child: BlocConsumer<LocaleCubit, LocaleStates>(
           builder: (context, state) => MaterialApp.router(

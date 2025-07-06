@@ -79,10 +79,23 @@ class UserDetailsScreen extends StatelessWidget {
               ),
               actions: [
                 TextButton(onPressed: () async{
-                  var result  = await context.pushNamed(AppRoutes.reviewUser.name,extra: cubit.user);
-                  if(result!=null){
-                    cubit.user = result as UserModel;
-                    cubit.getAttendance(cubit.user.uid ?? "");
+                  final pinResult = await context.pushNamed(
+                    AppRoutes.pin.name,
+                    extra: AppRoutes.reviewUser.name,
+                  );
+                  if (pinResult == true) {
+                    var result = await context.pushNamed(
+                      AppRoutes.reviewUser.name,
+                      extra: cubit.user,
+                    );
+                    if(result == true){
+                      context.pop(true);
+                      return;
+                    }
+                    if (result != null) {
+                      cubit.user = result as UserModel;
+                      cubit.getAttendance(cubit.user.uid ?? "");
+                    }
                   }
                 }, child: Text(localize.translate('edit'),style: textTheme.titleMedium,))
               ],

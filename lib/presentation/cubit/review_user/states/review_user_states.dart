@@ -14,3 +14,6 @@ class OnErrorState extends ReviewUserStates{
 class OnReviewState extends ReviewUserStates{}
 
 class OnClassSelectedState extends ReviewUserStates{}
+
+class OnDeleteUser extends ReviewUserStates{}
+
