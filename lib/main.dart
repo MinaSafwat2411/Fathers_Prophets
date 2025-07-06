@@ -42,15 +42,6 @@ void main() async {
   await CacheHelper.init();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await NotificationService.init();
-  final QuizzesScoreUseCase quizzesScoreUseCase = QuizzesScoreUseCase(QuizzesScoreRepository());
-  for(var item in await ReadFromJson().getMembersJsonData()){
-    quizzesScoreUseCase.updateQuizzesScore(item.uid??"", QuizzesScoreModel(
-      quizzes: [],
-      score: 0,
-      name: item.name
-    ));
-  }
-
   if (kDebugMode) Bloc.observer = MyBlocObserver();
   bool isDark = await CacheHelper.getData(key: 'isDark') ?? false;
   String lang = await CacheHelper.getData(key: 'lang') ?? 'en';
