@@ -13,8 +13,8 @@ class EventShimmerItem extends StatelessWidget {
       baseColor: isDark? AppColors.riverBed:AppColors.gray,
       highlightColor: AppColors.white,
       child: Container(
-        height: 200,
-        width: double.infinity,
+        height: 100,
+        width: 100,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
           color: AppColors.gray20,

@@ -22,6 +22,7 @@ class EventDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     var textTheme = Theme.of(context).textTheme;
     final localize = AppLocalizations.of(context);
+    var cubit = LayoutCubit.get(context);
     return WillPopScope(
       onWillPop: () {
         context.read<LayoutCubit>().getAllData();
@@ -104,7 +105,7 @@ class EventDetails extends StatelessWidget {
                                           Padding(
                                             padding: const EdgeInsets.all(8.0),
                                             child: Text(
-                                              events[index].title ?? '',
+                                              "${events[index].title ?? ''} ${cubit.formatDateEvent(events[index].dateTime ?? DateTime.now(), context.read<LocaleCubit>().lang)}",
                                               style: textTheme.titleSmall,
                                             ),
                                           ),

@@ -113,7 +113,7 @@ class EventSearch extends StatelessWidget {
                       color: AppColors.gray90.withOpacity(0.7),
                       padding: const EdgeInsets.all(8),
                       child: Text(
-                        events[index].title ?? '',
+                        "${events[index].title ?? ''} ${cubit.formatDateEvent(events[index].dateTime ?? DateTime.now(), context.read<LocaleCubit>().lang)}",
                         style: textTheme.titleSmall?.copyWith(color: AppColors.white),
                         textAlign: TextAlign.center,
                       ),

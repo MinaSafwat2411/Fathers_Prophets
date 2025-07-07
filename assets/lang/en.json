@@ -131,5 +131,8 @@
   "reviewed": "Reviewed",
   "admin": "Admin",
   "teacher": "Teacher",
-  "no_member_done_quiz": "No Member Done Quiz"
+  "no_member_done_quiz": "No Member Done Quiz",
+  "no_member_attended": "No Member Attended",
+  "event_attendance": "Event Attendance",
+  "coming_events": "Coming Events"
 }

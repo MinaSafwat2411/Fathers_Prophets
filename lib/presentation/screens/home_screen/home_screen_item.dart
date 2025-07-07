@@ -12,6 +12,7 @@ import '../../routes.dart';
 
 class HomeScreenItem extends StatelessWidget {
   const HomeScreenItem({super.key, required this.events, required this.title});
+
   final List<EventsModel> events;
   final String title;
 
@@ -20,69 +21,77 @@ class HomeScreenItem extends StatelessWidget {
     var textTheme = Theme.of(context).textTheme;
     final localize = AppLocalizations.of(context);
     var cubit = LayoutCubit.get(context);
-    return events.isNotEmpty ? Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        GestureDetector(
-          onTap: () {
-            context.pushNamed(AppRoutes.eventDetails.name,
-                extra: {
-                  'items': events,
-                  'title': title,
-                });
-          },
-          child: Padding(
-            padding: const EdgeInsets.all(4.0),
-            child: Text(localize.translate(title), style: textTheme.titleLarge),
-          ),
-        ),
-        SizedBox(
-          height: 230,
-          child: ListView.separated(
-            shrinkWrap: true,
-            scrollDirection: Axis.horizontal,
-            itemBuilder:
-                (context, index) => GestureDetector(
-                  onTap: () async{
-                    var result = await context.pushNamed(AppRoutes.addEventAttendance.name,
-                        extra: {
-                          'item': events[index],
-                          'title': title,
-                        });
-                    if(result != null){
-                      cubit.getAllData();
-                    }
-                  },
-                  child: Card(
-                                child: Column(
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: CachedNetworkImage(
-                        height: 180,
-                        width: 230,
-                        fit: BoxFit.fill,
-                        imageUrl: events[index].image ?? '',
-                        placeholder:
-                            (context, url) => EventShimmerItem(
-                          isDark: context.read<LocaleCubit>().isDark,
-                        ),
-                        errorWidget:
-                            (context, url, error) => EventShimmerItem(
-                          isDark: context.read<LocaleCubit>().isDark,
+    return events.isNotEmpty
+        ? Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            GestureDetector(
+              onTap: () {
+                context.pushNamed(
+                  AppRoutes.eventDetails.name,
+                  extra: {'items': events, 'title': title},
+                );
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: Text(
+                  localize.translate(title),
+                  style: textTheme.titleLarge,
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 230,
+              child: ListView.separated(
+                shrinkWrap: true,
+                scrollDirection: Axis.horizontal,
+                itemBuilder:
+                    (context, index) => GestureDetector(
+                      onTap: () async {
+                        var result = await context.pushNamed(
+                          AppRoutes.addEventAttendance.name,
+                          extra: {'item': events[index], 'title': title},
+                        );
+                        if (result != null) {
+                          cubit.getAllData();
+                        }
+                      },
+                      child: Card(
+                        child: Column(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: CachedNetworkImage(
+                                height: 180,
+                                width: 230,
+                                fit: BoxFit.fill,
+                                imageUrl: events[index].image ?? '',
+                                placeholder:
+                                    (context, url) => EventShimmerItem(
+                                      isDark:
+                                          context.read<LocaleCubit>().isDark,
+                                    ),
+                                errorWidget:
+                                    (context, url, error) => EventShimmerItem(
+                                      isDark:
+                                          context.read<LocaleCubit>().isDark,
+                                    ),
+                              ),
+                            ),
+                            SizedBox(height: 4),
+                            Text(
+                              "${events[index].title ?? ""} ${cubit.formatDateEvent(events[index].dateTime ?? DateTime.now(), context.read<LocaleCubit>().lang)}",
+                            ),
+                          ],
                         ),
                       ),
                     ),
-                    Text(events[index].title ?? ""),
-                  ],
-                                ),
-                              ),
-                ),
-            separatorBuilder: (context, index) => SizedBox(),
-            itemCount: events.length > 3 ? 3 : events.length,
-          ),
-        ),
-      ],
-    ) :SizedBox();
+                separatorBuilder: (context, index) => SizedBox(),
+                itemCount: events.length > 3 ? 3 : events.length,
+              ),
+            ),
+          ],
+        )
+        : SizedBox();
   }
 }

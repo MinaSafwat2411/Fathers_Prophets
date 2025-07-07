@@ -1,4 +1,5 @@
 import 'package:fathers_prophets/core/utils/app_colors.dart';
+import 'package:fathers_prophets/core/widgets/custom_loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -17,11 +18,17 @@ class SplashScreen extends StatelessWidget {
     return BlocConsumer<SplashCubit, SplashStates>(
       builder: (context, state) =>  Scaffold(
         body: Center(
-          child: Image(
-            image:context.read<LocaleCubit>().isDark? AssetImage('assets/images/logo_dark.png') : AssetImage('assets/images/logo_light.png'),
-            height: 250,
-            width: 250,
-            fit: BoxFit.fill,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Image(
+                image:context.read<LocaleCubit>().isDark? AssetImage('assets/images/logo_dark.png') : AssetImage('assets/images/logo_light.png'),
+                height: 250,
+                width: 250,
+                fit: BoxFit.fill,
+              ),
+              if(state is OnLoading) CustomLoading(isDark: context.read<LocaleCubit>().isDark)
+            ],
           ),
         ),
       ),

@@ -131,5 +131,8 @@
   "reviewed": "تمت المراجعة",
   "admin": "مشرف",
   "teacher": "خادم",
-  "no_member_done_quiz": "لا يوجد مخدوم أكمل مسابقة"
+  "no_member_done_quiz": "لا يوجد مخدوم أكمل مسابقة",
+  "no_member_attended": "لم يحضر أي مخدوم",
+  "event_attendance": "حضور المخدومين",
+  "coming_events": "الفعاليات القادمة"
 }

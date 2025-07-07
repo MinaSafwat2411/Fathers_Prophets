@@ -103,89 +103,95 @@ class EventsCubit extends Cubit<EventsStates> {
       switch (selectedEvent) {
         case EventEnum.BIBLE:
           {
-            String id = await eventsUseCase.addNewBibleEvent(
-              event.copyWith(name: "كتاب مقدس"),
-            );
+            event = event.copyWith(name: "كتاب مقدس");
+            String id = await eventsUseCase.addNewBibleEvent(event);
             var events = CacheHelper.getEvents('bible');
             events.add(event.copyWith(docId: id));
             await CacheHelper.saveEvents(events, 'bible');
           }
         case EventEnum.DOCTRINE:
           {
-            String id = await eventsUseCase.addNewDoctrineEvent(event.copyWith(name: "عقيدة"));
+            event = event.copyWith(name: "عقيدة");
+            String id = await eventsUseCase.addNewDoctrineEvent(event);
             var events = CacheHelper.getEvents('doctrine');
             events.add(event.copyWith(docId: id));
             await CacheHelper.saveEvents(events, 'doctrine');
           }
         case EventEnum.COPTIC:
           {
-            String id = await eventsUseCase.addNewCopticEvent(event.copyWith(name: "قبطي"));
+            event = event.copyWith(name: "قبطي");
+            String id = await eventsUseCase.addNewCopticEvent(event);
             var events = CacheHelper.getEvents('coptic');
             events.add(event.copyWith(docId: id));
             await CacheHelper.saveEvents(events, 'coptic');
           }
         case EventEnum.RITUAL:
           {
-            String id = await eventsUseCase.addNewRitualEvent(event.copyWith(name: "طقس"));
+            event = event.copyWith(name: "طقس");
+            String id = await eventsUseCase.addNewRitualEvent(event);
             var events = CacheHelper.getEvents('ritual');
             events.add(event.copyWith(docId: id));
             await CacheHelper.saveEvents(events, 'ritual');
           }
         case EventEnum.CHOIR:
           {
-            String id = await eventsUseCase.addNewChoirEvent(event.copyWith(name: "كورال"));
+            event = event.copyWith(name: "كورال");
+            String id = await eventsUseCase.addNewChoirEvent(event);
             var events = CacheHelper.getEvents('choir');
             events.add(event.copyWith(docId: id));
             await CacheHelper.saveEvents(events, 'choir');
           }
         case EventEnum.MELODIES:
           {
-            String id = await eventsUseCase.addNewMelodiesEvent(event.copyWith(name: "الحان"));
+            event = event.copyWith(name: "الحان");
+            String id = await eventsUseCase.addNewMelodiesEvent(event);
             var events = CacheHelper.getEvents('melodies');
             events.add(event.copyWith(docId: id));
             await CacheHelper.saveEvents(events, 'melodies');
           }
         case EventEnum.CHESS:
           {
-            String id = await eventsUseCase.addNewChessEvent(event.copyWith(name: "شطرنج"));
+            event = event.copyWith(name: "شطرنج");
+            String id = await eventsUseCase.addNewChessEvent(event);
             var events = CacheHelper.getEvents('chess');
             events.add(event.copyWith(docId: id));
             await CacheHelper.saveEvents(events, 'chess');
           }
         case EventEnum.PINGPONG:
           {
-            String id = await eventsUseCase.addNewPingPongEvent(event.copyWith(
-              name: "بينج بونج"
-            ));
+            event = event.copyWith(name: "بينج بونج");
+            String id = await eventsUseCase.addNewPingPongEvent(event);
             var events = CacheHelper.getEvents('pingPong');
             events.add(event.copyWith(docId: id));
             await CacheHelper.saveEvents(events, 'pingPong');
           }
         case EventEnum.VOLLEYBALL:
           {
-            String id = await eventsUseCase.addNewVolleyballEvent(
-              event.copyWith(name: "كورة طائرة"),
-            );
+            event= event.copyWith(name: "كورة طائرة");
+            String id = await eventsUseCase.addNewVolleyballEvent(event);
             var events = CacheHelper.getEvents('volleyball');
             events.add(event.copyWith(docId: id));
             await CacheHelper.saveEvents(events, 'volleyball');
           }
         case EventEnum.FOOTBALL:
           {
-            String id = await eventsUseCase.addNewFootballEvent(event.copyWith(name: "كورة قدم"));
+            event= event.copyWith(name: "كورة قدم");
+            String id = await eventsUseCase.addNewFootballEvent(event);
             var events = CacheHelper.getEvents('football');
             events.add(event.copyWith(docId: id));
             await CacheHelper.saveEvents(events, 'football');
           }
           case EventEnum.PRAISE:
             {
-              String id  =await eventsUseCase.addNewPraiseEvent(event.copyWith(name: "تسبحة"));
+              event= event.copyWith(name: "تسبحة");
+              String id  =await eventsUseCase.addNewPraiseEvent(event);
               var events = CacheHelper.getEvents('praise');
               events.add(event.copyWith(docId: id));
               await CacheHelper.saveEvents(events, 'praise');
             }
           case EventEnum.PRAY:{
-            String id = await eventsUseCase.addNewPrayEvent(event.copyWith(name:  "صلاة"));
+            event =event.copyWith(name:  "صلاة");
+            String id = await eventsUseCase.addNewPrayEvent(event);
             var events = CacheHelper.getEvents('pray');
             events.add(event.copyWith(docId: id));
             await CacheHelper.saveEvents(events, 'pray');

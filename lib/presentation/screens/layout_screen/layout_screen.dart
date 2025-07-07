@@ -139,7 +139,6 @@ class LayoutScreen extends StatelessWidget {
                   case 1: {
                     var event = await context.pushNamed(AppRoutes.addEvent.name);
                     if (!context.mounted) return;
-
                     if (event != null) {
                       cubit.getAllData();
                     }

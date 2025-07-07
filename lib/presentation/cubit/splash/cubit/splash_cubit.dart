@@ -147,6 +147,7 @@ class SplashCubit extends Cubit<SplashStates> {
           if ((await splashUseCase.getRequireToUpdate().then((value) => value.requireToUpdate ?? true,))) {
             emit(OnRequestUpToDate());
           }else{
+            emit(OnLoading());
             userData = await usersUseCase.getUserData(uid) ?? UserModel();
             await CacheHelper.saveUserData(userData);
             classList = [

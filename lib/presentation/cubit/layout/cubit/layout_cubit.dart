@@ -117,7 +117,6 @@ class LayoutCubit extends Cubit<LayoutStates> {
     filteredEvents.clear();
     comingEvents.clear();
     allEvents.clear();
-    quizzesDone.clear();
     quizzes.clear();
     quizzesSearch.clear();
     quizzes = CacheHelper.getQuizzes();
@@ -223,5 +222,11 @@ class LayoutCubit extends Cubit<LayoutStates> {
     );
     await CacheHelper.saveUserData(userData);
     emit(CanPreviewState());
+  }
+
+  String formatDateEvent(DateTime dateTime, String lang) {
+    String locale = lang == "en" ? "en_US" : "ar_SA";
+    DateFormat dateFormat = DateFormat("EEEE d - MMM", locale);
+    return dateFormat.format(dateTime);
   }
 }
