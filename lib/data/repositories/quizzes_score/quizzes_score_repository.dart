@@ -32,12 +32,13 @@ class QuizzesScoreRepository {
 
   Future<void> updateQuizzesScore(String uid,QuizzesScoreModel quizzesScoreModel)async {
     if (uid.isNotEmpty) {
-      await FirebaseFirestore.instance.collection(FirebaseEndpoints.quizzesScore).doc(uid).update(
+      await FirebaseFirestore.instance.collection(FirebaseEndpoints.quizzesScore).doc(uid).set(
           {
             'quizzes': FieldValue.arrayUnion(quizzesScoreModel.quizzes??[]),
             'score': FieldValue.increment(quizzesScoreModel.score??0),
             'name': quizzesScoreModel.name,
-          }
+          },
+        SetOptions(merge: true)
       );
     }
   }

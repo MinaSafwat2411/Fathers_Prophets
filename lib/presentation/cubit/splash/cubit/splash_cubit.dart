@@ -234,9 +234,7 @@ class SplashCubit extends Cubit<SplashStates> {
                 await CacheHelper.saveMembersByClassId(memberList.where((element) => element.classId == classList[7].docId).toList(), classList[7].docId);
               }
               if(adminList.isNotEmpty) await CacheHelper.saveAdmins(adminList);
-              if ((userData.isAnyUpdate ?? false)) {
-                await getAllFirebaseDate();
-              }
+              await getAllFirebaseDate();
               emit(OnNavigateToHomeScreen());
             } else {
               Future.delayed(

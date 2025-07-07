@@ -56,9 +56,6 @@ class UsersUseCase {
   Future<void> updateApply(UserModel user)async{
     await userRepository.updateApply(user);
   }
-  Future<void> updateApplyToAll(List<UserModel> users)async {
-    await userRepository.updateApplyToAll(users);
-  }
   Future<void> addEventAttendance(String uid,String eventId,String title)async{
     await userRepository.addEventAttendance(uid,eventId,title);
   }

@@ -104,7 +104,7 @@ class EventsCubit extends Cubit<EventsStates> {
         case EventEnum.BIBLE:
           {
             String id = await eventsUseCase.addNewBibleEvent(
-              event.copyWith(name: "bible"),
+              event.copyWith(name: "كتاب مقدس"),
             );
             var events = CacheHelper.getEvents('bible');
             events.add(event.copyWith(docId: id));
@@ -154,7 +154,9 @@ class EventsCubit extends Cubit<EventsStates> {
           }
         case EventEnum.PINGPONG:
           {
-            String id = await eventsUseCase.addNewPingPongEvent(event);
+            String id = await eventsUseCase.addNewPingPongEvent(event.copyWith(
+              name: "بينج بونج"
+            ));
             var events = CacheHelper.getEvents('pingPong');
             events.add(event.copyWith(docId: id));
             await CacheHelper.saveEvents(events, 'pingPong');
@@ -162,7 +164,7 @@ class EventsCubit extends Cubit<EventsStates> {
         case EventEnum.VOLLEYBALL:
           {
             String id = await eventsUseCase.addNewVolleyballEvent(
-              event.copyWith(name: "volleyball"),
+              event.copyWith(name: "كورة طائرة"),
             );
             var events = CacheHelper.getEvents('volleyball');
             events.add(event.copyWith(docId: id));
@@ -189,9 +191,6 @@ class EventsCubit extends Cubit<EventsStates> {
             await CacheHelper.saveEvents(events, 'pray');
           }
       }
-      await usersUseCase.updateApplyToAll(admins);
-      // await usersUseCase.updateApplyToAll(servants);
-      // await usersUseCase.updateApplyToAll(members);
       emit(OnSuccess());
     } catch (e) {
       emit(OnError(e.toString()));
@@ -228,8 +227,9 @@ class EventsCubit extends Cubit<EventsStates> {
   }
 
 
-  Future<void> onEventAttendance(String event,String title)async{
+  Future<void> onEventAttendance(String event,String title,EventsModel eventModel)async{
     emit(OnLoading());
+    var index =eventModel.index??-1;
     try{
       for(var element in selectedMembers){
         try{
@@ -237,6 +237,101 @@ class EventsCubit extends Cubit<EventsStates> {
         }catch(e){
           emit(OnError(e.toString()));
         }
+      }
+      final currentAttendance = eventModel.attendance ?? [];
+      final newNames = selectedMembers
+          .map((e) => e.name ?? "")
+          .where((name) => name.isNotEmpty && !currentAttendance.contains(name))
+          .toList();
+      this.event = eventModel.copyWith(
+        attendance: [...currentAttendance, ...newNames],
+      );
+      switch(title){
+        case 'football':{
+          await eventsUseCase.addFootballAttendance(selectedMembers.map((e) => e.name??"").toList(), event);
+          var football = CacheHelper.getEvents('football');
+          football[index] = this.event;
+          await CacheHelper.saveEvents(football, 'football');
+          break;
+        }
+        case 'volleyball':{
+          await eventsUseCase.addVolleyballAttendance(selectedMembers.map((e) => e.name??"").toList(), event);
+          var volleyball = CacheHelper.getEvents('volleyball');
+          volleyball[index] = this.event;
+          await CacheHelper.saveEvents(volleyball, 'volleyball');
+          break;
+        }
+        case 'bible':{
+          await eventsUseCase.addBibleAttendance(selectedMembers.map((e) => e.name??"").toList(), event);
+          var bible = CacheHelper.getEvents('bible');
+          bible[index] = this.event;
+          await CacheHelper.saveEvents(bible, 'bible');
+          break;
+        }
+        case 'ritual':{
+          await eventsUseCase.addRitualAttendance(selectedMembers.map((e) => e.name??"").toList(), event);
+          var ritual = CacheHelper.getEvents('ritual');
+          ritual[index] = this.event;
+          await CacheHelper.saveEvents(ritual, 'ritual');
+          break;
+        }
+        case 'doctrine':{
+          await eventsUseCase.addDoctrineAttendance(selectedMembers.map((e) => e.name??"").toList(), event);
+          var doctrine = CacheHelper.getEvents('doctrine');
+          doctrine[index] = this.event;
+          await CacheHelper.saveEvents(doctrine, 'doctrine');
+          break;
+        }
+        case 'coptic':{
+          await eventsUseCase.addCopticAttendance(selectedMembers.map((e) => e.name??"").toList(), event);
+          var coptic = CacheHelper.getEvents('coptic');
+          coptic[index] = this.event;
+          await CacheHelper.saveEvents(coptic, 'coptic');
+          break;
+        }
+        case 'choir':{
+          await eventsUseCase.addChoirAttendance(selectedMembers.map((e) => e.name??"").toList(), event);
+          var choir = CacheHelper.getEvents('choir');
+          choir[index] = this.event;
+          await CacheHelper.saveEvents(choir, 'choir');
+          break;
+        }
+        case 'chess':{
+          await eventsUseCase.addChessAttendance(selectedMembers.map((e) => e.name??"").toList(), event);
+          var chess = CacheHelper.getEvents('chess');
+          chess[index] = this.event;
+          await CacheHelper.saveEvents(chess, 'chess');
+          break;
+        }
+        case 'pingPong':{
+          await eventsUseCase.addPingPongAttendance(selectedMembers.map((e) => e.name??"").toList(), event);
+          var pingPong = CacheHelper.getEvents('pingPong');
+          pingPong[index] = this.event;
+          await CacheHelper.saveEvents(pingPong, 'pingPong');
+          break;
+        }
+        case 'melodies':{
+          await eventsUseCase.addMelodiesAttendance(selectedMembers.map((e) => e.name??"").toList(), event);
+          var melodies = CacheHelper.getEvents('melodies');
+          melodies[index] = this.event;
+          await CacheHelper.saveEvents(melodies, 'melodies');
+          break;
+        }
+        case 'pray':{
+          await eventsUseCase.addPrayAttendance(selectedMembers.map((e) => e.name??"").toList(), event);
+          var pray = CacheHelper.getEvents('pray');
+          pray[index] = this.event;
+          await CacheHelper.saveEvents(pray, 'pray');
+          break;
+        }
+        case 'praise':{
+          await eventsUseCase.addPraiseAttendance(selectedMembers.map((e) => e.name??"").toList(), event);
+          var praise = CacheHelper.getEvents('praise');
+          praise[index] = this.event;
+          await CacheHelper.saveEvents(praise, 'praise');
+          break;
+        }
+        default: break;
       }
       await CacheHelper.saveMembers(members);
     }catch(e){

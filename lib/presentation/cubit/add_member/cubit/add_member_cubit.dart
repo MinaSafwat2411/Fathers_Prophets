@@ -36,7 +36,6 @@ class AddMemberCubit extends Cubit<AddMemberStates>{
       CacheHelper.saveMembers(members);
       nameController.clear();
       classId = "";
-      await usersUseCase.updateApplyToAll(CacheHelper.getAdmins());
       emit(OnSuccess());
     }catch(e){
       emit(OnError(e.toString()));

@@ -52,7 +52,6 @@ class RegisterCubit extends Cubit<RegisterStates>{
           uid: uid,
           name: nameController.text,
           isTeacher: false,
-          isAnyUpdate: true,
           isAdmin: false,
           isReviewed: false,
           classId: selectedClass,

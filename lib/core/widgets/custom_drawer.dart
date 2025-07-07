@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:fathers_prophets/core/constants/firebase_endpoints.dart';
 import 'package:fathers_prophets/core/widgets/profile_loading_image.dart';
 import 'package:fathers_prophets/presentation/cubit/layout/cubit/layout_cubit.dart';
 import 'package:flutter/material.dart';
@@ -102,7 +103,7 @@ class CustomDrawer extends StatelessWidget {
             ),
             const Spacer(),
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 24),
+              padding: const EdgeInsets.only(top : 24),
               child: MaterialButton(
                 child:  Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -129,6 +130,10 @@ class CustomDrawer extends StatelessWidget {
                   cubit.getNewThemes(context.read<LocaleCubit>().lang);
                 },
               ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 24),
+              child: Text("${localize.translate('version')} ${FirebaseEndpoints.version}",style: textTheme.labelMedium),
             )
           ]),
     );

@@ -99,4 +99,53 @@ class EventsUseCase {
     return await eventsRepository.addNewPraiseEvent(eventsModel)??'';
   }
 
+  Future<void> addFootballAttendance(List<String> attendance, String eventId) async {
+    await eventsRepository.addFootballAttendance(attendance, eventId);
+  }
+
+  Future<void> addVolleyballAttendance(List<String> attendance, String eventId) async {
+    await eventsRepository.addVolleyballAttendance(attendance, eventId);
+  }
+
+
+  Future<void> addBibleAttendance(List<String> attendance, String eventId) async {
+    await eventsRepository.addBibleAttendance(attendance, eventId);
+  }
+
+  Future<void> addRitualAttendance(List<String> attendance, String eventId) async {
+    await eventsRepository.addRitualAttendance(attendance, eventId);
+  }
+
+  Future<void> addDoctrineAttendance(List<String> attendance, String eventId) async {
+    await eventsRepository.addDoctrineAttendance(attendance, eventId);
+  }
+
+  Future<void> addCopticAttendance(List<String> attendance, String eventId) async {
+    await eventsRepository.addCopticAttendance(attendance, eventId);
+  }
+
+  Future<void> addChoirAttendance(List<String> attendance, String eventId) async {
+    await eventsRepository.addChoirAttendance(attendance, eventId);
+  }
+
+  Future<void> addChessAttendance(List<String> attendance, String eventId) async {
+    await eventsRepository.addChessAttendance(attendance, eventId);
+  }
+
+  Future<void> addPingPongAttendance(List<String> attendance, String eventId) async {
+    await eventsRepository.addPingPongAttendance(attendance, eventId);
+  }
+
+  Future<void> addMelodiesAttendance(List<String> attendance, String eventId) async {
+    await eventsRepository.addMelodiesAttendance(attendance, eventId);
+  }
+
+  Future<void> addPrayAttendance(List<String> attendance, String eventId) async {
+    await eventsRepository.addPrayAttendance(attendance, eventId);
+  }
+
+  Future<void> addPraiseAttendance(List<String> attendance, String eventId) async {
+    await eventsRepository.addPraiseAttendance(attendance, eventId);
+  }
+
 }

@@ -10,6 +10,8 @@ import '../../../data/models/events/events_model.dart';
 import '../../cubit/events/states/events_states.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
+import '../../cubit/layout/cubit/layout_cubit.dart';
+
 class EventDetails extends StatelessWidget {
   const EventDetails({super.key, required this.title, required this.events});
 
@@ -20,95 +22,114 @@ class EventDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     var textTheme = Theme.of(context).textTheme;
     final localize = AppLocalizations.of(context);
-    return BlocConsumer<EventsCubit, EventsStates>(
-      builder:
-          (context, state) => Scaffold(
-            appBar: AppBar(
-              title: Text(
-                localize.translate(title),
-                style: textTheme.titleLarge,
+    return WillPopScope(
+      onWillPop: () {
+        context.read<LayoutCubit>().getAllData();
+        context.pop();
+        return Future.value(false);
+      },
+      child: BlocConsumer<EventsCubit, EventsStates>(
+        builder:
+            (context, state) => Scaffold(
+              appBar: AppBar(
+                title: Text(
+                  localize.translate(title),
+                  style: textTheme.titleLarge,
+                ),
+                leading: IconButton(
+                  onPressed: () {
+                    context.read<LayoutCubit>().getAllData();
+                    context.pop();
+                  },
+                  icon: const Icon(Icons.arrow_back_ios_new_outlined),
+                ),
               ),
-            ),
-            body:
-                events.isNotEmpty
-                    ? Column(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Expanded(
-                          child: ListView.separated(
-                            itemBuilder:
-                                (context, index) => GestureDetector(
-                                  onTap:
-                                      () => context.pushNamed(
-                                        AppRoutes.addEventAttendance.name,
-                                        extra: {
-                                          'title':title,
-                                          'item':events[index]
+              body:
+                  events.isNotEmpty
+                      ? Column(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Expanded(
+                            child: ListView.separated(
+                              itemBuilder:
+                                  (context, index) => GestureDetector(
+                                    onTap:
+                                        () async{
+                                          var result = await context.pushNamed(
+                                          AppRoutes.addEventAttendance.name,
+                                          extra: {
+                                            'title':title,
+                                            'item':events[index],
+                                          },
+                                        );
+                                          if(result != null){
+                                            events[index] = result as EventsModel;
+                                          }
                                         },
+                                    child: Card(
+                                      child: Column(
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius: BorderRadius.circular(
+                                              12,
+                                            ),
+                                            child: CachedNetworkImage(
+                                              height: 200,
+                                              width: double.infinity,
+                                              fit: BoxFit.fill,
+                                              imageUrl: events[index].image ?? '',
+                                              placeholder:
+                                                  (
+                                                    context,
+                                                    url,
+                                                  ) => EventShimmerItem(
+                                                    isDark:
+                                                        context
+                                                            .read<LocaleCubit>()
+                                                            .isDark,
+                                                  ),
+                                              errorWidget:
+                                                  (
+                                                    context,
+                                                    url,
+                                                    error,
+                                                  ) => EventShimmerItem(
+                                                    isDark:
+                                                        context
+                                                            .read<LocaleCubit>()
+                                                            .isDark,
+                                                  ),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Text(
+                                              events[index].title ?? '',
+                                              style: textTheme.titleSmall,
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                  child: Card(
-                                    child: Column(
-                                      children: [
-                                        ClipRRect(
-                                          borderRadius: BorderRadius.circular(
-                                            12,
-                                          ),
-                                          child: CachedNetworkImage(
-                                            height: 200,
-                                            width: double.infinity,
-                                            fit: BoxFit.fill,
-                                            imageUrl: events[index].image ?? '',
-                                            placeholder:
-                                                (
-                                                  context,
-                                                  url,
-                                                ) => EventShimmerItem(
-                                                  isDark:
-                                                      context
-                                                          .read<LocaleCubit>()
-                                                          .isDark,
-                                                ),
-                                            errorWidget:
-                                                (
-                                                  context,
-                                                  url,
-                                                  error,
-                                                ) => EventShimmerItem(
-                                                  isDark:
-                                                      context
-                                                          .read<LocaleCubit>()
-                                                          .isDark,
-                                                ),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Text(
-                                            events[index].title ?? '',
-                                            style: textTheme.titleSmall,
-                                          ),
-                                        ),
-                                      ],
                                     ),
                                   ),
-                                ),
-                            separatorBuilder:
-                                (context, index) => SizedBox(height: 0),
-                            itemCount: events.length,
+                              separatorBuilder:
+                                  (context, index) => SizedBox(height: 0),
+                              itemCount: events.length,
+                            ),
                           ),
+                        ],
+                      )
+                      : Center(
+                        child: Text(
+                          localize.translate('no_events') +
+                              localize.translate(title),
+                          style: textTheme.titleLarge,
                         ),
-                      ],
-                    )
-                    : Center(
-                      child: Text(
-                        localize.translate('no_events') +
-                            localize.translate(title),
-                        style: textTheme.titleLarge,
                       ),
-                    ),
-          ),
-      listener: (context, state) {},
-      buildWhen: (previous, current) => current is! InitialState,
+            ),
+        listener: (context, state) {},
+        buildWhen: (previous, current) => current is! InitialState,
+      ),
     );
   }
 }

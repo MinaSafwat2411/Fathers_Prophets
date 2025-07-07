@@ -102,6 +102,24 @@ class LayoutCubit extends Cubit<LayoutStates> {
 
   void getAllData() async {
     emit(LoadingState());
+    footballEvents.clear();
+    bibleEvents.clear();
+    pingPongEvents.clear();
+    volleyballEvents.clear();
+    copticEvents.clear();
+    choirEvents.clear();
+    melodiesEvents.clear();
+    ritualEvents.clear();
+    doctrineEvents.clear();
+    chessEvents.clear();
+    prayEvents.clear();
+    praiseEvents.clear();
+    filteredEvents.clear();
+    comingEvents.clear();
+    allEvents.clear();
+    quizzesDone.clear();
+    quizzes.clear();
+    quizzesSearch.clear();
     quizzes = CacheHelper.getQuizzes();
     footballEvents = CacheHelper.getEvents('football');
     comingEvents.addAll(footballEvents.where((element) => element.dateTime!.isAfter(DateTime.now().subtract(Duration(days: 1)))).toList());

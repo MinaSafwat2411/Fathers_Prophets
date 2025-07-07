@@ -256,8 +256,6 @@ class QuizzesCubit extends Cubit<QuizzesStates> {
     try{
       adminList = CacheHelper.getAdmins();
       memberList = CacheHelper.getMembers();
-      await usersUseCase.updateApplyToAll(adminList);
-      await usersUseCase.updateApplyToAll(memberList);
       var docId = await quizzesUseCase.addNewQuiz(quiz);
       var quizzes = CacheHelper.getQuizzes();
       quiz= quiz.copyWith(docId: docId);

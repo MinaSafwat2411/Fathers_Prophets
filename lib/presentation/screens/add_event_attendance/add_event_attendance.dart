@@ -25,16 +25,18 @@ class AddEventAttendance extends StatelessWidget {
     final localize = AppLocalizations.of(context);
     var textTheme = Theme.of(context).textTheme;
     var cubit = BlocProvider.of<EventsCubit>(context);
+    cubit.event = event;
     return WillPopScope(
       onWillPop: () {
         cubit.onRest();
-        return Future.value(true);
+        context.pop();
+        return Future.value(false);
       },
       child: BlocConsumer<EventsCubit, EventsStates>(
         listener: (context, state) {
           if (state is OnSuccess) {
             cubit.onRest();
-            context.pop();
+            context.pop(cubit.event);
           }
         },
         builder: (context, state) => Scaffold(
@@ -47,6 +49,11 @@ class AddEventAttendance extends StatelessWidget {
               cubit.onRest();
               context.pop();
             }, icon: Icon(Icons.arrow_back_ios_new_outlined)),
+            actions: [
+              IconButton(onPressed: () {
+                context.pushNamed(AppRoutes.eventAttendanceDetails.name,extra: cubit.event.attendance??<String>[]);
+              }, icon: Icon(Icons.people_alt_outlined))
+            ],
           ),
           body: SingleChildScrollView(
             child: Padding(
@@ -116,7 +123,7 @@ class AddEventAttendance extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: CustomButton(
               onPressed: () {
-                cubit.onEventAttendance(event.docId??"",title);
+                cubit.onEventAttendance(event.docId??"",title,event);
               },
               text: localize.translate('save'),
               isEnabled: cubit.selectedMembers.isNotEmpty,

@@ -58,12 +58,12 @@ class AddAttendanceCubit extends Cubit<AddAttendanceStates> {
       lastDate: DateTime(2100),
     );
 
-    if (!context.mounted) return; // ✅ Ensure widget is still mounted
+    if (!context.mounted) return;
 
     if (datePicked != null) {
       isUpdate = true;
       selectedDate = datePicked;
-
+      getMembers();
       attendance = AttendanceModel(
         date: datePicked,
         dateView: formatDate(datePicked, context.read<LocaleCubit>().lang),

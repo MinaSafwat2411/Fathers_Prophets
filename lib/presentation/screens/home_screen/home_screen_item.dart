@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/localization/app_localizations.dart';
 import '../../../core/widgets/event_shimmer_item.dart';
 import '../../../data/models/events/events_model.dart';
+import '../../cubit/layout/cubit/layout_cubit.dart';
 import '../../cubit/local/cubit/local_cubit.dart';
 import '../../routes.dart';
 
@@ -18,6 +19,7 @@ class HomeScreenItem extends StatelessWidget {
   Widget build(BuildContext context) {
     var textTheme = Theme.of(context).textTheme;
     final localize = AppLocalizations.of(context);
+    var cubit = LayoutCubit.get(context);
     return events.isNotEmpty ? Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -41,12 +43,15 @@ class HomeScreenItem extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             itemBuilder:
                 (context, index) => GestureDetector(
-                  onTap: () {
-                    context.pushNamed(AppRoutes.addEventAttendance.name,
+                  onTap: () async{
+                    var result = await context.pushNamed(AppRoutes.addEventAttendance.name,
                         extra: {
                           'item': events[index],
                           'title': title,
                         });
+                    if(result != null){
+                      cubit.getAllData();
+                    }
                   },
                   child: Card(
                                 child: Column(

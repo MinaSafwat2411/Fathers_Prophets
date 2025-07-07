@@ -26,12 +26,15 @@ class HomeScreen extends StatelessWidget {
           itemBuilder: (context, index, realIndex) {
             final item = cubit.comingEvents[index];
             return GestureDetector(
-              onTap: () {
-                context.pushNamed(AppRoutes.addEventAttendance.name,
+              onTap: () async{
+                var result = await context.pushNamed(AppRoutes.addEventAttendance.name,
                     extra: {
                       'item': item,
                       'title': item.nameEn,
                     });
+                if(result != null){
+                  cubit.getAllData();
+                }
               },
               child: Card(
                 child: ClipRRect(

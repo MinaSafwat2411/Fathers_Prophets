@@ -15,7 +15,6 @@ class UserModel {
   final bool? isTeacher;
   final bool? isAdmin;
   final String? role;
-  final bool? isAnyUpdate;
   final bool? isReviewed;
   bool? canPreview = false;
   bool? checked;
@@ -36,7 +35,6 @@ class UserModel {
     this.uid,
     this.isTeacher,
     this.isAdmin,
-    this.isAnyUpdate,
     this.checked,
     this.isReviewed,
     this.canPreview,
@@ -61,7 +59,6 @@ class UserModel {
       uid: uid,
       isTeacher: json['isTeacher']??false,
       isAdmin: json['isAdmin']??false,
-      isAnyUpdate: json["isAnyUpdate"]??false,
       checked: false,
       isReviewed: json['isReviewed']??false,
       canPreview: json['isAdmin']??false,
@@ -83,7 +80,6 @@ class UserModel {
       'isTeacher':isTeacher,
       'isAdmin':isAdmin,
       'uid':uid,
-      "isAnyUpdate": isAnyUpdate,
       "isReviewed": isReviewed,
       "role": role,
     };
@@ -127,7 +123,6 @@ class UserModel {
       uid: uid??this.uid,
       isTeacher: isTeacher??this.isTeacher,
       isAdmin: isAdmin??this.isAdmin,
-      isAnyUpdate: isAnyUpdate??this.isAnyUpdate,
       checked: checked??this.checked,
       isReviewed: isReviewed??this.isReviewed,
       canPreview: canPreview??this.canPreview,

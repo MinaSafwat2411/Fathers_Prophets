@@ -78,13 +78,6 @@ class UserRepository {
   Future<void> updateApply(UserModel user)async{
     await FirebaseFirestore.instance.collection(FirebaseEndpoints.users).doc(user.uid).update(user.toJson());
   }
-  Future<void> updateApplyToAll(List<UserModel> users)async{
-    for(var user in users){
-      await FirebaseFirestore.instance.collection(FirebaseEndpoints.users).doc(user.uid).update({
-        "isAnyUpdate": true
-      });
-    }
-  }
   Future<void> addEventAttendance(String uid,String eventId,String event)async{
     if(uid.isNotEmpty) {
       await FirebaseFirestore.instance.collection(FirebaseEndpoints.users).doc(uid).update({

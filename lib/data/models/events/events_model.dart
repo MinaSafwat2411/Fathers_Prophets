@@ -6,7 +6,9 @@ class EventsModel {
   final String? image;
   final String? date;
   final String? docId;
+  final List<String>? attendance;
   DateTime? dateTime;
+  int? index;
 
   EventsModel({
     this.nameAr,
@@ -16,9 +18,11 @@ class EventsModel {
     this.date,
     this.docId,
     this.dateTime,
+    this.attendance,
+    this.index
   });
 
-  factory EventsModel.fromJson(Map<String, dynamic> json, String id,String nameEn) {
+  factory EventsModel.fromJson(Map<String, dynamic> json, String id,String nameEn,int index) {
     return EventsModel(
       nameAr: json['name'],
       title: json['title'],
@@ -27,6 +31,8 @@ class EventsModel {
       docId: id,
       dateTime: DateTime.parse(json['date']),
       nameEn: nameEn,
+      attendance: (json['attendance'] as List<dynamic>?)?.map((e) => e as String).toList(),
+      index: index
     );
   }
 
@@ -37,6 +43,7 @@ class EventsModel {
       'image': image,
       'date': date,
       'docId': docId,
+      'attendance': attendance?.map((e) => e).toList(),
     };
   }
 
@@ -48,6 +55,7 @@ class EventsModel {
     String? docId,
     DateTime? dateTime,
     String? nameEn,
+    List<String>? attendance,
   }) {
     return EventsModel(
       date: date ?? this.date,
@@ -57,6 +65,7 @@ class EventsModel {
       image: image ?? this.image,
       title: title ?? this.title,
       nameEn: nameEn ?? this.nameEn,
+      attendance: attendance??  this.attendance
     );
   }
 }

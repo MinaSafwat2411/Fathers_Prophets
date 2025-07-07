@@ -276,8 +276,9 @@ class CacheHelper{
     String? jsonString = sharedPreferences?.getString(key);
     if (jsonString != null) {
       List<dynamic> jsonList = jsonDecode(jsonString);
+      var index = -1;
       final events = jsonList
-          .map((json) => EventsModel.fromJson(json, json['docId'] ?? "",key))
+          .map((json) => EventsModel.fromJson(json, json['docId'] ?? "",key,index++))
           .toList();
       events.sort((a, b) => (b.dateTime ?? DateTime.now()).compareTo(a.dateTime ?? DateTime.now()));
       return events;
