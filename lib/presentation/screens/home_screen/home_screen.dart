@@ -46,7 +46,7 @@ class HomeScreen extends StatelessWidget {
                   margin: EdgeInsets.symmetric(vertical: 4),
                   shape: CircleBorder(),
                   child: ClipOval(
-                    child: CachedNetworkImage(
+                    child: cubit.comingEvents[index].image != '' ? CachedNetworkImage(
                       width: 100,
                       height: 100,
                       fit: BoxFit.fill,
@@ -59,7 +59,7 @@ class HomeScreen extends StatelessWidget {
                           (context, url, error) => EventShimmerItem(
                         isDark: context.read<LocaleCubit>().isDark,
                       ),
-                    ),
+                    ):Image.asset(context.read<LocaleCubit>().isDark?'assets/images/logo_dark.png': 'assets/images/logo_light.png',width: 100,height: 100,fit: BoxFit.fill,),
                   ),
                 ),
                 ),

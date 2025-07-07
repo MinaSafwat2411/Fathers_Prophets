@@ -61,7 +61,7 @@ class HomeScreenItem extends StatelessWidget {
                           children: [
                             ClipRRect(
                               borderRadius: BorderRadius.circular(12),
-                              child: CachedNetworkImage(
+                              child: events[index].image != ''?CachedNetworkImage(
                                 height: 180,
                                 width: 230,
                                 fit: BoxFit.fill,
@@ -76,7 +76,7 @@ class HomeScreenItem extends StatelessWidget {
                                       isDark:
                                           context.read<LocaleCubit>().isDark,
                                     ),
-                              ),
+                              ):Image.asset(context.read<LocaleCubit>().isDark?'assets/images/logo_dark.png': 'assets/images/logo_light.png',width: 230,height: 180,fit: BoxFit.fill,),
                             ),
                             SizedBox(height: 4),
                             Text(

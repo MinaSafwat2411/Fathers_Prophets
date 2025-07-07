@@ -65,7 +65,7 @@ class AddEventAttendance extends StatelessWidget {
                   Card(
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(12),
-                      child: CachedNetworkImage(
+                      child: event.image!= ''?CachedNetworkImage(
                         height: 200,
                         width: double.infinity,
                         fit: BoxFit.fill,
@@ -78,7 +78,7 @@ class AddEventAttendance extends StatelessWidget {
                             (context, url, error) => EventShimmerItem(
                           isDark: context.read<LocaleCubit>().isDark,
                         ),
-                      ),
+                      ):Image.asset(context.read<LocaleCubit>().isDark?'assets/images/logo_dark.png': 'assets/images/logo_light.png',width: double.infinity,height: 200,fit: BoxFit.fill,),
                     ),
                   ),
                   if(context.read<LayoutCubit>().userData.isAdmin??false)Padding(

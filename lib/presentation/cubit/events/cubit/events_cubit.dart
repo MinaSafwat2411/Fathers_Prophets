@@ -93,10 +93,10 @@ class EventsCubit extends Cubit<EventsStates> {
     emit(OnLoading());
     event = event.copyWith(
       title: titleController.text,
-      image: await googleDriveUploader.uploadFileToDrive(
+      image: image != null?await googleDriveUploader.uploadFileToDrive(
         image!=null?image!:await getDefaultImageFile(),
         'image_${DateTime.now().millisecondsSinceEpoch}.jpg',
-      ),
+      ):'',
       date: selectedDate.toString(),
     );
     try {
