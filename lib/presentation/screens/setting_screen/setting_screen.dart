@@ -74,8 +74,9 @@ class SettingScreen extends StatelessWidget {
                                   context.pop();
                                 },
                                 child: SizedBox(
-                                  height: 72,
+                                  height: 60,
                                   child: Card(
+                                    margin: EdgeInsets.zero,
                                     child: Padding(
                                       padding: const EdgeInsets.all(14),
                                       child: Text(
@@ -92,7 +93,7 @@ class SettingScreen extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              separatorBuilder: (context, index) => const SizedBox(height: 5),
+                              separatorBuilder: (context, index) => const SizedBox(height: 8),
                             ),
                           ),
                         );

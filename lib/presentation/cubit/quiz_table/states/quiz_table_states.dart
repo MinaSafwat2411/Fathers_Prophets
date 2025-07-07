@@ -8,3 +8,11 @@ class OnError extends QuizTableStates{
   final String error;
   OnError(this.error);
 }
+
+class OnSelectMember extends QuizTableStates{}
+
+class OnSelectQuiz extends QuizTableStates{}
+
+class OnSelectClass extends QuizTableStates{}
+
+class OnSearch extends QuizTableStates{}
