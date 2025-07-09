@@ -120,7 +120,7 @@ class EventScreen extends StatelessWidget {
                   image:context.read<LocaleCubit>().isDark?"assets/images/ic_praise_dark.png":"assets/images/ic_praise_light.png" ,
                   title: 'praise',
                   isDark: context.read<LocaleCubit>().isDark,
-                  events: cubit.chessEvents,
+                  events: cubit.praiseEvents,
                 ),
               ],
             ),

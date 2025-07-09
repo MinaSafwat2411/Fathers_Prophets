@@ -319,7 +319,7 @@ abstract class AppThemes {
       ),
     ),
     cardTheme: const CardTheme(
-      color: AppColors.riverBed,
+      color: AppColors.oxfordBlue,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(12)),
       ),
