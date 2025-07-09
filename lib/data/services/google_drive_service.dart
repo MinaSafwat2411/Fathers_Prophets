@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:googleapis/drive/v3.dart' as drive;
 import 'package:googleapis_auth/auth_io.dart';
@@ -213,7 +214,9 @@ class GoogleDriveUploader {
       uploadMedia: mediaUpload,
     );
 
-    print("✅ User '${updatedUser.uid}' updated successfully.");
+    if (kDebugMode) {
+      print("✅ User '${updatedUser.uid}' updated successfully.");
+    }
   }
 
   Future<void> deleteUserFromJsonFile(String fileId, String uidToDelete) async {
@@ -238,7 +241,9 @@ class GoogleDriveUploader {
 
     // Step 3: If no user was removed, exit
     if (jsonList.length == initialLength) {
-      print("❌ No user with uid '$uidToDelete' found.");
+      if (kDebugMode) {
+        print("❌ No user with uid '$uidToDelete' found.");
+      }
       return;
     }
 
@@ -253,6 +258,8 @@ class GoogleDriveUploader {
       uploadMedia: mediaUpload,
     );
 
-    print("🗑️ User with uid '$uidToDelete' deleted successfully.");
+    if (kDebugMode) {
+      print("🗑️ User with uid '$uidToDelete' deleted successfully.");
+    }
   }
 }

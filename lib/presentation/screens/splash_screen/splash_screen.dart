@@ -39,6 +39,13 @@ class SplashScreen extends StatelessWidget {
           case OnNavigateToHomeScreen(): {context.goNamed(AppRoutes.layout.name);break;}
           case OnRequestUpToDate(): {showCustomSnackBar(context, "Check your Update",color: AppColors.red,icon: Icons.update);}
           case OnNavigateToReviewScreen(): {context.goNamed(AppRoutes.review.name);break;}
+          case OnError(): {
+              showCustomSnackBar(
+              context,
+              state.message.toString(),
+              icon: Icons.error,
+              color: AppColors.red,
+            );}
         }
       },
     );

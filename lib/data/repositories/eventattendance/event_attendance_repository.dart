@@ -31,4 +31,15 @@ class EventAttendanceRepository {
     }
   }
 
+  Future<void> removeEventAttendance(String uid, String eventId, String event) async {
+    if (uid.isNotEmpty) {
+      await FirebaseFirestore.instance
+          .collection(FirebaseEndpoints.eventAttendance)
+          .doc(uid)
+          .set({
+        event: FieldValue.arrayRemove([eventId]),
+      }, SetOptions(merge: true));
+    }
+  }
+
 }

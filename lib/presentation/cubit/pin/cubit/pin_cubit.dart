@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fathers_prophets/presentation/cubit/pin/states/pin_states.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:googleapis/mybusinesslodging/v1.dart' show Connectivity;
 
 import '../../../../data/models/admin_pin/admin_pin_model.dart';
 import '../../../../data/repositories/admin_pin/admin_pin_repository.dart';

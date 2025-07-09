@@ -12,6 +12,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' show BlocProvider;
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import '../../../../core/constants/firebase_endpoints.dart';
 import '../../../../data/models/events/event_attendance_model.dart';
 import '../../../../data/repositories/events/events_repository.dart';
 import '../../../../data/repositories/users/users_repository.dart';
@@ -104,7 +105,7 @@ class EventsCubit extends Cubit<EventsStates> {
         case EventEnum.BIBLE:
           {
             event = event.copyWith(name: "كتاب مقدس");
-            String id = await eventsUseCase.addNewBibleEvent(event);
+            String id = await eventsUseCase.addNewEventByName(event,FirebaseEndpoints.bible);
             var events = CacheHelper.getEvents('bible');
             events.add(event.copyWith(docId: id));
             await CacheHelper.saveEvents(events, 'bible');
@@ -112,7 +113,7 @@ class EventsCubit extends Cubit<EventsStates> {
         case EventEnum.DOCTRINE:
           {
             event = event.copyWith(name: "عقيدة");
-            String id = await eventsUseCase.addNewDoctrineEvent(event);
+            String id = await eventsUseCase.addNewEventByName(event,FirebaseEndpoints.doctrine);
             var events = CacheHelper.getEvents('doctrine');
             events.add(event.copyWith(docId: id));
             await CacheHelper.saveEvents(events, 'doctrine');
@@ -120,7 +121,7 @@ class EventsCubit extends Cubit<EventsStates> {
         case EventEnum.COPTIC:
           {
             event = event.copyWith(name: "قبطي");
-            String id = await eventsUseCase.addNewCopticEvent(event);
+            String id = await eventsUseCase.addNewEventByName(event,FirebaseEndpoints.coptic);
             var events = CacheHelper.getEvents('coptic');
             events.add(event.copyWith(docId: id));
             await CacheHelper.saveEvents(events, 'coptic');
@@ -128,7 +129,7 @@ class EventsCubit extends Cubit<EventsStates> {
         case EventEnum.RITUAL:
           {
             event = event.copyWith(name: "طقس");
-            String id = await eventsUseCase.addNewRitualEvent(event);
+            String id = await eventsUseCase.addNewEventByName(event,FirebaseEndpoints.ritual);
             var events = CacheHelper.getEvents('ritual');
             events.add(event.copyWith(docId: id));
             await CacheHelper.saveEvents(events, 'ritual');
@@ -136,7 +137,7 @@ class EventsCubit extends Cubit<EventsStates> {
         case EventEnum.CHOIR:
           {
             event = event.copyWith(name: "كورال");
-            String id = await eventsUseCase.addNewChoirEvent(event);
+            String id = await eventsUseCase.addNewEventByName(event,FirebaseEndpoints.choir);
             var events = CacheHelper.getEvents('choir');
             events.add(event.copyWith(docId: id));
             await CacheHelper.saveEvents(events, 'choir');
@@ -144,7 +145,7 @@ class EventsCubit extends Cubit<EventsStates> {
         case EventEnum.MELODIES:
           {
             event = event.copyWith(name: "الحان");
-            String id = await eventsUseCase.addNewMelodiesEvent(event);
+            String id = await eventsUseCase.addNewEventByName(event,FirebaseEndpoints.melodies);
             var events = CacheHelper.getEvents('melodies');
             events.add(event.copyWith(docId: id));
             await CacheHelper.saveEvents(events, 'melodies');
@@ -152,7 +153,7 @@ class EventsCubit extends Cubit<EventsStates> {
         case EventEnum.CHESS:
           {
             event = event.copyWith(name: "شطرنج");
-            String id = await eventsUseCase.addNewChessEvent(event);
+            String id = await eventsUseCase.addNewEventByName(event,FirebaseEndpoints.chess);
             var events = CacheHelper.getEvents('chess');
             events.add(event.copyWith(docId: id));
             await CacheHelper.saveEvents(events, 'chess');
@@ -160,7 +161,7 @@ class EventsCubit extends Cubit<EventsStates> {
         case EventEnum.PINGPONG:
           {
             event = event.copyWith(name: "بينج بونج");
-            String id = await eventsUseCase.addNewPingPongEvent(event);
+            String id = await eventsUseCase.addNewEventByName(event,FirebaseEndpoints.pingPong);
             var events = CacheHelper.getEvents('pingPong');
             events.add(event.copyWith(docId: id));
             await CacheHelper.saveEvents(events, 'pingPong');
@@ -168,7 +169,7 @@ class EventsCubit extends Cubit<EventsStates> {
         case EventEnum.VOLLEYBALL:
           {
             event= event.copyWith(name: "كورة طائرة");
-            String id = await eventsUseCase.addNewVolleyballEvent(event);
+            String id = await eventsUseCase.addNewEventByName(event,FirebaseEndpoints.volleyball);
             var events = CacheHelper.getEvents('volleyball');
             events.add(event.copyWith(docId: id));
             await CacheHelper.saveEvents(events, 'volleyball');
@@ -176,7 +177,7 @@ class EventsCubit extends Cubit<EventsStates> {
         case EventEnum.FOOTBALL:
           {
             event= event.copyWith(name: "كورة قدم");
-            String id = await eventsUseCase.addNewFootballEvent(event);
+            String id = await eventsUseCase.addNewEventByName(event,FirebaseEndpoints.football);
             var events = CacheHelper.getEvents('football');
             events.add(event.copyWith(docId: id));
             await CacheHelper.saveEvents(events, 'football');
@@ -184,14 +185,14 @@ class EventsCubit extends Cubit<EventsStates> {
           case EventEnum.PRAISE:
             {
               event= event.copyWith(name: "تسبحة");
-              String id  =await eventsUseCase.addNewPraiseEvent(event);
+              String id  =await eventsUseCase.addNewEventByName(event,FirebaseEndpoints.praise);
               var events = CacheHelper.getEvents('praise');
               events.add(event.copyWith(docId: id));
               await CacheHelper.saveEvents(events, 'praise');
             }
           case EventEnum.PRAY:{
             event =event.copyWith(name:  "صلاة");
-            String id = await eventsUseCase.addNewPrayEvent(event);
+            String id = await eventsUseCase.addNewEventByName(event,FirebaseEndpoints.pray);
             var events = CacheHelper.getEvents('pray');
             events.add(event.copyWith(docId: id));
             await CacheHelper.saveEvents(events, 'pray');
@@ -254,84 +255,84 @@ class EventsCubit extends Cubit<EventsStates> {
       );
       switch(title){
         case 'football':{
-          await eventsUseCase.addFootballAttendance(selectedMembers.map((e) => e.name??"").toList(), event);
+          await eventsUseCase.addEventAttendance(selectedMembers.map((e) => e.name??"").toList(), event,FirebaseEndpoints.football);
           var football = CacheHelper.getEvents('football');
           football[index] = this.event;
           await CacheHelper.saveEvents(football, 'football');
           break;
         }
         case 'volleyball':{
-          await eventsUseCase.addVolleyballAttendance(selectedMembers.map((e) => e.name??"").toList(), event);
+          await eventsUseCase.addEventAttendance(selectedMembers.map((e) => e.name??"").toList(), event,FirebaseEndpoints.volleyball);
           var volleyball = CacheHelper.getEvents('volleyball');
           volleyball[index] = this.event;
           await CacheHelper.saveEvents(volleyball, 'volleyball');
           break;
         }
         case 'bible':{
-          await eventsUseCase.addBibleAttendance(selectedMembers.map((e) => e.name??"").toList(), event);
+          await eventsUseCase.addEventAttendance(selectedMembers.map((e) => e.name??"").toList(), event,FirebaseEndpoints.bible);
           var bible = CacheHelper.getEvents('bible');
           bible[index] = this.event;
           await CacheHelper.saveEvents(bible, 'bible');
           break;
         }
         case 'ritual':{
-          await eventsUseCase.addRitualAttendance(selectedMembers.map((e) => e.name??"").toList(), event);
+          await eventsUseCase.addEventAttendance(selectedMembers.map((e) => e.name??"").toList(), event,FirebaseEndpoints.ritual);
           var ritual = CacheHelper.getEvents('ritual');
           ritual[index] = this.event;
           await CacheHelper.saveEvents(ritual, 'ritual');
           break;
         }
         case 'doctrine':{
-          await eventsUseCase.addDoctrineAttendance(selectedMembers.map((e) => e.name??"").toList(), event);
+          await eventsUseCase.addEventAttendance(selectedMembers.map((e) => e.name??"").toList(), event,FirebaseEndpoints.doctrine);
           var doctrine = CacheHelper.getEvents('doctrine');
           doctrine[index] = this.event;
           await CacheHelper.saveEvents(doctrine, 'doctrine');
           break;
         }
         case 'coptic':{
-          await eventsUseCase.addCopticAttendance(selectedMembers.map((e) => e.name??"").toList(), event);
+          await eventsUseCase.addEventAttendance(selectedMembers.map((e) => e.name??"").toList(), event,FirebaseEndpoints.coptic);
           var coptic = CacheHelper.getEvents('coptic');
           coptic[index] = this.event;
           await CacheHelper.saveEvents(coptic, 'coptic');
           break;
         }
         case 'choir':{
-          await eventsUseCase.addChoirAttendance(selectedMembers.map((e) => e.name??"").toList(), event);
+          await eventsUseCase.addEventAttendance(selectedMembers.map((e) => e.name??"").toList(), event,FirebaseEndpoints.choir);
           var choir = CacheHelper.getEvents('choir');
           choir[index] = this.event;
           await CacheHelper.saveEvents(choir, 'choir');
           break;
         }
         case 'chess':{
-          await eventsUseCase.addChessAttendance(selectedMembers.map((e) => e.name??"").toList(), event);
+          await eventsUseCase.addEventAttendance(selectedMembers.map((e) => e.name??"").toList(), event,FirebaseEndpoints.chess);
           var chess = CacheHelper.getEvents('chess');
           chess[index] = this.event;
           await CacheHelper.saveEvents(chess, 'chess');
           break;
         }
         case 'pingPong':{
-          await eventsUseCase.addPingPongAttendance(selectedMembers.map((e) => e.name??"").toList(), event);
+          await eventsUseCase.addEventAttendance(selectedMembers.map((e) => e.name??"").toList(), event,FirebaseEndpoints.pingPong);
           var pingPong = CacheHelper.getEvents('pingPong');
           pingPong[index] = this.event;
           await CacheHelper.saveEvents(pingPong, 'pingPong');
           break;
         }
         case 'melodies':{
-          await eventsUseCase.addMelodiesAttendance(selectedMembers.map((e) => e.name??"").toList(), event);
+          await eventsUseCase.addEventAttendance(selectedMembers.map((e) => e.name??"").toList(), event,FirebaseEndpoints.melodies);
           var melodies = CacheHelper.getEvents('melodies');
           melodies[index] = this.event;
           await CacheHelper.saveEvents(melodies, 'melodies');
           break;
         }
         case 'pray':{
-          await eventsUseCase.addPrayAttendance(selectedMembers.map((e) => e.name??"").toList(), event);
+          await eventsUseCase.addEventAttendance(selectedMembers.map((e) => e.name??"").toList(), event,FirebaseEndpoints.pray);
           var pray = CacheHelper.getEvents('pray');
           pray[index] = this.event;
           await CacheHelper.saveEvents(pray, 'pray');
           break;
         }
         case 'praise':{
-          await eventsUseCase.addPraiseAttendance(selectedMembers.map((e) => e.name??"").toList(), event);
+          await eventsUseCase.addEventAttendance(selectedMembers.map((e) => e.name??"").toList(), event,FirebaseEndpoints.praise);
           var praise = CacheHelper.getEvents('praise');
           praise[index] = this.event;
           await CacheHelper.saveEvents(praise, 'praise');

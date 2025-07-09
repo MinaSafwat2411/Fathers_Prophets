@@ -50,7 +50,7 @@ class AddEventAttendance extends StatelessWidget {
               context.pop();
             }, icon: Icon(Icons.arrow_back_ios_new_outlined)),
             actions: [
-              IconButton(onPressed: () {
+              if(context.read<LayoutCubit>().userData.isAdmin??false)IconButton(onPressed: () {
                 context.pushNamed(AppRoutes.eventAttendanceDetails.name,extra: cubit.event.attendance??<String>[]);
               }, icon: Icon(Icons.people_alt_outlined))
             ],

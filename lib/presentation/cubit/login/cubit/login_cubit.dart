@@ -1,3 +1,4 @@
+import 'package:fathers_prophets/core/constants/firebase_endpoints.dart';
 import 'package:fathers_prophets/data/models/auth/auth_model.dart';
 import 'package:fathers_prophets/domain/usecases/events/events_use_case.dart';
 import 'package:flutter/material.dart';
@@ -189,46 +190,45 @@ class LoginCubit extends Cubit<LoginStates>  {
       await CacheHelper.removeEvents('praise');
       switch(userData.role){
         case 'admin':
-          footballEvents = (await eventsUseCase.getFootballEvents());
-          bibleEvents = (await eventsUseCase.getBibleEvents());
-          pingPongEvents = (await eventsUseCase.getPingPongEvents());
-          volleyballEvents = (await eventsUseCase.getVolleyballEvents());
-          copticEvents = (await eventsUseCase.getCopticEvents());
-          choirEvents = (await eventsUseCase.getChoirEvents());
-          melodiesEvents = (await eventsUseCase.getMelodiesEvents());
-          ritualEvents = (await eventsUseCase.getRitualEvents());
-          doctrineEvents = (await eventsUseCase.getDoctrineEvents());
-          chessEvents = (await eventsUseCase.getChessEvents());
-          prayEvents = (await eventsUseCase.getPrayEvents());
-          praiseEvents = (await eventsUseCase.getPraiseEvents());
+          footballEvents = (await eventsUseCase.getEventsByName(FirebaseEndpoints.football));
+          bibleEvents = (await eventsUseCase.getEventsByName(FirebaseEndpoints.bible));
+          pingPongEvents = (await eventsUseCase.getEventsByName(FirebaseEndpoints.pingPong));
+          volleyballEvents = (await eventsUseCase.getEventsByName(FirebaseEndpoints.volleyball));
+          copticEvents = (await eventsUseCase.getEventsByName(FirebaseEndpoints.coptic));
+          choirEvents = (await eventsUseCase.getEventsByName(FirebaseEndpoints.choir));
+          melodiesEvents = (await eventsUseCase.getEventsByName(FirebaseEndpoints.melodies));
+          ritualEvents = (await eventsUseCase.getEventsByName(FirebaseEndpoints.ritual));
+          doctrineEvents = (await eventsUseCase.getEventsByName(FirebaseEndpoints.doctrine));
+          chessEvents = (await eventsUseCase.getEventsByName(FirebaseEndpoints.chess));
+          prayEvents = (await eventsUseCase.getEventsByName(FirebaseEndpoints.pray));
+          praiseEvents = (await eventsUseCase.getEventsByName(FirebaseEndpoints.praise));
           break;
         case 'sports':
-          footballEvents = (await eventsUseCase.getFootballEvents());
-          bibleEvents = (await eventsUseCase.getBibleEvents());
-          pingPongEvents = (await eventsUseCase.getPingPongEvents());
-          volleyballEvents = (await eventsUseCase.getVolleyballEvents());
-          chessEvents = (await eventsUseCase.getChessEvents());
+          footballEvents = (await eventsUseCase.getEventsByName(FirebaseEndpoints.football));
+          pingPongEvents = (await eventsUseCase.getEventsByName(FirebaseEndpoints.pingPong));
+          volleyballEvents = (await eventsUseCase.getEventsByName(FirebaseEndpoints.volleyball));
+          chessEvents = (await eventsUseCase.getEventsByName(FirebaseEndpoints.chess));
           break;
         case 'coptic':
-          copticEvents = (await eventsUseCase.getCopticEvents());
+
           break;
         case 'choir':
-          choirEvents = (await eventsUseCase.getChoirEvents());
+          choirEvents = (await eventsUseCase.getEventsByName(FirebaseEndpoints.choir));
           break;
         case 'melodies':
-          melodiesEvents = (await eventsUseCase.getMelodiesEvents());
+          melodiesEvents = (await eventsUseCase.getEventsByName(FirebaseEndpoints.melodies));
           break;
         case 'ritual':
-          ritualEvents = (await eventsUseCase.getRitualEvents());
+          ritualEvents = (await eventsUseCase.getEventsByName(FirebaseEndpoints.ritual));
           break;
         case 'doctrine':
-          doctrineEvents = (await eventsUseCase.getDoctrineEvents());
+          doctrineEvents = (await eventsUseCase.getEventsByName(FirebaseEndpoints.doctrine));
           break;
         case 'pray':
-          prayEvents = (await eventsUseCase.getPrayEvents());
+          prayEvents = (await eventsUseCase.getEventsByName(FirebaseEndpoints.pray));
           break;
         case 'praise':
-          praiseEvents = (await eventsUseCase.getPraiseEvents());
+          praiseEvents = (await eventsUseCase.getEventsByName(FirebaseEndpoints.praise));
           break;
         default: break;
       }

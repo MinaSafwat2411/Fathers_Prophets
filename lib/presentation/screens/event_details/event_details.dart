@@ -122,8 +122,7 @@ class EventDetails extends StatelessWidget {
                       )
                       : Center(
                         child: Text(
-                          localize.translate('no_events') +
-                              localize.translate(title),
+                          "${localize.translate('no_events')} ${localize.translate(title)}",
                           style: textTheme.titleLarge,
                         ),
                       ),

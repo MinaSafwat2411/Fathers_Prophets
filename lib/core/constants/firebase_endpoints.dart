@@ -13,6 +13,19 @@ class FirebaseEndpoints {
   static const String eventAttendance = "EventAttendance";
   static const String quizzesScore = "QuizzesScore";
   static const String classId = "class";
-  static const String version = "1.0.6";
+  static const String version = "1.0.7";
   static const String adminPin = "AdminPin";
+  static const String football = "Football";
+  static const String volleyball = "Volleyball";
+  static const String chess = "Chess";
+  static const String pingPong = "PingPong";
+  static const String pingpong = "pingPong";
+  static const String melodies = "Melodies";
+  static const String pray = "Pray";
+  static const String praise = "Praise";
+  static const String doctrine = "Doctrine";
+  static const String bible = "Bible";
+  static const String ritual = "Ritual";
+  static const String coptic = "Coptic";
+  static const String choir = "Choir";
 }

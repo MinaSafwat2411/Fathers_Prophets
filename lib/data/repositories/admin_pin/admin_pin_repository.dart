@@ -20,7 +20,7 @@ class AdminPinRepository {
     } on FirebaseException {
       return false;
     } catch (e) {
-      return false;;
+      return false;
     }
   }
 }
