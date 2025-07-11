@@ -26,3 +26,5 @@ class OnRest extends EventsStates{}
 class SearchState extends EventsStates{}
 
 class OnBackDone extends EventsStates{}
+
+class OnSearch extends EventsStates{}

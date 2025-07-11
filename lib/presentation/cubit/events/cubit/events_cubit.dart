@@ -33,8 +33,7 @@ class EventsCubit extends Cubit<EventsStates> {
   var event = EventsModel();
   var title = "";
   List<UserModel> members = <UserModel>[];
-  List<UserModel> servants = <UserModel>[];
-  List<UserModel> admins = <UserModel>[];
+  List<UserModel> filteredMembers = <UserModel>[];
   TextEditingController titleController = TextEditingController();
   TextEditingController searchController = TextEditingController();
   File? image;
@@ -51,13 +50,26 @@ class EventsCubit extends Cubit<EventsStates> {
   void getAllMembers() async{
     classes = CacheHelper.getClasses();
     userData = CacheHelper.getUserData();
+    members = CacheHelper.getMembers();
+    filteredMembers = members;
     selectedMembers.clear();
     emit(GetAllMembersState());
   }
 
-  List<UserModel> getMembers(String id){
-    return CacheHelper.getMembersByClassId(id);
+
+  void onSearch(String value)async{
+    emit(OnLoading());
+    searchController.text = value;
+    if(value !=''){
+      filteredMembers = members.where((element) => element.name!.toLowerCase().contains(value.toLowerCase())).toList();
+    }else{
+      filteredMembers = members;
+    }
+    await Future.delayed(Duration(seconds: 3), () {
+    });
+    emit(OnSearch());
   }
+
 
   void onRest(){
     selectedMembers.clear();

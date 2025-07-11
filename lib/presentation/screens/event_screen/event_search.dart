@@ -96,7 +96,7 @@ class EventSearch extends StatelessWidget {
                 child: Stack(
                   alignment: Alignment.bottomCenter,
                   children: [
-                    CachedNetworkImage(
+                    events[index].image != '' ?CachedNetworkImage(
                       fit: BoxFit.cover,
                       width: double.infinity,
                       height: double.infinity,
@@ -107,6 +107,12 @@ class EventSearch extends StatelessWidget {
                       errorWidget: (context, url, error) => EventShimmerItem(
                         isDark: context.read<LocaleCubit>().isDark,
                       ),
+                    ):Image.asset(
+                      context.read<LocaleCubit>().isDark
+                          ? "assets/images/logo_dark.png"
+                          : "assets/images/logo_light.png",
+                      height: double.infinity,
+                      width: double.infinity,
                     ),
                     Container(
                       width: double.infinity,
