@@ -22,7 +22,7 @@ import '../../routes.dart';
 class UserDetailsScreen extends StatelessWidget {
   const UserDetailsScreen({
     super.key,
-    required this.user,
+    required this.uid,
     required this.football,
     required this.volleyball,
     required this.pingPong,
@@ -37,7 +37,7 @@ class UserDetailsScreen extends StatelessWidget {
     required this.praise,
   });
 
-  final UserModel user;
+  final String uid;
   final int football;
   final int volleyball;
   final int pingPong;
@@ -53,7 +53,7 @@ class UserDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var cubit = CommentCubit.get(context)..getUserData(user.uid ?? "");
+    var cubit = CommentCubit.get(context)..getUserData(uid);
     final localize = AppLocalizations.of(context);
     var textTheme = Theme.of(context).textTheme;
     return BlocConsumer<CommentCubit, CommentStates>(

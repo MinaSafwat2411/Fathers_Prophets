@@ -1,3 +1,4 @@
+import 'package:fathers_prophets/data/models/classes/class_model.dart';
 import 'package:fathers_prophets/domain/usecases/users/users_use_case.dart';
 import 'package:fathers_prophets/presentation/cubit/add_attendance/states/add_attendance_states.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +24,7 @@ class AddAttendanceCubit extends Cubit<AddAttendanceStates> {
   var servant = UserModel();
   AttendanceUseCase useCase = AttendanceUseCase(AttendanceRepository());
   UsersUseCase usersUseCase = UsersUseCase(UserRepository());
-  List<UserModel> members = <UserModel>[];
+  ClassModel classModel = ClassModel();
   DateTime? selectedDate;
 
   void onRest() {
@@ -68,7 +69,7 @@ class AddAttendanceCubit extends Cubit<AddAttendanceStates> {
         date: datePicked,
         dateView: formatDate(datePicked, context.read<LocaleCubit>().lang),
         attendance: [
-          for (var member in members)
+          for (var member in (classModel.members??[]))
             Attendance(
               name: member.name,
               uid: member.uid,
@@ -91,10 +92,8 @@ class AddAttendanceCubit extends Cubit<AddAttendanceStates> {
   }
 
   void getMembers() {
-    members =
-        CacheHelper.getMembers()
-            .where((element) => element.classId == servant.classId)
-            .toList();
+    var classes =  CacheHelper.getClasses();
+    classModel = classes.firstWhere((element) => servant.classId==element.docId,);
     emit(OnGetMembers());
   }
 

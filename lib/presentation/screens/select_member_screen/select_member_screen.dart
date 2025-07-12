@@ -1,5 +1,5 @@
 import 'package:fathers_prophets/core/widgets/custom_loading.dart';
-import 'package:fathers_prophets/data/services/cache_helper.dart';
+import 'package:fathers_prophets/data/models/classes/class_user_model.dart';
 import 'package:fathers_prophets/presentation/cubit/events/cubit/events_cubit.dart';
 import 'package:fathers_prophets/presentation/cubit/events/states/events_states.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +33,7 @@ class SelectMemberScreen extends StatelessWidget {
           child: Column(
             children: [
               SearchBar(
-                onSubmitted: (value) => cubit.onSearch(value),
+                onChanged: (value) => cubit.onSearch(value),
                 hintText: localize.translate('search'),
                 leading: Icon(
                   Icons.search,
@@ -69,52 +69,60 @@ class SelectMemberScreen extends StatelessWidget {
               const SizedBox(height: 8),
               Expanded(
                 child: state is! OnLoading
-                    ? ListView.separated(
-                  physics: BouncingScrollPhysics(),
-                  itemCount: cubit.filteredMembers.length,
-                  separatorBuilder: (context, index) =>
-                  const SizedBox(height: 5),
-                  itemBuilder: (context, index) {
-                    var member = cubit.filteredMembers[index];
-                    return GestureDetector(
-                      onTap: () {
-                        if (cubit.selectedMembers
-                            .any((e) => e.userId == member.uid)) {
-                          cubit.onRemoveMember(member);
-                        } else {
-                          cubit.onAddMember(member);
-                        }
-                      },
-                      child: Card(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(member.name ?? "",
-                                  style: textTheme.titleMedium),
+                    ? RefreshIndicator(
+                  onRefresh: () async => cubit.onRefresh(),
+                      child: ListView.separated(
+                                        physics: BouncingScrollPhysics(),
+                                        itemCount: cubit.filteredClasses.length,
+                                        separatorBuilder: (context, index) =>
+                                        const SizedBox(height: 5),
+                                        itemBuilder: (context, index) {
+                      var member = cubit.filteredClasses[index].members;
+                      return Column(
+                        children: [
+                          Text(cubit.filteredClasses[index].name??"",style: textTheme.titleMedium,),
+                          for(int i=0;i<(member?.length??0);i++)GestureDetector(
+                            onTap: () {
+                              if (cubit.selectedMembers
+                                  .any((e) => e.userId == member?[i].uid)) {
+                                cubit.onRemoveMember(member?[i]??ClassUserModel());
+                              } else {
+                                cubit.onAddMember(member?[i]??ClassUserModel());
+                              }
+                            },
+                            child: Card(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(member?[i].name ?? "",
+                                        style: textTheme.titleMedium),
+                                  ),
+                                  Checkbox(
+                                    value: cubit.selectedMembers
+                                        .any((e) => e.userId == member?[i].uid),
+                                    onChanged: (_) {
+                                      if (cubit.selectedMembers
+                                          .any((e) => e.userId == member?[i].uid)) {
+                                        cubit.onRemoveMember(member?[i]??ClassUserModel());
+                                      } else {
+                                        cubit.onAddMember(member?[i]??ClassUserModel());
+                                      }
+                                    },
+                                    checkColor: AppColors.white,
+                                    activeColor: AppColors.green,
+                                    shape: const CircleBorder(),
+                                  )
+                                ],
+                              ),
                             ),
-                            Checkbox(
-                              value: cubit.selectedMembers
-                                  .any((e) => e.userId == member.uid),
-                              onChanged: (_) {
-                                if (cubit.selectedMembers
-                                    .any((e) => e.userId == member.uid)) {
-                                  cubit.onRemoveMember(member);
-                                } else {
-                                  cubit.onAddMember(member);
-                                }
-                              },
-                              checkColor: AppColors.white,
-                              activeColor: AppColors.green,
-                              shape: const CircleBorder(),
-                            )
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                )
+                          ),
+                        ],
+                      );
+                                        },
+                                      ),
+                    )
                     : CustomLoading(
                   isDark: context.read<LocaleCubit>().isDark,
                 ),

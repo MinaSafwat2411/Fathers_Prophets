@@ -1,6 +1,7 @@
+import 'package:fathers_prophets/data/models/classes/class_model.dart';
+import 'package:fathers_prophets/data/models/classes/class_user_model.dart';
 import 'package:fathers_prophets/data/models/quizzes/quizzes_model.dart';
 import 'package:fathers_prophets/data/models/quizzes_score/quizzes_score_model.dart';
-import 'package:fathers_prophets/data/models/users/users_model.dart';
 import 'package:fathers_prophets/data/services/cache_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,11 +16,11 @@ class QuizTableCubit extends Cubit<QuizTableStates> {
   static QuizTableCubit get(context) => BlocProvider.of(context);
 
   List<QuizzesScoreModel> quizzesScore = <QuizzesScoreModel>[];
-  List<UserModel> members = <UserModel>[];
   List<QuizzesModel> quizzes = <QuizzesModel>[];
-  var selectedMember = UserModel();
+  List<ClassModel> classes = <ClassModel>[];
+  var selectedMember = ClassUserModel();
   var selectedQuiz = QuizzesModel();
-  var selectedClass = "";
+  ClassModel selectedClass = ClassModel();
   TextEditingController nameController = TextEditingController();
   TextEditingController quizNumberController = TextEditingController();
   TextEditingController scoreController = TextEditingController();
@@ -32,6 +33,7 @@ class QuizTableCubit extends Cubit<QuizTableStates> {
     emit(OnLoading());
     try {
       quizzes = CacheHelper.getQuizzes();
+      classes = CacheHelper.getClasses();
       quizzesScore = await quizzesScoreUseCase.getQuizzesScore();
       emit(OnSuccess());
     } catch (e) {
@@ -63,7 +65,7 @@ class QuizTableCubit extends Cubit<QuizTableStates> {
     }
   }
 
-  void onSelectMember(UserModel member) {
+  void onSelectMember(ClassUserModel member) {
     selectedMember = member;
     emit(OnSelectMember());
   }
@@ -73,15 +75,9 @@ class QuizTableCubit extends Cubit<QuizTableStates> {
     emit(OnSelectQuiz());
   }
   
-  void onClassSelected(String classId) {
-    selectedClass = classId;
-    members = CacheHelper.getMembersByClassId(classId);
+  void onClassSelected(ClassModel item) {
+    selectedClass = item;
     emit(OnSelectClass());
-  }
-
-  void onSearchName() {
-    members.where((element) => element.name!.contains(nameController.text)).toList();
-    emit(OnSearch());
   }
 
   void onSearchScore() {

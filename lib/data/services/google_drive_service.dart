@@ -1,13 +1,11 @@
 import 'dart:io';
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:googleapis/drive/v3.dart' as drive;
 import 'package:googleapis_auth/auth_io.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
 
-import '../models/users/users_model.dart';
 
 class GoogleDriveUploader {
   final String serviceAccountJsonPath =
@@ -119,147 +117,5 @@ class GoogleDriveUploader {
     final driveApi = drive.DriveApi(authClient);
     await driveApi.files.delete(fileId);
     return "File deleted successfully";
-  }
-  Future<List<UserModel>> getUsersFromFileById(String fileId) async {
-    final authClient = await _getAuthClient();
-    if (authClient == null) return [];
-
-    final driveApi = drive.DriveApi(authClient);
-
-    final media = await driveApi.files.get(
-      fileId,
-      downloadOptions: drive.DownloadOptions.fullMedia,
-      supportsAllDrives: true,
-    ) as drive.Media;
-
-    final content = await media.stream.transform(utf8.decoder).join();
-
-    final List<dynamic> jsonList = json.decode(content);
-
-    final List<UserModel> users = jsonList.map((userJson) {
-      final uid = userJson['uid'] ?? DateTime.now().millisecondsSinceEpoch.toString();
-      return UserModel.fromJson(userJson, uid);
-    }).toList();
-
-    return users;
-  }
-  Future<void> addUserToJsonFile(String fileId, UserModel newUser) async {
-    final authClient = await _getAuthClient();
-    if (authClient == null) return;
-
-    final driveApi = drive.DriveApi(authClient);
-
-    // Step 1: Get current content
-    final media = await driveApi.files.get(
-      fileId,
-      downloadOptions: drive.DownloadOptions.fullMedia,
-      supportsAllDrives: true,
-    ) as drive.Media;
-
-    final content = await media.stream.transform(utf8.decoder).join();
-    final List<dynamic> jsonList = json.decode(content);
-
-    // Step 2: Add the new user
-    jsonList.add(newUser.toJson());
-
-    // Step 3: Convert to JSON bytes
-    final updatedJsonString = json.encode(jsonList);
-    final List<int> bytes = utf8.encode(updatedJsonString);
-
-    final mediaUpload = drive.Media(
-      Stream.fromIterable([bytes]),
-      bytes.length,
-    );
-
-    await driveApi.files.update(
-      drive.File(), // no changes to metadata
-      fileId,
-      uploadMedia: mediaUpload,
-    );
-  }
-
-  Future<void> updateUserInJsonFile(String fileId, UserModel updatedUser) async {
-    final authClient = await _getAuthClient();
-    if (authClient == null) return;
-
-    final driveApi = drive.DriveApi(authClient);
-
-    // Step 1: Download existing JSON file
-    final media = await driveApi.files.get(
-      fileId,
-      downloadOptions: drive.DownloadOptions.fullMedia,
-      supportsAllDrives: true,
-    ) as drive.Media;
-
-    final content = await media.stream.transform(utf8.decoder).join();
-    final List<dynamic> jsonList = json.decode(content);
-
-    // Step 2: Find user by uid and update
-    final index = jsonList.indexWhere((u) => u['uid'] == updatedUser.uid);
-    if (index != -1) {
-      jsonList[index] = updatedUser.toJson();
-    } else {
-      await addUserToJsonFile(fileId, updatedUser);
-      return;
-    }
-
-    // Step 3: Upload updated JSON file
-    final updatedJsonString = json.encode(jsonList);
-    final List<int> bytes = utf8.encode(updatedJsonString);
-    final mediaUpload = drive.Media(Stream.fromIterable([bytes]), bytes.length);
-
-    await driveApi.files.update(
-      drive.File(), // No metadata change
-      fileId,
-      uploadMedia: mediaUpload,
-    );
-
-    if (kDebugMode) {
-      print("✅ User '${updatedUser.uid}' updated successfully.");
-    }
-  }
-
-  Future<void> deleteUserFromJsonFile(String fileId, String uidToDelete) async {
-    final authClient = await _getAuthClient();
-    if (authClient == null) return;
-
-    final driveApi = drive.DriveApi(authClient);
-
-    // Step 1: Download existing JSON file
-    final media = await driveApi.files.get(
-      fileId,
-      downloadOptions: drive.DownloadOptions.fullMedia,
-      supportsAllDrives: true,
-    ) as drive.Media;
-
-    final content = await media.stream.transform(utf8.decoder).join();
-    final List<dynamic> jsonList = json.decode(content);
-
-    // Step 2: Remove user by uid
-    final initialLength = jsonList.length;
-    jsonList.removeWhere((user) => user['uid'] == uidToDelete);
-
-    // Step 3: If no user was removed, exit
-    if (jsonList.length == initialLength) {
-      if (kDebugMode) {
-        print("❌ No user with uid '$uidToDelete' found.");
-      }
-      return;
-    }
-
-    // Step 4: Upload updated JSON file
-    final updatedJsonString = json.encode(jsonList);
-    final List<int> bytes = utf8.encode(updatedJsonString);
-    final mediaUpload = drive.Media(Stream.fromIterable([bytes]), bytes.length);
-
-    await driveApi.files.update(
-      drive.File(),
-      fileId,
-      uploadMedia: mediaUpload,
-    );
-
-    if (kDebugMode) {
-      print("🗑️ User with uid '$uidToDelete' deleted successfully.");
-    }
   }
 }

@@ -17,3 +17,5 @@ class OnClassSelectedState extends ReviewUserStates{}
 
 class OnDeleteUser extends ReviewUserStates{}
 
+class OnGetData extends ReviewUserStates{}
+

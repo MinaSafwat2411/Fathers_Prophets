@@ -1,3 +1,4 @@
+import 'package:fathers_prophets/data/models/classes/class_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../data/models/users/users_model.dart';
 import '../../../../data/repositories/users/users_repository.dart';
@@ -11,7 +12,8 @@ class DashboardCubit extends Cubit<DashboardStates> {
   static DashboardCubit get(context) => BlocProvider.of(context);
 
   UserModel userData = UserModel();
-  List<UserModel> members = <UserModel>[];
+  List<ClassModel> classes = <ClassModel>[];
+  ClassModel selectedClass = ClassModel();
   List<UserModel> unReviewedMembers = <UserModel>[];
   final UsersUseCase usersUseCase = UsersUseCase(UserRepository());
 
@@ -31,13 +33,13 @@ class DashboardCubit extends Cubit<DashboardStates> {
   void getAllData()async {
     emit(OnLoading());
     userData = CacheHelper.getUserData();
-    members = [];
+    classes = CacheHelper.getClasses();
     await getUnReviewedMembers();
     emit(OnSuccess());
   }
-  void onSelectClass(String id){
+  void onSelectClass(ClassModel item){
     emit(OnLoading());
-    members = CacheHelper.getMembersByClassId(id);
+    selectedClass = item;
     emit(OnSuccess());
   }
 

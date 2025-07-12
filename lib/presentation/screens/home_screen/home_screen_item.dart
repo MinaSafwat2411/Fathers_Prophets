@@ -80,7 +80,7 @@ class HomeScreenItem extends StatelessWidget {
                             ),
                             SizedBox(height: 4),
                             Text(
-                              "${events[index].title ?? ""} ${cubit.formatDateEvent(events[index].dateTime ?? DateTime.now(), context.read<LocaleCubit>().lang)}",
+                              "${events[index].nameAr ?? ""} ${cubit.formatDateEvent(events[index].dateTime ?? DateTime.now(), context.read<LocaleCubit>().lang)}",
                             ),
                           ],
                         ),

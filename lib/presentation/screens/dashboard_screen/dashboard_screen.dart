@@ -1,4 +1,6 @@
 import 'package:fathers_prophets/core/utils/app_colors.dart';
+import 'package:fathers_prophets/data/models/classes/class_model.dart';
+import 'package:fathers_prophets/data/models/classes/class_user_model.dart';
 import 'package:fathers_prophets/presentation/cubit/layout/cubit/layout_cubit.dart';
 import 'package:fathers_prophets/presentation/cubit/local/cubit/local_cubit.dart';
 import 'package:flutter/material.dart';
@@ -45,42 +47,12 @@ class DashboardScreen extends StatelessWidget {
                                 borderSide: BorderSide(color: AppColors.azureRadiance)
                             )
                         ),
-                        dropdownMenuEntries: [
-                          DropdownMenuEntry<String>(
-                            value: "2uli6QXyKY8VrpjMz99H",
-                            label: "ابونا ابراهيم",
-                          ),
-                          DropdownMenuEntry<String>(
-                            value: "8aB4mDsvky0FbzOQwfTU",
-                            label: "دانيال النبي",
-                          ),
-                          DropdownMenuEntry<String>(
-                            value: "9l6zfZIO1C6OavYCvuRV",
-                            label: "امنا سارة",
-                          ),
-                          DropdownMenuEntry<String>(
-                            value: "bCkH6KkCRnEDMk5Ea6sf",
-                            label: "حنه النبيه",
-                          ),
-                          DropdownMenuEntry<String>(
-                            value: "el2A2Mjm45SU5jliE29g",
-                            label: "دبورة النبية",
-                          ),
-                          DropdownMenuEntry<String>(
-                            value: "f0nBkPZu9OJbQ0Hstqij",
-                            label: "امنا رفقة",
-                          ),
-                          DropdownMenuEntry<String>(
-                            value: "fE4xWCz3bvBhyZeMuk7g",
-                            label: "ابونا اسحق",
-                          ),
-                          DropdownMenuEntry<String>(
-                            value: "nXB5fzKgjVkIrVrXrLDo",
-                            label: "موسي النبي",
-                          ),
-                        ],
+                        dropdownMenuEntries:cubit.classes.map((e) => DropdownMenuEntry<ClassModel>(
+                          label: e.name??"",
+                          value: e
+                        ),).toList(),
                         onSelected: (value) {
-                          cubit.onSelectClass(value.toString());
+                          cubit.onSelectClass(value ??ClassModel());
                         },
                         width: double.infinity,
                         hintText: localize.translate("select_class"),
@@ -94,45 +66,51 @@ class DashboardScreen extends StatelessWidget {
                       ),
                     ),
                     state is! OnLoading? Expanded(
-                      child: ListView(
-                        children: [
-                          for(var item in cubit.members) TextButton(onPressed: ()async {
-                            var res= await context.pushNamed(AppRoutes.userDetails.name, extra: {'user':item.copyWith(isReviewed: true),
-                              'football':context.read<LayoutCubit>().footballEvents.length,
-                              'volleyball':context.read<LayoutCubit>().volleyballEvents.length,
-                              'pingPong':context.read<LayoutCubit>().pingPongEvents.length,
-                              'chess':context.read<LayoutCubit>().chessEvents.length,
-                              'melodies':context.read<LayoutCubit>().melodiesEvents.length,
-                              'choir':context.read<LayoutCubit>().choirEvents.length,
-                              'ritual':context.read<LayoutCubit>().ritualEvents.length,
-                              'coptic':context.read<LayoutCubit>().copticEvents.length,
-                              'doctrine':context.read<LayoutCubit>().doctrineEvents.length,
-                              'bible':context.read<LayoutCubit>().bibleEvents.length,
-                              'pray':context.read<LayoutCubit>().prayEvents.length,
-                              'praise':context.read<LayoutCubit>().praiseEvents.length,
-                            });
-                            if(res != null){
-                              cubit.getAllData();
-                            }
-                          }, child: Card(child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(item.name??'', style: textTheme.bodyLarge,),
-                              ],
-                            ),
-                          )))
-                          ]
+                      child: RefreshIndicator(
+                        onRefresh: ()async => cubit.getAllData(),
+                        child: ListView(
+                          children: [
+                            for(var item in (cubit.selectedClass.members??<ClassUserModel>[])) TextButton(onPressed: ()async {
+                              var res= await context.pushNamed(AppRoutes.userDetails.name, extra: {'uid':item.uid,
+                                'football':context.read<LayoutCubit>().footballEvents.length,
+                                'volleyball':context.read<LayoutCubit>().volleyballEvents.length,
+                                'pingPong':context.read<LayoutCubit>().pingPongEvents.length,
+                                'chess':context.read<LayoutCubit>().chessEvents.length,
+                                'melodies':context.read<LayoutCubit>().melodiesEvents.length,
+                                'choir':context.read<LayoutCubit>().choirEvents.length,
+                                'ritual':context.read<LayoutCubit>().ritualEvents.length,
+                                'coptic':context.read<LayoutCubit>().copticEvents.length,
+                                'doctrine':context.read<LayoutCubit>().doctrineEvents.length,
+                                'bible':context.read<LayoutCubit>().bibleEvents.length,
+                                'pray':context.read<LayoutCubit>().prayEvents.length,
+                                'praise':context.read<LayoutCubit>().praiseEvents.length,
+                              });
+                              if(res != null){
+                                cubit.getAllData();
+                              }
+                            }, child: Card(child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.max,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(item.name??'', style: textTheme.bodyLarge,),
+                                ],
+                              ),
+                            )))
+                            ]
+                        ),
                       ),
                     ):
                     Expanded(
-                      child: Center(
-                        child: CircularProgressIndicator(
-                            strokeWidth: 1,
-                            backgroundColor: AppColors.transparent,
-                            color: context.read<LocaleCubit>().isDark? AppColors.white: AppColors.mirage
+                      child: RefreshIndicator(
+                        onRefresh: ()async =>cubit.getAllData() ,
+                        child: Center(
+                          child: CircularProgressIndicator(
+                              strokeWidth: 1,
+                              backgroundColor: AppColors.transparent,
+                              color: context.read<LocaleCubit>().isDark? AppColors.white: AppColors.mirage
+                          ),
                         ),
                       ),
                     )
@@ -146,7 +124,7 @@ class DashboardScreen extends StatelessWidget {
                       child: ListView(
                           children: [
                             for(var item in cubit.unReviewedMembers) TextButton(onPressed: ()async {
-                              var res = await context.pushNamed(AppRoutes.userDetails.name, extra: {'user':item.copyWith(isReviewed: false),
+                              var res = await context.pushNamed(AppRoutes.userDetails.name, extra: {'uid':item.uid,
                                 'football':context.read<LayoutCubit>().footballEvents.length,
                                 'volleyball':context.read<LayoutCubit>().volleyballEvents.length,
                                 'pingPong':context.read<LayoutCubit>().pingPongEvents.length,

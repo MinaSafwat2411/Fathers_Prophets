@@ -42,9 +42,10 @@ class AddEventAttendance extends StatelessWidget {
         builder: (context, state) => Scaffold(
           appBar: AppBar(
             title: Text(
-              "${event.title ?? ''} ${cubit.formatDate(event.dateTime ?? DateTime.now(), context.read<LocaleCubit>().lang)}",
+              event.nameAr ?? '',
               style: textTheme.titleLarge,
             ),
+            centerTitle: true,
             leading: IconButton(onPressed: () {
               cubit.onRest();
               context.pop();
@@ -62,6 +63,11 @@ class AddEventAttendance extends StatelessWidget {
                 mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  Text(
+                    "${event.title ?? ''} ${cubit.formatDate(event.dateTime ?? DateTime.now(), context.read<LocaleCubit>().lang)}",
+                    style: textTheme.titleMedium,
+                  ),
+                  SizedBox(height: 8,),
                   Card(
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(12),

@@ -207,7 +207,7 @@ final GoRouter router = GoRouter(
       builder: (context, state) {
         final extra = state.extra as Map<String, dynamic>;
         return UserDetailsScreen(
-          user: extra['user'] as UserModel,
+          uid: extra['uid'] as String,
           football: extra['football'] as int,
           volleyball: extra['volleyball'] as int,
           pingPong: extra['pingPong'] as int,

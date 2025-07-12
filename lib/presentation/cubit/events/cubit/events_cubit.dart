@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:fathers_prophets/data/models/classes/class_model.dart';
+import 'package:fathers_prophets/data/models/classes/class_user_model.dart';
 import 'package:fathers_prophets/data/models/events/events_model.dart';
 import 'package:fathers_prophets/data/models/users/users_model.dart';
 import 'package:fathers_prophets/data/repositories/eventattendance/event_attendance_repository.dart';
@@ -32,13 +33,12 @@ class EventsCubit extends Cubit<EventsStates> {
   DateTime? selectedDate;
   var event = EventsModel();
   var title = "";
-  List<UserModel> members = <UserModel>[];
-  List<UserModel> filteredMembers = <UserModel>[];
   TextEditingController titleController = TextEditingController();
   TextEditingController searchController = TextEditingController();
   File? image;
   List<AttendanceEventModel> selectedMembers = [];
-  List<ClassModel> classes = [];
+  List<ClassModel> classes = <ClassModel>[];
+  List<ClassModel> filteredClasses = <ClassModel>[];
   int currentIndex = 0;
   var userData = UserModel();
 
@@ -49,24 +49,44 @@ class EventsCubit extends Cubit<EventsStates> {
 
   void getAllMembers() async{
     classes = CacheHelper.getClasses();
+    filteredClasses = classes;
     userData = CacheHelper.getUserData();
-    members = CacheHelper.getMembers();
-    filteredMembers = members;
     selectedMembers.clear();
     emit(GetAllMembersState());
   }
 
+  void onRefresh(){
+    classes = CacheHelper.getClasses();
+    filteredClasses = classes;
+    userData = CacheHelper.getUserData();
+    searchController.clear();
+    emit(GetAllMembersState());
+  }
 
-  void onSearch(String value)async{
-    emit(OnLoading());
+
+  void onSearch(String value) async {
     searchController.text = value;
-    if(value !=''){
-      filteredMembers = members.where((element) => element.name!.toLowerCase().contains(value.toLowerCase())).toList();
-    }else{
-      filteredMembers = members;
-    }
-    await Future.delayed(Duration(seconds: 3), () {
-    });
+    final query = value.trim().toLowerCase();
+
+    filteredClasses = classes
+        .map((classModel) {
+      final matchedMembers = classModel.members
+          ?.where((member) =>
+      member.name?.toLowerCase().contains(query) ?? false)
+          .toList();
+
+      if (matchedMembers != null && matchedMembers.isNotEmpty) {
+        return ClassModel(
+          name: classModel.name,
+          docId: classModel.docId,
+          members: matchedMembers,
+        );
+      }
+      return null;
+    })
+        .whereType<ClassModel>() // removes any nulls
+        .toList();
+
     emit(OnSearch());
   }
 
@@ -79,12 +99,12 @@ class EventsCubit extends Cubit<EventsStates> {
     selectedEvent = value;
     emit(SelectEventState());
   }
-  void onAddMember(UserModel member){
+  void onAddMember(ClassUserModel member){
     selectedMembers.add(AttendanceEventModel(userId: member.uid, name: member.name));
     emit(OnAddMember());
   }
 
-  void onRemoveMember(UserModel member){
+  void onRemoveMember(ClassUserModel member){
     selectedMembers.removeAt(selectedMembers.indexWhere((element) => element.userId == member.uid));
     emit(OnAddMember());
   }
@@ -352,7 +372,6 @@ class EventsCubit extends Cubit<EventsStates> {
         }
         default: break;
       }
-      await CacheHelper.saveMembers(members);
     }catch(e){
       emit(OnError(e.toString()));
     }
