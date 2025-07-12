@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/constants/firebase_endpoints.dart';
 import '../../../core/localization/app_localizations.dart';
 import '../../../core/widgets/custom_snackbar.dart';
 import '../../../data/services/cache_helper.dart';
@@ -20,6 +21,7 @@ class SplashScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     var cubit = SplashCubit.get(context);
     final localize = AppLocalizations.of(context);
+    var textTheme = Theme.of(context).textTheme;
     return BlocConsumer<SplashCubit, SplashStates>(
       builder: (context, state) =>  Scaffold(
         body: Center(
@@ -49,6 +51,10 @@ class SplashScreen extends StatelessWidget {
                       text: localize.translate('refresh'),
                       btnColor: AppColors.red,
                     ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 24),
+                    child: Text("${localize.translate('version')} ${FirebaseEndpoints.version}",style: textTheme.labelMedium),
                   )
                 ],
               ),
