@@ -71,7 +71,7 @@ class MyApp extends StatelessWidget {
           BlocProvider(create: (context) => EventsCubit()..getAllMembers()),
           BlocProvider(create: (context) => DashboardCubit()..getAllData()),
           BlocProvider(create: (context) => ForgotPasswordCubit(),),
-          BlocProvider(create: (context) => AddMemberCubit(),),
+          BlocProvider(create: (context) => AddMemberCubit()..getData(),),
           BlocProvider(create: (context) => ReviewUserCubit()..getData(),),
           BlocProvider(create: (context) => PinCubit(),),
           BlocProvider(create: (context) => QuizTableCubit()..getAllQuizzesScore(),)

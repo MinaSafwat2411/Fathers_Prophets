@@ -105,7 +105,7 @@ class EventDetails extends StatelessWidget {
                                           Padding(
                                             padding: const EdgeInsets.all(8.0),
                                             child: Text(
-                                              "${events[index].title ?? ''} ${cubit.formatDateEvent(events[index].dateTime ?? DateTime.now(), context.read<LocaleCubit>().lang)}",
+                                              "${events[index].nameAr ?? ''} ${cubit.formatDateEvent(events[index].dateTime ?? DateTime.now(), context.read<LocaleCubit>().lang)}",
                                               style: textTheme.titleSmall,
                                             ),
                                           ),

@@ -1,3 +1,4 @@
+import 'package:fathers_prophets/data/models/classes/class_model.dart';
 import 'package:fathers_prophets/data/models/classes/class_user_model.dart';
 import 'package:fathers_prophets/data/models/users/users_model.dart';
 import 'package:fathers_prophets/data/repositories/classes/class_repository.dart';
@@ -17,7 +18,8 @@ class AddMemberCubit extends Cubit<AddMemberStates>{
   static AddMemberCubit get(context) => BlocProvider.of(context);
 
   var member = UserModel();
-  var classId = "";
+  List<ClassModel> classes= <ClassModel>[];
+  ClassModel selectedClass = ClassModel();
   TextEditingController nameController = TextEditingController();
   UsersUseCase usersUseCase = UsersUseCase(UserRepository());
   ClassesUseCase classesUseCase = ClassesUseCase(ClassRepository());
@@ -26,12 +28,12 @@ class AddMemberCubit extends Cubit<AddMemberStates>{
   void addMember()async{
     emit(OnLoading());
     try{
-      member = member.copyWith(name: nameController.text,classId: classId,isReviewed: true);
+      member = member.copyWith(name: nameController.text,classId: selectedClass.docId,isReviewed: true);
       var result = await usersUseCase.addNewMemberByDocId(member);
       member = member.copyWith(uid: result ??"");
       var classes = CacheHelper.getClasses();
       for(var i = 0; i<classes.length;i++){
-        if(classes[i].docId==classId){
+        if(classes[i].docId==selectedClass.docId){
           classes[i].members?.add(ClassUserModel(
             isTeacher: false,
             uid: member.uid,
@@ -43,17 +45,19 @@ class AddMemberCubit extends Cubit<AddMemberStates>{
         }
       }
       await CacheHelper.saveClasses(classes);
-
       nameController.clear();
-      classId = "";
       emit(OnSuccess());
     }catch(e){
       emit(OnError(e.toString()));
     }
   }
 
-  void onSelectClass(String value){
-    classId = value;
+  void  getData(){
+    classes = CacheHelper.getClasses();
+    emit(OnGetData());
+  }
+  void onSelectClass(ClassModel item){
+    selectedClass = item;
     emit(OnSelectClass());
   }
 }

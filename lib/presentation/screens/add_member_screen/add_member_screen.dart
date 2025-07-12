@@ -1,6 +1,7 @@
 import 'package:fathers_prophets/core/widgets/custom_big_textfield.dart';
 import 'package:fathers_prophets/core/widgets/custom_button.dart';
 import 'package:fathers_prophets/core/widgets/custom_loading.dart';
+import 'package:fathers_prophets/data/models/classes/class_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -53,42 +54,12 @@ class AddMemberScreen extends StatelessWidget {
                                 borderSide: BorderSide(color: AppColors.azureRadiance)
                             )
                         ),
-                        dropdownMenuEntries: [
-                          DropdownMenuEntry<String>(
-                            value: "2uli6QXyKY8VrpjMz99H",
-                            label: "ابونا ابراهيم",
-                          ),
-                          DropdownMenuEntry<String>(
-                            value: "8aB4mDsvky0FbzOQwfTU",
-                            label: "دانيال النبي",
-                          ),
-                          DropdownMenuEntry<String>(
-                            value: "9l6zfZIO1C6OavYCvuRV",
-                            label: "امنا سارة",
-                          ),
-                          DropdownMenuEntry<String>(
-                            value: "bCkH6KkCRnEDMk5Ea6sf",
-                            label: "حنه النبيه",
-                          ),
-                          DropdownMenuEntry<String>(
-                            value: "el2A2Mjm45SU5jliE29g",
-                            label: "دبورة النبية",
-                          ),
-                          DropdownMenuEntry<String>(
-                            value: "f0nBkPZu9OJbQ0Hstqij",
-                            label: "امنا رفقة",
-                          ),
-                          DropdownMenuEntry<String>(
-                            value: "fE4xWCz3bvBhyZeMuk7g",
-                            label: "ابونا اسحق",
-                          ),
-                          DropdownMenuEntry<String>(
-                            value: "nXB5fzKgjVkIrVrXrLDo",
-                            label: "موسي النبي",
-                          ),
-                        ],
+                        dropdownMenuEntries: cubit.classes.map((e) => DropdownMenuEntry<ClassModel>(
+                          value: e,
+                          label: e.name??"",
+                        ),).toList(),
                         onSelected: (value) {
-                          cubit.onSelectClass(value??"");
+                          cubit.onSelectClass(value ??ClassModel());
                         },
                         width: double.infinity,
                         hintText: localize.translate("select_class"),
@@ -104,7 +75,7 @@ class AddMemberScreen extends StatelessWidget {
                       CustomButton(
                           onPressed: () => cubit.addMember(),
                           text: localize.translate("add_member"),
-                          isEnabled: cubit.nameController.text.isNotEmpty && cubit.classId!= '',
+                          isEnabled: cubit.nameController.text.isNotEmpty && cubit.selectedClass.docId!= '',
                           btnColor: AppColors.green,
                           height: 56,
                           isDark: context.read<LocaleCubit>().isDark
@@ -118,7 +89,6 @@ class AddMemberScreen extends StatelessWidget {
           ),
         ),
         listener: (context, state) {
-
         },
     );
   }

@@ -12,3 +12,5 @@ class OnError extends AddMemberStates {
 }
 
 class OnSelectClass extends AddMemberStates {}
+
+class OnGetData extends AddMemberStates {}
