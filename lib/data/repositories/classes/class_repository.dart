@@ -1,17 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fathers_prophets/core/constants/firebase_endpoints.dart';
 import 'package:fathers_prophets/data/models/classes/class_model.dart';
 import 'package:fathers_prophets/data/models/classes/class_user_model.dart';
 
 class ClassRepository {
   Future<List<ClassModel>?> getAllClasses() async {
     final snapshot =
-    await FirebaseFirestore.instance.collection("Classes").get();
+    await FirebaseFirestore.instance.collection(FirebaseEndpoints.classes).get();
     return snapshot.docs
         .map((doc) => ClassModel.fromJson(doc.data(), doc.id))
         .toList();
   }
   Future<String?> addNewClass(ClassModel classModel)async{
-    final snapshot = await FirebaseFirestore.instance.collection("Classes").add(classModel.toJson());
+    final snapshot = await FirebaseFirestore.instance.collection(FirebaseEndpoints.classes).add(classModel.toJson());
     return snapshot.id;
   }
   Future<void> updateClass(ClassModel classModel) async {
@@ -30,7 +31,7 @@ class ClassRepository {
       }
     }
 
-    await FirebaseFirestore.instance.collection("Classes").doc(classModel.docId).set({
+    await FirebaseFirestore.instance.collection(FirebaseEndpoints.classes).doc(classModel.docId).set({
       'members': FieldValue.arrayUnion(members),
       'servants': FieldValue.arrayUnion(servants),
       'name': classModel.name,
@@ -41,13 +42,12 @@ class ClassRepository {
     final userMap = {
       'name': member.name,
       'uid': member.uid,
-      'isTeacher': member.isTeacher,
     };
 
     final fieldToUpdate = (member.isTeacher ?? false) ? 'servants' : 'members';
 
     await FirebaseFirestore.instance
-        .collection("Classes")
+        .collection(FirebaseEndpoints.classes)
         .doc(classModel.docId)
         .set({
       fieldToUpdate: FieldValue.arrayRemove([userMap])
@@ -55,11 +55,11 @@ class ClassRepository {
   }
 
   Future<void> deleteClass(String id)async{
-    await FirebaseFirestore.instance.collection("Classes").doc(id).delete();
+    await FirebaseFirestore.instance.collection(FirebaseEndpoints.classes).doc(id).delete();
   }
 
   Future<ClassModel?> getClassById(String id)async{
-    final snapshot = await FirebaseFirestore.instance.collection("Classes").doc(id).get();
+    final snapshot = await FirebaseFirestore.instance.collection(FirebaseEndpoints.classes).doc(id).get();
     return ClassModel.fromJson(snapshot.data()!,snapshot.id);
   }
 }

@@ -34,15 +34,31 @@ class ReviewUserCubit extends Cubit<ReviewUserStates>{
     try{
       user = user.copyWith(name: nameController.text,role: role.text);
       await usersUseCase.updateUser(user);
-      for(var i = 0; i<classes.length;i++){
-        if(classes[i].docId==classId){
-          classes[i].members?.add(ClassUserModel(
-              isTeacher: user.isTeacher,
-              uid: user.uid,
-              name: user.name
-          ));
-          await classesUseCase.updateClass(classes[i]);
-          break;
+      if(user.isTeacher??false){
+        for(var i = 0; i<classes.length;i++){
+          if(classes[i].docId==classId){
+            classes[i].members?.removeWhere((element) => element.uid==user.uid);
+            classes[i].servants?.add(ClassUserModel(
+                isTeacher: user.isTeacher,
+                uid: user.uid,
+                name: user.name
+            ));
+            await classesUseCase.updateClass(classes[i]);
+            break;
+          }
+        }
+      }else{
+        for(var i = 0; i<classes.length;i++){
+          if(classes[i].docId==classId){
+            classes[i].servants?.removeWhere((element) => element.uid==user.uid);
+            classes[i].members?.add(ClassUserModel(
+                isTeacher: user.isTeacher,
+                uid: user.uid,
+                name: user.name
+            ));
+            await classesUseCase.updateClass(classes[i]);
+            break;
+          }
         }
       }
       await CacheHelper.saveClasses(classes);
@@ -77,16 +93,21 @@ class ReviewUserCubit extends Cubit<ReviewUserStates>{
       await usersUseCase.deleteMember(user.uid??"");
       for(var i = 0; i<classes.length;i++){
         if(classes[i].docId==classId){
-          classes[i].members?.remove(ClassUserModel(
-              isTeacher: user.isTeacher,
-              uid: user.uid,
-              name: user.name
-          ));
-          await classesUseCase.removerMember(classes[i],ClassUserModel(
-              isTeacher: user.isTeacher,
-              uid: user.uid,
-              name: user.name
-          ));
+          if(user.isTeacher??false){
+            classes[i].servants?.removeWhere((element) => element.uid==user.uid,);
+            await classesUseCase.removerMember(classes[i],ClassUserModel(
+                isTeacher: user.isTeacher,
+                uid: user.uid,
+                name: user.name
+            ));
+          }else{
+            classes[i].members?.removeWhere((element) => element.uid==user.uid,);
+            await classesUseCase.removerMember(classes[i],ClassUserModel(
+                isTeacher: user.isTeacher,
+                uid: user.uid,
+                name: user.name
+            ));
+          }
           break;
         }
       }

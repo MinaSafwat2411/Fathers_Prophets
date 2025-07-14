@@ -43,7 +43,10 @@ class OnboardingCubit extends Cubit<OnboardingStates> {
     'assets/images/ic_onboarding_dark_5.webp',
   ];
 
-  void onPageChanged(int index) {
+  void onPageChanged(int index) async{
+    await pageController.animateToPage(index,curve: Curves.fastOutSlowIn,duration: Duration(
+      milliseconds: 500
+    ));
     currentIndex = index;
     switch (currentIndex) {
       case 4:
