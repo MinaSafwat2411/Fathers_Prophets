@@ -13,6 +13,8 @@ import '../../../core/widgets/custom_button.dart';
 import '../../cubit/events/states/events_states.dart';
 import '../../cubit/local/cubit/local_cubit.dart';
 import 'event_enum.dart';
+import 'package:fathers_prophets/core/widgets/custom_snackbar.dart';
+
 
 class AddEventScreen extends StatelessWidget {
   const AddEventScreen({super.key});
@@ -208,6 +210,14 @@ class AddEventScreen extends StatelessWidget {
       listener: (context, state) {
         if (state is OnSuccess) {
           context.pop(true);
+        }
+        if (state is OnError) {
+          showCustomSnackBar(
+              context,
+              state.error,
+              icon: Icons.error_outline,
+              color: AppColors.red
+          );
         }
       },
     );

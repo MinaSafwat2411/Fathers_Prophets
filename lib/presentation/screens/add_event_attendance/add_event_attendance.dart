@@ -201,7 +201,7 @@ class AddEventAttendance extends StatelessWidget {
                                 );
                               },
                               text: localize.translate('save'),
-                              isEnabled: cubit.selectedMembers.isNotEmpty,
+                              isEnabled: true,
                               btnColor: AppColors.green,
                               height: 56,
                               isDark: false,

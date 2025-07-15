@@ -9,11 +9,10 @@ class EventsRepository {
     if (snapshot.docs.isEmpty) {
       return [];
     } else {
-      var index = -1;
       return snapshot.docs
           .map(
             (doc) =>
-            EventsModel.fromJson(doc.data(), doc.id, FirebaseEndpoints.pingPong != event ? event.toLowerCase() : FirebaseEndpoints.pingpong, index++),
+            EventsModel.fromJson(doc.data(), doc.id, FirebaseEndpoints.pingPong != event ? event.toLowerCase() : FirebaseEndpoints.pingpong),
       )
           .toList();
     }

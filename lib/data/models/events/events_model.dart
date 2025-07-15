@@ -8,7 +8,6 @@ class EventsModel {
   final String? docId;
   final List<String>? attendance;
   DateTime? dateTime;
-  int? index;
 
   EventsModel({
     this.nameAr,
@@ -19,10 +18,9 @@ class EventsModel {
     this.docId,
     this.dateTime,
     this.attendance,
-    this.index
   });
 
-  factory EventsModel.fromJson(Map<String, dynamic> json, String id,String nameEn,int index) {
+  factory EventsModel.fromJson(Map<String, dynamic> json, String id,String nameEn) {
     return EventsModel(
       nameAr: json['name'],
       title: json['title'],
@@ -32,7 +30,6 @@ class EventsModel {
       dateTime: DateTime.parse(json['date']),
       nameEn: nameEn,
       attendance: (json['attendance'] as List<dynamic>?)?.map((e) => e as String).toList(),
-      index: index
     );
   }
 

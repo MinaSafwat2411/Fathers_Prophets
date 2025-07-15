@@ -124,6 +124,7 @@ class EventsCubit extends Cubit<EventsStates> {
 
   void onSubmit() async {
     emit(OnLoading());
+   
     event = event.copyWith(
       title: titleController.text,
       image: image != null?await googleDriveUploader.uploadFileToDrive(
@@ -268,13 +269,12 @@ class EventsCubit extends Cubit<EventsStates> {
 
   Future<void> onEventAttendance(String event,String title,EventsModel eventModel)async{
     emit(OnLoading());
-    var index =eventModel.index??-1;
     try{
       for(var element in selectedMembers){
         try{
           await eventsAttendanceUseCase.addEventAttendance(element.userId ?? "", event, title);
         }catch(e){
-          emit(OnError(e.toString()));
+          emit(OnError("${element.name} didn't attend"));
         }
       }
       final currentAttendance = eventModel.attendance ?? [];
@@ -289,6 +289,7 @@ class EventsCubit extends Cubit<EventsStates> {
         case 'football':{
           await eventsUseCase.addEventAttendance(selectedMembers.map((e) => e.name??"").toList(), event,FirebaseEndpoints.football);
           var football = CacheHelper.getEvents('football');
+          var index = football.indexWhere((element) => element.docId == event);
           football[index] = this.event;
           await CacheHelper.saveEvents(football, 'football');
           break;
@@ -296,6 +297,7 @@ class EventsCubit extends Cubit<EventsStates> {
         case 'volleyball':{
           await eventsUseCase.addEventAttendance(selectedMembers.map((e) => e.name??"").toList(), event,FirebaseEndpoints.volleyball);
           var volleyball = CacheHelper.getEvents('volleyball');
+          var index = volleyball.indexWhere((element) => element.docId == event);
           volleyball[index] = this.event;
           await CacheHelper.saveEvents(volleyball, 'volleyball');
           break;
@@ -303,6 +305,7 @@ class EventsCubit extends Cubit<EventsStates> {
         case 'bible':{
           await eventsUseCase.addEventAttendance(selectedMembers.map((e) => e.name??"").toList(), event,FirebaseEndpoints.bible);
           var bible = CacheHelper.getEvents('bible');
+          var index = bible.indexWhere((element) => element.docId == event);
           bible[index] = this.event;
           await CacheHelper.saveEvents(bible, 'bible');
           break;
@@ -310,6 +313,7 @@ class EventsCubit extends Cubit<EventsStates> {
         case 'ritual':{
           await eventsUseCase.addEventAttendance(selectedMembers.map((e) => e.name??"").toList(), event,FirebaseEndpoints.ritual);
           var ritual = CacheHelper.getEvents('ritual');
+          var index = ritual.indexWhere((element) => element.docId == event);
           ritual[index] = this.event;
           await CacheHelper.saveEvents(ritual, 'ritual');
           break;
@@ -317,6 +321,7 @@ class EventsCubit extends Cubit<EventsStates> {
         case 'doctrine':{
           await eventsUseCase.addEventAttendance(selectedMembers.map((e) => e.name??"").toList(), event,FirebaseEndpoints.doctrine);
           var doctrine = CacheHelper.getEvents('doctrine');
+          var index = doctrine.indexWhere((element) => element.docId == event);
           doctrine[index] = this.event;
           await CacheHelper.saveEvents(doctrine, 'doctrine');
           break;
@@ -324,6 +329,7 @@ class EventsCubit extends Cubit<EventsStates> {
         case 'coptic':{
           await eventsUseCase.addEventAttendance(selectedMembers.map((e) => e.name??"").toList(), event,FirebaseEndpoints.coptic);
           var coptic = CacheHelper.getEvents('coptic');
+          var index = coptic.indexWhere((element) => element.docId == event);
           coptic[index] = this.event;
           await CacheHelper.saveEvents(coptic, 'coptic');
           break;
@@ -331,6 +337,7 @@ class EventsCubit extends Cubit<EventsStates> {
         case 'choir':{
           await eventsUseCase.addEventAttendance(selectedMembers.map((e) => e.name??"").toList(), event,FirebaseEndpoints.choir);
           var choir = CacheHelper.getEvents('choir');
+          var index = choir.indexWhere((element) => element.docId == event);
           choir[index] = this.event;
           await CacheHelper.saveEvents(choir, 'choir');
           break;
@@ -338,6 +345,7 @@ class EventsCubit extends Cubit<EventsStates> {
         case 'chess':{
           await eventsUseCase.addEventAttendance(selectedMembers.map((e) => e.name??"").toList(), event,FirebaseEndpoints.chess);
           var chess = CacheHelper.getEvents('chess');
+          var index = chess.indexWhere((element) => element.docId == event);
           chess[index] = this.event;
           await CacheHelper.saveEvents(chess, 'chess');
           break;
@@ -345,6 +353,7 @@ class EventsCubit extends Cubit<EventsStates> {
         case 'pingPong':{
           await eventsUseCase.addEventAttendance(selectedMembers.map((e) => e.name??"").toList(), event,FirebaseEndpoints.pingPong);
           var pingPong = CacheHelper.getEvents('pingPong');
+          var index = pingPong.indexWhere((element) => element.docId == event);
           pingPong[index] = this.event;
           await CacheHelper.saveEvents(pingPong, 'pingPong');
           break;
@@ -352,6 +361,7 @@ class EventsCubit extends Cubit<EventsStates> {
         case 'melodies':{
           await eventsUseCase.addEventAttendance(selectedMembers.map((e) => e.name??"").toList(), event,FirebaseEndpoints.melodies);
           var melodies = CacheHelper.getEvents('melodies');
+          var index = melodies.indexWhere((element) => element.docId == event);
           melodies[index] = this.event;
           await CacheHelper.saveEvents(melodies, 'melodies');
           break;
@@ -359,6 +369,7 @@ class EventsCubit extends Cubit<EventsStates> {
         case 'pray':{
           await eventsUseCase.addEventAttendance(selectedMembers.map((e) => e.name??"").toList(), event,FirebaseEndpoints.pray);
           var pray = CacheHelper.getEvents('pray');
+          var index = pray.indexWhere((element) => element.docId == event);
           pray[index] = this.event;
           await CacheHelper.saveEvents(pray, 'pray');
           break;
@@ -366,6 +377,7 @@ class EventsCubit extends Cubit<EventsStates> {
         case 'praise':{
           await eventsUseCase.addEventAttendance(selectedMembers.map((e) => e.name??"").toList(), event,FirebaseEndpoints.praise);
           var praise = CacheHelper.getEvents('praise');
+          var index = praise.indexWhere((element) => element.docId == event);
           praise[index] = this.event;
           await CacheHelper.saveEvents(praise, 'praise');
           break;
@@ -373,6 +385,7 @@ class EventsCubit extends Cubit<EventsStates> {
         default: break;
       }
     }catch(e){
+      print(e.toString());
       emit(OnError(e.toString()));
     }
     emit(OnSuccess());

@@ -1,28 +1,23 @@
 import 'dart:io';
-import 'dart:convert';
-import 'package:flutter/services.dart' show rootBundle;
-import 'package:googleapis/drive/v3.dart' as drive;
-import 'package:googleapis_auth/auth_io.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:file_picker/file_picker.dart';
 
+import 'package:file_picker/file_picker.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:googleapis/drive/v3.dart' as drive;
+import 'package:http/http.dart' as http;
+import 'package:http/io_client.dart';
+import 'package:image_picker/image_picker.dart';
 
 class GoogleDriveUploader {
-  final String serviceAccountJsonPath =
-      'assets/json/fathers-prophets-458809-577830d3f74d.json';
-  final String folderId = '18b8OqS14QkOxQ6KqX2cKxzJD0t8ByUYM';
+  final GoogleSignIn _googleSignIn = GoogleSignIn(
+    scopes: [drive.DriveApi.driveFileScope],
+  );
 
+  Future<http.Client?> _getAuthClient() async {
+    final account = await _googleSignIn.signIn();
+    if (account == null) return null;
 
-
-  Future<void> init() async {
-    await _getAuthClient();
-  }
-  Future<AuthClient?> _getAuthClient() async {
-    final jsonString = await rootBundle.loadString(serviceAccountJsonPath);
-    final credentials =
-    ServiceAccountCredentials.fromJson(json.decode(jsonString));
-    return await clientViaServiceAccount(
-        credentials, [drive.DriveApi.driveFileScope]);
+    final authHeaders = await account.authHeaders;
+    return GoogleAuthClient(authHeaders);
   }
 
   Future<String?> uploadFileToDrive(File file, String fileName) async {
@@ -32,9 +27,7 @@ class GoogleDriveUploader {
     final driveApi = drive.DriveApi(authClient);
     final media = drive.Media(file.openRead(), file.lengthSync());
 
-    final driveFile = drive.File()
-      ..name = fileName
-      ..parents = [folderId];
+    final driveFile = drive.File()..name = fileName;
 
     final uploadedFile =
     await driveApi.files.create(driveFile, uploadMedia: media);
@@ -44,7 +37,6 @@ class GoogleDriveUploader {
       uploadedFile.id!,
     );
 
-    // Return the direct view link
     return "https://drive.google.com/uc?export=view&id=${uploadedFile.id}";
   }
 
@@ -102,20 +94,32 @@ class GoogleDriveUploader {
         file, 'pdf_${DateTime.now().millisecondsSinceEpoch}.pdf');
   }
 
-  Future<String?> deleteFile(String fileUrl) async {
+  Future<String?> deleteFile(String fileId) async {
     final authClient = await _getAuthClient();
     if (authClient == null) return "Need to get auth client";
-
-    // Extract file ID from URL
-    final uri = Uri.parse(fileUrl);
-    final fileId = uri.queryParameters['id'];
-
-    if (fileId == null) {
-      return "Invalid file URL";
-    }
 
     final driveApi = drive.DriveApi(authClient);
     await driveApi.files.delete(fileId);
     return "File deleted successfully";
   }
 }
+
+class GoogleAuthClient extends http.BaseClient {
+  final Map<String, String> _headers;
+  final http.Client _client = IOClient();
+
+  GoogleAuthClient(this._headers);
+
+  @override
+  Future<http.StreamedResponse> send(http.BaseRequest request) {
+    request.headers.addAll(_headers);
+    return _client.send(request);
+  }
+
+  @override
+  void close() {
+    _client.close();
+  }
+}
+
+

@@ -8,6 +8,8 @@ import '../../../core/widgets/custom_loading.dart';
 import '../../cubit/add_attendance/cubit/add_attendance_cubit.dart';
 import '../../cubit/add_attendance/states/add_attendance_states.dart';
 import '../../cubit/local/cubit/local_cubit.dart';
+import 'package:fathers_prophets/core/widgets/custom_snackbar.dart';
+
 
 class AddAttendanceScreen extends StatelessWidget {
   const AddAttendanceScreen({super.key});
@@ -188,6 +190,14 @@ class AddAttendanceScreen extends StatelessWidget {
           switch(state){
             case OnSuccess():{
               context.pop(cubit.attendance);
+            }
+            case OnError(): {
+              showCustomSnackBar(
+                  context,
+                  state.message,
+                  icon: Icons.error_outline,
+                  color: AppColors.red
+              );
             }
           }
         },
