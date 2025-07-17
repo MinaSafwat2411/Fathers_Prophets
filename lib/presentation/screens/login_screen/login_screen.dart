@@ -22,139 +22,158 @@ class LoginScreen extends StatelessWidget {
     final localize = AppLocalizations.of(context);
     var textTheme = Theme.of(context).textTheme;
     return BlocConsumer<LoginCubit, LoginStates>(
-      builder: (context, state) => Stack(
-        alignment: Alignment.center,
-        children: [
-          Scaffold(
-            body: Form(
-              key: cubit.formKey,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    const Spacer(),
-                    Text(
-                      localize.translate('app_name'),
-                      style: textTheme.headlineLarge,
-                    ),
-                    const SizedBox(height: 25),
-                    CustomBigTextField(
-                      observe: false,
-                      label: localize.translate('email'),
-                      controller: cubit.emailController,
-                      isDark: context.read<LocaleCubit>().isDark,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return localize.translate('email_validation_1');
-                        }
-                        if (!Validators.isValidEmail(value)) {
-                          return localize.translate('email_validation_2');
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 25),
-                    CustomBigTextField(
-                      suffix: IconButton(
-                        onPressed: () {
-                          cubit.onObscureText();
-                        },
-                        icon: Icon(
-                          cubit.obscureText ? Icons.visibility_off : Icons.visibility,)
-                      ),
-                      observe: cubit.obscureText,
-                      label: localize.translate('password'),
-                      controller: cubit.passwordController,
-                      isDark: context.read<LocaleCubit>().isDark,
-                      validator: (value){
-                        if(Validators.isValidPassword(value??"")){
-                          return null;
-                        }else{
-                          return localize.translate('password_validation_1');
-                        }
-                      },
-                    ),
-                    Row(
+      builder:
+          (context, state) => Stack(
+            alignment: Alignment.center,
+            children: [
+              Scaffold(
+                body: Form(
+                  key: cubit.formKey,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisSize: MainAxisSize.max,
                       children: [
-                        Text(
-                          localize.translate('forget_password_des'),
-                          style: textTheme.bodyMedium,
+                        const Spacer(),
+                        Image.asset(
+                          context.read<LocaleCubit>().isDark
+                              ? 'assets/images/logo_dark.png'
+                              : 'assets/images/logo_light.png',
+                          width: 150,
+                          height: 150,
                         ),
-                        const SizedBox(
-                          width: 5,
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            context.pushNamed(AppRoutes.forgotPassword.name);
+                        const SizedBox(height: 25),
+                        CustomBigTextField(
+                          observe: false,
+                          label: localize.translate('email'),
+                          controller: cubit.emailController,
+                          isDark: context.read<LocaleCubit>().isDark,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return localize.translate('email_validation_1');
+                            }
+                            if (!Validators.isValidEmail(value)) {
+                              return localize.translate('email_validation_2');
+                            }
+                            return null;
                           },
-                          child: Text(
-                            localize.translate('click_here'),
-                            style: textTheme.bodyMedium,
-                          ),
+                          border: 24,
                         ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 25,
-                    ),
-                    const Spacer(),
-                    CustomButton(
-                      height: 55,
-                      onPressed: () {
-                        if (cubit.formKey.currentState!.validate()) {
-                          cubit.login();
-                        }
-                      },
-                      btnColor: context.read<LocaleCubit>().isDark ? AppColors.white : AppColors.mirage2,
-                      text: state is LoginLoadingState? localize.translate('loading') :localize.translate('login'),
-                      isEnabled: true,
-                      isDark: context.read<LocaleCubit>().isDark,
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Text(
-                          localize.translate('register_des'),
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w500,
-                            height: 1.50,
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 5,
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            context.pushNamed(AppRoutes.register.name);
-                          },
-                          child: Text(
-                            localize.translate('register'),
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w800,
-                              height: 1.50,
-                              decoration: TextDecoration.underline,
+                        const SizedBox(height: 16),
+                        CustomBigTextField(
+                          suffix: IconButton(
+                            onPressed: () {
+                              cubit.onObscureText();
+                            },
+                            icon: Icon(
+                              cubit.obscureText
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
                             ),
                           ),
+                          observe: cubit.obscureText,
+                          label: localize.translate('password'),
+                          controller: cubit.passwordController,
+                          isDark: context.read<LocaleCubit>().isDark,
+                          validator: (value) {
+                            if (Validators.isValidPassword(value ?? "")) {
+                              return null;
+                            } else {
+                              return localize.translate(
+                                'password_validation_1',
+                              );
+                            }
+                          },
+                          border: 24,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Text(
+                              localize.translate('forget_password_des'),
+                              style: textTheme.bodyMedium,
+                            ),
+                            const SizedBox(width: 5),
+                            GestureDetector(
+                              onTap: () {
+                                context.pushNamed(
+                                  AppRoutes.forgotPassword.name,
+                                );
+                              },
+                              child: Text(
+                                localize.translate('click_here'),
+                                style: textTheme.bodyMedium?.copyWith(
+                                  decoration: TextDecoration.underline,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w800,
+                                  height: 1.50,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 25),
+                        const Spacer(),
+                        CustomButton(
+                          height: 55,
+                          onPressed: () {
+                            if (cubit.formKey.currentState!.validate()) {
+                              cubit.login();
+                            }
+                          },
+                          btnColor:
+                              context.read<LocaleCubit>().isDark
+                                  ? AppColors.white
+                                  : AppColors.mirage2,
+                          text:
+                              state is LoginLoadingState
+                                  ? localize.translate('loading')
+                                  : localize.translate('login'),
+                          isEnabled: true,
+                          isDark: context.read<LocaleCubit>().isDark,
+                        ),
+                        const SizedBox(height: 8),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Text(
+                              localize.translate('register_des'),
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500,
+                                height: 1.50,
+                              ),
+                            ),
+                            const SizedBox(width: 5),
+                            GestureDetector(
+                              onTap: () {
+                                context.pushNamed(AppRoutes.register.name);
+                              },
+                              child: Text(
+                                localize.translate('register'),
+                                style: textTheme.bodyMedium?.copyWith(
+                                  decoration: TextDecoration.underline,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w800,
+                                  height: 1.50,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                  ],
+                  ),
                 ),
               ),
-            ),
+              if (state is LoginLoadingState)
+                CustomLoading(isDark: context.read<LocaleCubit>().isDark),
+            ],
           ),
-          if (state is LoginLoadingState) CustomLoading(isDark: context.read<LocaleCubit>().isDark,)
-        ],
-      ),
       listener: (context, state) {
         if (state is LoginSuccessState) {
           context.goNamed(AppRoutes.layout.name);
@@ -167,19 +186,20 @@ class LoginScreen extends StatelessWidget {
             context,
             state.message.toString(),
             icon: Icons.error,
-            color: AppColors.red
+            color: AppColors.red,
           );
         }
         if (state is OnRequestUpToDate) {
           showCustomSnackBar(
-              context, "Check your Update",
-              color: AppColors.red,
-              icon: Icons.update
+            context,
+            "Check your Update",
+            color: AppColors.red,
+            icon: Icons.update,
           );
         }
       },
       listenWhen: (previous, current) => current is! LoginInitialState,
-      buildWhen: (previous, current) =>current is! LoginInitialState,
+      buildWhen: (previous, current) => current is! LoginInitialState,
     );
   }
 }

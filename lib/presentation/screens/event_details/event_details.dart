@@ -69,7 +69,7 @@ class EventDetails extends StatelessWidget {
                                           }
                                         },
                                     child: Stack(
-                                      alignment: Alignment.centerLeft,
+                                      alignment: context.read<LocaleCubit>().lang == 'ar' ? Alignment.centerLeft:Alignment.centerRight,
                                       children: [
                                         Padding(
                                           padding: const EdgeInsets.all(12.0),
