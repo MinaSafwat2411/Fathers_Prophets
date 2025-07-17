@@ -20,7 +20,9 @@ class SelectMemberScreen extends StatelessWidget {
     var textTheme = Theme.of(context).textTheme;
     return BlocConsumer<EventsCubit, EventsStates>(builder: (context, state) => Scaffold(
       appBar: AppBar(
-        title: Text(localize.translate("select_member")),
+        title: Text(localize.translate("select_member"),
+          style: textTheme.titleLarge,
+        ),
         leading: IconButton(onPressed: () async{
           context.pop(
             cubit.selectedMembers

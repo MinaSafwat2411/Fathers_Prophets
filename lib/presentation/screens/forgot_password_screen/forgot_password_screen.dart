@@ -19,10 +19,13 @@ class ForgotPasswordScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     var cubit = ForgotPasswordCubit.get(context);
     final localize = AppLocalizations.of(context);
+    var textTheme = Theme.of(context).textTheme;
     return BlocConsumer<ForgotPasswordCubit, ForgotPasswordStates>(
         builder: (context, state) => Scaffold(
           appBar: AppBar(
-            title:  Text(localize.translate('forgot_password')),
+            title:  Text(localize.translate('forgot_password'),
+              style: textTheme.titleLarge,
+            ),
           ),
           body:  Form(
             key: cubit.formKey,

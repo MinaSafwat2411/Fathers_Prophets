@@ -13,7 +13,9 @@ class EventAttendanceDetailsScreen extends StatelessWidget {
     final localize = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text(localize.translate('event_attendance')),
+        title: Text(localize.translate('event_attendance'),
+          style: textTheme.titleLarge,
+        ),
         leading: IconButton(onPressed: () {
           context.pop();
         },icon: Icon(Icons.arrow_back_ios_new_outlined),),

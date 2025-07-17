@@ -70,7 +70,9 @@ class UserDetailsScreen extends StatelessWidget {
       builder:
           (context, state) => Scaffold(
             appBar: AppBar(
-              title: Text(localize.translate("user_details")),
+              title: Text(localize.translate("user_details"),
+                style: textTheme.titleLarge,
+              ),
               leading: IconButton(
                 onPressed: () {
                   context.pop(true);

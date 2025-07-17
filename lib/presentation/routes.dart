@@ -6,6 +6,7 @@ import 'package:fathers_prophets/presentation/screens/add_event_screen/add_event
 import 'package:fathers_prophets/presentation/screens/add_member_screen/add_member_screen.dart';
 import 'package:fathers_prophets/presentation/screens/add_quizzes_screen/add_quiz_screen.dart';
 import 'package:fathers_prophets/presentation/screens/attendance_details_screen/attendance_details_screen.dart';
+import 'package:fathers_prophets/presentation/screens/categories_screen/categories_screen.dart';
 import 'package:fathers_prophets/presentation/screens/dashboard_screen/dashboard_screen.dart';
 import 'package:fathers_prophets/presentation/screens/event_attendance_details_screen/event_attendance_details_screen.dart';
 import 'package:fathers_prophets/presentation/screens/event_details/event_details.dart';
@@ -60,7 +61,8 @@ enum AppRoutes {
   addMember,
   reviewUser,
   pin,
-  eventAttendanceDetails
+  eventAttendanceDetails,
+  categories,
 }
 
 final GoRouter router = GoRouter(
@@ -258,7 +260,12 @@ final GoRouter router = GoRouter(
       builder: (context, state) => EventAttendanceDetailsScreen(
         members: state.extra as List<String>,
       )
-    )
+    ),
+    GoRoute(
+      path: AppRoutePaths.categories,
+      name: AppRoutes.categories.name,
+      builder: (context, state) => CategoriesScreen(),
+    ),
   ],
 );
 
@@ -294,4 +301,5 @@ abstract class AppRoutePaths {
   static const String reviewUser = '/review_user';
   static const String pin = '/pin';
   static const String eventAttendanceDetails = '/event_attendance_details';
+  static const String categories = '/categories';
 }

@@ -22,13 +22,16 @@ class ReviewUserScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final localize = AppLocalizations.of(context);
     var cubit = BlocProvider.of<ReviewUserCubit>(context);
+    var textTheme = Theme.of(context).textTheme;
     cubit.user=user;
     cubit.nameController.text=user.name??'';
     cubit.role.text=user.role??'';
     return BlocConsumer<ReviewUserCubit, ReviewUserStates>(
         builder: (context, state) => Scaffold(
           appBar: AppBar(
-            title: Text(localize.translate("review_user")),
+            title: Text(localize.translate("review_user"),
+              style: textTheme.titleLarge,
+            ),
             leading: IconButton(onPressed: () {
               context.pop();
             }, icon: Icon(Icons.arrow_back_ios_new_outlined)),

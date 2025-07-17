@@ -19,7 +19,7 @@ class LayoutCubit extends Cubit<LayoutStates> {
   var scaffoldKey = GlobalKey<ScaffoldState>();
   var pageController = PageController();
   var currentIndex = 0;
-  var titles = ["home", "event", "quizzes", "attendance"];
+  var titles = ["home", "quizzes", "attendance","chat"];
   List<AttendanceModel> attendance = [];
   List<QuizzesModel> quizzes = [];
   List<QuizzesModel> quizzesSearch = [];
@@ -37,9 +37,13 @@ class LayoutCubit extends Cubit<LayoutStates> {
   var chessEvents = <EventsModel>[];
   var prayEvents = <EventsModel>[];
   var praiseEvents = <EventsModel>[];
+  TextEditingController searchController = TextEditingController();
   List<EventsModel> comingEvents = <EventsModel>[];
   List<EventsModel> filteredEvents = <EventsModel>[];
   List<EventsModel> allEvents = <EventsModel>[];
+  List<String> categories = ["bible", "melodies", "pray", "praise", "doctrine", "football", "pingPong", "volleyball", "coptic", "choir", "ritual", "chess"];
+  List<List<EventsModel>> categoriesEvents =<List<EventsModel>>[];
+  final searchFocusNode = FocusNode();
 
 
   final attendanceUseCase = AttendanceUseCase(AttendanceRepository());
@@ -120,6 +124,7 @@ class LayoutCubit extends Cubit<LayoutStates> {
     quizzes.clear();
     quizzesSearch.clear();
     quizzes = CacheHelper.getQuizzes();
+    categoriesEvents.clear();
     footballEvents = CacheHelper.getEvents('football');
     comingEvents.addAll(footballEvents.where((element) => element.dateTime!.isAfter(DateTime.now().subtract(Duration(days: 1)))).toList());
     bibleEvents = CacheHelper.getEvents('bible');
@@ -148,6 +153,7 @@ class LayoutCubit extends Cubit<LayoutStates> {
     filteredEvents.sort((a, b) => (b.dateTime?? DateTime.now()).compareTo(a.dateTime?? DateTime.now()));
     comingEvents.sort((a, b) => (b.dateTime?? DateTime.now()).compareTo(a.dateTime?? DateTime.now()));
     allEvents = filteredEvents;
+    categoriesEvents.addAll([bibleEvents, melodiesEvents, prayEvents, praiseEvents, doctrineEvents, footballEvents, pingPongEvents, volleyballEvents, copticEvents, choirEvents, ritualEvents, chessEvents]);
     sortQuizzes();
     quizzesSearch = quizzes;
     emit(SuccessState());
@@ -189,6 +195,9 @@ class LayoutCubit extends Cubit<LayoutStates> {
   }
 
   void onSearchEventCloseClicked() {
+    searchController.clear();
+    searchFocusNode.unfocus();
+    filteredEvents = allEvents;
     emit(OnSearchEventCloseState());
   }
 
@@ -206,15 +215,15 @@ class LayoutCubit extends Cubit<LayoutStates> {
     }
   }
   void onSearchEvent(String query) {
-    if (query.isEmpty) {
-      filteredEvents = allEvents;
-      emit(OnSearchEventState());
-    } else {
-      filteredEvents= filteredEvents.where((element) => (element.title??"").contains(query)).toList();
-      emit(OnSearchEventState());
-    }
+    if (query.isEmpty && filteredEvents.length == allEvents.length) return;
+    filteredEvents = query.isEmpty
+        ? allEvents
+        : allEvents
+        .where((event) =>
+        (event.title ?? "").toLowerCase().contains(query.toLowerCase()))
+        .toList();
+    emit(OnSearchEventState());
   }
-
   void canPreview()async{
     userData = userData.copyWith(
       isAdmin: !(userData.isAdmin??false),

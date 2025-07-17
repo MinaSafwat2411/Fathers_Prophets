@@ -31,7 +31,9 @@ class QuizzesScoreTableScreen extends StatelessWidget {
               Scaffold(
                 appBar: AppBar(
                   centerTitle: true,
-                  title: Text(localize.translate('quizzes_table')),
+                  title: Text(localize.translate('quizzes_table'),
+                    style: textTheme.titleLarge,
+                  ),
                   leading: IconButton(
                     onPressed: () {
                       context.pop();

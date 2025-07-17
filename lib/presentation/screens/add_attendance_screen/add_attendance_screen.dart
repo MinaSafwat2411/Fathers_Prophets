@@ -43,7 +43,8 @@ class AddAttendanceScreen extends StatelessWidget {
               },
               icon: Icon(Icons.arrow_back_ios),
             ),
-            title: Text(localize.translate("add_attendance")),
+            title: Text(localize.translate("add_attendance"),
+            style: textTheme.titleLarge,),
           ),
           body:Stack(
             children: [

@@ -9,89 +9,99 @@ import '../../../data/models/events/events_model.dart';
 import '../../cubit/layout/cubit/layout_cubit.dart';
 import '../../cubit/local/cubit/local_cubit.dart';
 import '../../routes.dart';
+import 'categories_item.dart';
 
 class HomeScreenItem extends StatelessWidget {
-  const HomeScreenItem({super.key, required this.events, required this.title});
+  const HomeScreenItem({super.key});
 
-  final List<EventsModel> events;
-  final String title;
 
   @override
   Widget build(BuildContext context) {
     var textTheme = Theme.of(context).textTheme;
     final localize = AppLocalizations.of(context);
     var cubit = LayoutCubit.get(context);
-    return events.isNotEmpty
-        ? Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            GestureDetector(
-              onTap: () {
-                context.pushNamed(
-                  AppRoutes.eventDetails.name,
-                  extra: {'items': events, 'title': title},
-                );
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: Text(
-                  localize.translate(title),
-                  style: textTheme.titleLarge,
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 230,
-              child: ListView.separated(
-                shrinkWrap: true,
-                scrollDirection: Axis.horizontal,
-                itemBuilder:
-                    (context, index) => GestureDetector(
-                      onTap: () async {
-                        var result = await context.pushNamed(
-                          AppRoutes.addEventAttendance.name,
-                          extra: {'item': events[index], 'title': title},
-                        );
-                        if (result != null) {
-                          cubit.getAllData();
-                        }
+    return Column(
+      children: [
+        if (cubit.comingEvents.isNotEmpty)Text(
+          localize.translate('coming_events'),
+          style: Theme.of(context).textTheme.titleLarge,
+          textAlign: TextAlign.center,
+        ),
+        if (cubit.comingEvents.isNotEmpty)SizedBox(
+          height: 160,
+          child: ListView.separated(
+            physics: BouncingScrollPhysics(),
+            shrinkWrap: true,
+            scrollDirection: Axis.horizontal,
+            itemBuilder:
+                (context, index) => Column(
+              children: [
+                MaterialButton(
+                  height: 100,
+                  onPressed: () async {
+                    var result = await context.pushNamed(
+                      AppRoutes.addEventAttendance.name,
+                      extra: {
+                        'item': cubit.comingEvents[index],
+                        'title': cubit.comingEvents[index].nameEn,
                       },
-                      child: Card(
-                        child: Column(
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(12),
-                              child: events[index].image != ''?CachedNetworkImage(
-                                height: 180,
-                                width: 230,
-                                fit: BoxFit.fill,
-                                imageUrl: events[index].image ?? '',
-                                placeholder:
-                                    (context, url) => EventShimmerItem(
-                                      isDark:
-                                          context.read<LocaleCubit>().isDark,
-                                    ),
-                                errorWidget:
-                                    (context, url, error) => EventShimmerItem(
-                                      isDark:
-                                          context.read<LocaleCubit>().isDark,
-                                    ),
-                              ):Image.asset(context.read<LocaleCubit>().isDark?'assets/images/logo_dark.png': 'assets/images/logo_light.png',width: 230,height: 180,fit: BoxFit.fill,),
-                            ),
-                            SizedBox(height: 4),
-                            Text(
-                              "${events[index].nameAr ?? ""} ${cubit.formatDateEvent(events[index].dateTime ?? DateTime.now(), context.read<LocaleCubit>().lang)}",
-                            ),
-                          ],
+                    );
+                    if (result != null) {
+                      cubit.getAllData();
+                    }
+                  },
+                  child: Card(
+                    margin: EdgeInsets.symmetric(vertical: 4),
+                    shape: CircleBorder(),
+                    child: ClipOval(
+                      child:
+                      cubit.comingEvents[index].image != ''
+                          ? CachedNetworkImage(
+                        width: 100,
+                        height: 100,
+                        fit: BoxFit.fill,
+                        imageUrl:
+                        cubit.comingEvents[index].image ?? '',
+                        placeholder:
+                            (context, url) => EventShimmerItem(
+                          isDark:
+                          context
+                              .read<LocaleCubit>()
+                              .isDark,
                         ),
+                        errorWidget:
+                            (context, url, error) =>
+                            EventShimmerItem(
+                              isDark:
+                              context
+                                  .read<LocaleCubit>()
+                                  .isDark,
+                            ),
+                      )
+                          : Image.asset(
+                        context.read<LocaleCubit>().isDark
+                            ? 'assets/images/logo_dark.png'
+                            : 'assets/images/logo_light.png',
+                        width: 100,
+                        height: 100,
+                        fit: BoxFit.fill,
                       ),
                     ),
-                separatorBuilder: (context, index) => SizedBox(),
-                itemCount: events.length > 3 ? 3 : events.length,
-              ),
+                  ),
+                ),
+                Text(
+                  cubit.comingEvents[index].nameAr ?? "",
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+              ],
             ),
-          ],
-        )
-        : SizedBox();
+            separatorBuilder: (context, index) => SizedBox(),
+            itemCount: cubit.comingEvents.length,
+          ),
+        ),
+        CategoriesItem()
+      ],
+    );
   }
 }

@@ -48,7 +48,9 @@ class AddQuizScreen extends StatelessWidget {
                     ),
                   ),
                 ],
-                title: Text(localize.translate("add_quiz")),
+                title: Text(localize.translate("add_quiz"),
+                  style: textTheme.titleLarge,
+                ),
               ),
               body: SingleChildScrollView(
                 child: Padding(

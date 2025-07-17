@@ -24,7 +24,9 @@ class DashboardScreen extends StatelessWidget {
       builder:
           (context, state) => Scaffold(
             appBar: AppBar(
-              title: Text(localize.translate("dash_board")),
+              title: Text(localize.translate("dash_board"),
+                style: textTheme.titleLarge,
+              ),
               leading: IconButton(
                 onPressed: () {
                   context.pop();

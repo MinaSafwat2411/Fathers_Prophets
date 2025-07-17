@@ -135,5 +135,8 @@
   "no_member_attended": "No Member Attended",
   "event_attendance": "Event Attendance",
   "coming_events": "Coming Events",
-  "score": "Score"
+  "score": "Score",
+  "view_all": "View All",
+  "categories": "Categories",
+  "chat": "Chat"
 }

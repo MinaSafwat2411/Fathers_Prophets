@@ -1,12 +1,11 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import '../../../core/localization/app_localizations.dart';
-import '../../../core/widgets/event_shimmer_item.dart';
+import '../../../core/utils/app_colors.dart';
 import '../../cubit/layout/cubit/layout_cubit.dart';
+import '../../cubit/layout/states/layout_states.dart';
 import '../../cubit/local/cubit/local_cubit.dart';
-import '../../routes.dart';
+import 'event_search.dart';
 import 'home_screen_item.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -16,70 +15,84 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     var cubit = LayoutCubit.get(context);
     var localize = AppLocalizations.of(context);
-    return ListView(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      physics: const ClampingScrollPhysics(),
-      shrinkWrap: true,
-      children: [
-        if(cubit.comingEvents.isNotEmpty)Text(localize.translate('coming_events'),style: Theme.of(context).textTheme.titleLarge,textAlign: TextAlign.center,),
-        if(cubit.comingEvents.isNotEmpty)SizedBox(
-          height: 150,
-          child: ListView.separated(
-            physics: BouncingScrollPhysics(),
+    return BlocConsumer<LayoutCubit, LayoutStates>(
+      builder:
+          (context, state) => ListView(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            physics: const ClampingScrollPhysics(),
             shrinkWrap: true,
-            scrollDirection: Axis.horizontal,
-            itemBuilder: (context, index) => Column(
-              children: [
-                MaterialButton(
-                  height: 100,
-                onPressed: () async{
-                  var result = await context.pushNamed(AppRoutes.addEventAttendance.name,
-                      extra: {
-                        'item': cubit.comingEvents[index],
-                        'title': cubit.comingEvents[index].nameEn,
-                      });
-                  if(result != null){
-                    cubit.getAllData();
-                  }
-                },
-                child: Card(
-                  margin: EdgeInsets.symmetric(vertical: 4),
-                  shape: CircleBorder(),
-                  child: ClipOval(
-                    child: cubit.comingEvents[index].image != '' ? CachedNetworkImage(
-                      width: 100,
-                      height: 100,
-                      fit: BoxFit.fill,
-                      imageUrl: cubit.comingEvents[index].image ?? '',
-                      placeholder:
-                          (context, url) => EventShimmerItem(
-                        isDark: context.read<LocaleCubit>().isDark,
-                      ),
-                      errorWidget:
-                          (context, url, error) => EventShimmerItem(
-                        isDark: context.read<LocaleCubit>().isDark,
-                      ),
-                    ):Image.asset(context.read<LocaleCubit>().isDark?'assets/images/logo_dark.png': 'assets/images/logo_light.png',width: 100,height: 100,fit: BoxFit.fill,),
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: SearchBar(
+                  focusNode: cubit.searchFocusNode,
+                  hintText: localize.translate('search'),
+                  leading:
+                      state is OnSearchEventOpenState ||
+                              state is OnSearchEventState
+                          ? GestureDetector(
+                            onTap: () => cubit.onSearchEventCloseClicked(),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                              ),
+                              child: Icon(
+                                Icons.close,
+                                color:
+                                    context.read<LocaleCubit>().isDark
+                                        ? AppColors.mirage
+                                        : AppColors.white,
+                              ),
+                            ),
+                          )
+                          : Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: Icon(
+                              Icons.search,
+                              color:
+                                  context.read<LocaleCubit>().isDark
+                                      ? AppColors.mirage
+                                      : AppColors.white,
+                            ),
+                          ),
+                  padding: WidgetStateProperty.all<EdgeInsets>(
+                    const EdgeInsets.all(8),
                   ),
+                  controller: cubit.searchController,
+                  elevation: WidgetStateProperty.all<double>(2),
+                  textStyle: WidgetStatePropertyAll(
+                    TextStyle(
+                      color:
+                          context.read<LocaleCubit>().isDark
+                              ? AppColors.mirage
+                              : AppColors.white,
+                    ),
+                  ),
+                  backgroundColor: WidgetStatePropertyAll(
+                    context.read<LocaleCubit>().isDark
+                        ? AppColors.white
+                        : AppColors.mirage,
+                  ),
+                  hintStyle: WidgetStatePropertyAll(
+                    TextStyle(
+                      color:
+                          context.read<LocaleCubit>().isDark
+                              ? AppColors.mirage
+                              : AppColors.white,
+                    ),
+                  ),
+                  onTap: () => cubit.onSearchEventClicked(),
+                  onChanged: (value) => cubit.onSearchEvent(value),
                 ),
-                ),
-                Text(cubit.comingEvents[index].nameAr ?? "",textAlign: TextAlign.center,style: Theme.of(context).textTheme.bodyMedium,),
-              ],
-            ), separatorBuilder: (context, index) => SizedBox(), itemCount: cubit.comingEvents.length),
-        ),
-        HomeScreenItem(events: cubit.footballEvents,title: 'football',),
-        HomeScreenItem(events: cubit.bibleEvents,title: 'bible',),
-        HomeScreenItem(events: cubit.chessEvents,title: 'chess',),
-        HomeScreenItem(events: cubit.choirEvents,title: 'choir',),
-        HomeScreenItem(events: cubit.copticEvents,title: 'coptic',),
-        HomeScreenItem(events: cubit.doctrineEvents,title: 'doctrine',),
-        HomeScreenItem(events: cubit.melodiesEvents,title: 'melodies',),
-        HomeScreenItem(events: cubit.pingPongEvents,title: 'pingPong',),
-        HomeScreenItem(events: cubit.volleyballEvents,title: 'volleyball',),
-        HomeScreenItem(events: cubit.ritualEvents,title: 'ritual',),
-        HomeScreenItem(events: cubit.prayEvents,title: 'pray',),
-        HomeScreenItem(events: cubit.praiseEvents,title: 'praise',),
-      ],
+              ),
+              if (state is OnSearchEventOpenState ||
+                  state is OnSearchEventState)
+                EventSearch(events: cubit.filteredEvents)
+              else
+                HomeScreenItem(),
+            ],
+          ),
+      listener: (context, state) {},
     );
   }
 }

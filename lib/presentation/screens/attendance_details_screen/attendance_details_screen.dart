@@ -46,7 +46,9 @@ class AttendanceDetailsScreen extends StatelessWidget {
                   },
                   icon: Icon(Icons.arrow_back_ios),
                 ),
-                title: Text(cubit.attendance.dateView ?? ""),
+                title: Text(cubit.attendance.dateView ?? "",
+                  style: textTheme.titleLarge,
+                ),
                 actions: [
                   IconButton(onPressed: ()async {
                     var  result = await context.pushNamed(AppRoutes.pin.name,extra: AppRoutes.attendanceDetails.name);

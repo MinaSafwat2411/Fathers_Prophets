@@ -25,7 +25,9 @@ class ProfileScreen extends StatelessWidget {
             leading: IconButton(onPressed: () {
               context.pop();
             }, icon: Icon(Icons.arrow_back_ios)),
-            title: Text(localize.translate("profile")),
+            title: Text(localize.translate("profile"),
+              style: textTheme.titleLarge,
+            ),
           ),
           body: Padding(
             padding: const EdgeInsets.all(16.0),

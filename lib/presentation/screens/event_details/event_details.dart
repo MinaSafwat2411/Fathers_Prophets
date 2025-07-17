@@ -1,3 +1,4 @@
+import 'package:fathers_prophets/core/utils/app_colors.dart';
 import 'package:fathers_prophets/presentation/cubit/events/cubit/events_cubit.dart';
 import 'package:fathers_prophets/presentation/cubit/local/cubit/local_cubit.dart';
 import 'package:fathers_prophets/presentation/routes.dart';
@@ -67,54 +68,81 @@ class EventDetails extends StatelessWidget {
                                             events[index] = result as EventsModel;
                                           }
                                         },
-                                    child: Card(
-                                      child: Column(
-                                        children: [
-                                          ClipRRect(
-                                            borderRadius: BorderRadius.circular(
-                                              12,
+                                    child: Stack(
+                                      alignment: Alignment.centerLeft,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.all(12.0),
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: context.read<LocaleCubit>().isDark? AppColors.mirage:AppColors.white,
+                                              borderRadius: BorderRadius.circular(16),
+                                              border: Border.all(color: context.read<LocaleCubit>().isDark? AppColors.white:AppColors.mirage)
                                             ),
-                                            child: events[index].image != ''?CachedNetworkImage(
-                                              height: 200,
-                                              width: double.infinity,
-                                              fit: BoxFit.fill,
-                                              imageUrl: events[index].image ?? '',
-                                              placeholder:
-                                                  (
-                                                    context,
-                                                    url,
-                                                  ) => EventShimmerItem(
-                                                    isDark:
-                                                        context
-                                                            .read<LocaleCubit>()
-                                                            .isDark,
+                                            child: Row(
+                                              children: [
+                                                ClipRRect(
+                                                  borderRadius: BorderRadius.circular(
+                                                    16,
                                                   ),
-                                              errorWidget:
-                                                  (
-                                                    context,
-                                                    url,
-                                                    error,
-                                                  ) => EventShimmerItem(
-                                                    isDark:
-                                                        context
-                                                            .read<LocaleCubit>()
-                                                            .isDark,
+                                                  child: events[index].image != ''?CachedNetworkImage(
+                                                    height: 75,
+                                                    width: 70,
+                                                    fit: BoxFit.fill,
+                                                    imageUrl: events[index].image ?? '',
+                                                    placeholder:
+                                                        (
+                                                        context,
+                                                        url,
+                                                        ) => EventShimmerItem(
+                                                      isDark:
+                                                      context
+                                                          .read<LocaleCubit>()
+                                                          .isDark,
+                                                    ),
+                                                    errorWidget:
+                                                        (
+                                                        context,
+                                                        url,
+                                                        error,
+                                                        ) => EventShimmerItem(
+                                                      isDark:
+                                                      context
+                                                          .read<LocaleCubit>()
+                                                          .isDark,
+                                                    ),
+                                                  ):Image.asset(context.read<LocaleCubit>().isDark?'assets/images/logo_dark.png': 'assets/images/logo_light.png',width: 70,height: 70,fit: BoxFit.fill,),
+                                                ),
+                                                Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: Text(
+                                                    "${events[index].nameAr ?? ''} ${cubit.formatDateEvent(events[index].dateTime ?? DateTime.now(), context.read<LocaleCubit>().lang)}",
+                                                    style: textTheme.titleSmall,
                                                   ),
-                                            ):Image.asset(context.read<LocaleCubit>().isDark?'assets/images/logo_dark.png': 'assets/images/logo_light.png',width: double.infinity,height: 200,fit: BoxFit.fill,),
+                                                ),
+                                              ],
+                                            )
                                           ),
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Text(
-                                              "${events[index].nameAr ?? ''} ${cubit.formatDateEvent(events[index].dateTime ?? DateTime.now(), context.read<LocaleCubit>().lang)}",
-                                              style: textTheme.titleSmall,
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(4.0),
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: AppColors.white,
+                                              shape: BoxShape.circle,
+                                              border: Border.all(color: context.read<LocaleCubit>().isDark? AppColors.white:AppColors.mirage)
+                                            ),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(4.0),
+                                              child: Icon(Icons.arrow_forward_ios_outlined,size: 16,),
                                             ),
                                           ),
-                                        ],
-                                      ),
+                                        )
+                                      ],
                                     ),
                                   ),
                               separatorBuilder:
-                                  (context, index) => SizedBox(height: 0),
+                                  (context, index) => SizedBox(height: 5),
                               itemCount: events.length,
                             ),
                           ),

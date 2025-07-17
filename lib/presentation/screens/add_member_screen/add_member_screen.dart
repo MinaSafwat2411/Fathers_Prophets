@@ -19,10 +19,13 @@ class AddMemberScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     var cubit = AddMemberCubit.get(context);
     final localize = AppLocalizations.of(context);
+    var textTheme = Theme.of(context).textTheme;
     return BlocConsumer<AddMemberCubit, AddMemberStates>(
         builder: (context, state) => Scaffold(
           appBar: AppBar(
-            title: Text(localize.translate("add_member")),
+            title: Text(localize.translate("add_member"),
+              style: textTheme.titleLarge,
+            ),
             leading: IconButton(
               onPressed: () {
                 context.pop();

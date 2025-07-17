@@ -23,13 +23,16 @@ class QuizzesDetailsScreen extends StatelessWidget {
     var localize = AppLocalizations.of(context);
     var cubit = BlocProvider.of<QuizzesCubit>(context)..createQuizAnswers(quizzes.docId??"",quizzes);
     cubit.isAdd = isAddMode;
+    var textTheme = Theme.of(context).textTheme;
     return BlocConsumer<QuizzesCubit,QuizzesStates>(
       builder: (context, state) => Scaffold(
         appBar: AppBar(
           leading: IconButton(onPressed: () {
             cubit.onSaveAnswers();
           }, icon: Icon(Icons.arrow_back_ios)),
-          title: Text("${localize.translate("quiz_no")} ${quizzes.number}"),
+          title: Text("${localize.translate("quiz_no")} ${quizzes.number}",
+            style: textTheme.titleLarge,
+          ),
         ),
         body: PageView(
           children: [

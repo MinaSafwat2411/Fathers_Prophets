@@ -89,7 +89,7 @@
   "submit": "إرسال",
   "activity": "انشطة",
   "add_more_questions": "أضف المزيد من الأسئلة",
-  "bible": "درس كتاب المقدس",
+  "bible": "كتاب المقدس",
   "coptic": "قبطي",
   "melodies": "ألحان",
   "ritual": "طقس",
@@ -135,5 +135,8 @@
   "no_member_attended": "لم يحضر أي مخدوم",
   "event_attendance": "حضور المخدومين",
   "coming_events": "الفعاليات القادمة",
-  "score": "الدرجة"
+  "score": "الدرجة",
+  "view_all": "عرض الكل",
+  "categories": "الفقرات",
+  "chat": "الدردشة"
 }

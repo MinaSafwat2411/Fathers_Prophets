@@ -41,7 +41,7 @@ void main() async {
   await NotificationService.init();
   if (kDebugMode) Bloc.observer = MyBlocObserver();
   bool isDark = await CacheHelper.getData(key: 'isDark') ?? false;
-  String lang = await CacheHelper.getData(key: 'lang') ?? 'en';
+  String lang = await CacheHelper.getData(key: 'lang') ?? 'ar';
   String uid = await CacheHelper.getData(key: 'uid') ?? '';
   bool isOpened = CacheHelper.getData(key: 'isOpened') ?? false;
   runApp(MyApp(isDark: isDark, lang: lang, uid: uid, isOpened: isOpened));
