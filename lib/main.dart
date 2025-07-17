@@ -1,7 +1,7 @@
-import 'package:fathers_prophets/data/services/google_drive_service.dart';
 import 'package:fathers_prophets/presentation/cubit/add_attendance/cubit/add_attendance_cubit.dart';
 import 'package:fathers_prophets/presentation/cubit/add_member/cubit/add_member_cubit.dart';
 import 'package:fathers_prophets/presentation/cubit/attendance/cubit/attendance_cubit.dart';
+import 'package:fathers_prophets/presentation/cubit/chatbot/cubit/chatbot_cubit.dart';
 import 'package:fathers_prophets/presentation/cubit/comment/cubit/comment_cubit.dart';
 import 'package:fathers_prophets/presentation/cubit/dashboard/cubit/dashboard_cubit.dart';
 import 'package:fathers_prophets/presentation/cubit/events/cubit/events_cubit.dart';
@@ -75,7 +75,8 @@ class MyApp extends StatelessWidget {
           BlocProvider(create: (context) => AddMemberCubit()..getData(),),
           BlocProvider(create: (context) => ReviewUserCubit()..getData(),),
           BlocProvider(create: (context) => PinCubit(),),
-          BlocProvider(create: (context) => QuizTableCubit()..getAllQuizzesScore(),)
+          BlocProvider(create: (context) => QuizTableCubit()..getAllQuizzesScore(),),
+          BlocProvider(create: (context) => ChatbotCubit())
         ],
         child: BlocConsumer<LocaleCubit, LocaleStates>(
           builder: (context, state) => MaterialApp.router(

@@ -7,6 +7,7 @@ import 'package:fathers_prophets/presentation/screens/add_member_screen/add_memb
 import 'package:fathers_prophets/presentation/screens/add_quizzes_screen/add_quiz_screen.dart';
 import 'package:fathers_prophets/presentation/screens/attendance_details_screen/attendance_details_screen.dart';
 import 'package:fathers_prophets/presentation/screens/categories_screen/categories_screen.dart';
+import 'package:fathers_prophets/presentation/screens/chat_bot_screen/chat_bot_screen.dart';
 import 'package:fathers_prophets/presentation/screens/dashboard_screen/dashboard_screen.dart';
 import 'package:fathers_prophets/presentation/screens/event_attendance_details_screen/event_attendance_details_screen.dart';
 import 'package:fathers_prophets/presentation/screens/event_details/event_details.dart';
@@ -63,6 +64,7 @@ enum AppRoutes {
   pin,
   eventAttendanceDetails,
   categories,
+  chatBot
 }
 
 final GoRouter router = GoRouter(
@@ -264,7 +266,12 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: AppRoutePaths.categories,
       name: AppRoutes.categories.name,
-      builder: (context, state) => CategoriesScreen(),
+      builder: (context, state) => const CategoriesScreen(),
+    ),
+    GoRoute(
+      path: AppRoutePaths.chatBot,
+      name: AppRoutes.chatBot.name,
+      builder: (context, state) => const ChatBotScreen(),
     ),
   ],
 );
@@ -302,4 +309,5 @@ abstract class AppRoutePaths {
   static const String pin = '/pin';
   static const String eventAttendanceDetails = '/event_attendance_details';
   static const String categories = '/categories';
+  static const String chatBot = '/chat_bot';
 }

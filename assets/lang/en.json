@@ -138,5 +138,7 @@
   "score": "Score",
   "view_all": "View All",
   "categories": "Categories",
-  "chat": "Chat"
+  "chat": "Chat",
+  "chatbot": "Chatbot",
+  "send": "Send"
 }

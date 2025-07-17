@@ -15,6 +15,7 @@ import '../../cubit/layout/states/layout_states.dart';
 import '../../cubit/local/cubit/local_cubit.dart';
 import '../../routes.dart';
 import '../attendance_screen/attendance_screen.dart';
+import '../chat_screen/chat_screen.dart';
 import '../home_screen/home_screen.dart';
 import '../quizzes_screen/quiz_search.dart';
 import '../quizzes_screen/quizzes_screen.dart';
@@ -235,7 +236,7 @@ class LayoutScreen extends StatelessWidget {
                   ),
                   if(state is OnSearchQuizOpenState || state is OnSearchQuizState) QuizSearch(quizzes: cubit.quizzesSearch, quizzesDone: cubit.quizzesDone,onChanged: (p0) => cubit.onSearchQuiz(p0),) else QuizzesScreen(quizzes: cubit.quizzes,quizzesDone: cubit.quizzesDone),
                   (cubit.userData.isTeacher??false) ?AttendanceScreen(attendanceList: cubit.attendance,userData: cubit.userData,):Text("Activity"),
-                  Text('chat')
+                  ChatScreen()
                 ],
                 onPageChanged: (value) {
                   cubit.onValueChange(value);

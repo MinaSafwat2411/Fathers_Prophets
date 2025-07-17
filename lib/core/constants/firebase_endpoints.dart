@@ -13,7 +13,7 @@ class FirebaseEndpoints {
   static const String eventAttendance = "EventAttendance";
   static const String quizzesScore = "QuizzesScore";
   static const String classId = "class";
-  static const String version = "1.0.14";
+  static const String version = "1.0.15";
   static const String adminPin = "AdminPin";
   static const String football = "Football";
   static const String volleyball = "Volleyball";
