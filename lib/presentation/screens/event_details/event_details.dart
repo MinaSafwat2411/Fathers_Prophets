@@ -128,7 +128,7 @@ class EventDetails extends StatelessWidget {
                                           padding: const EdgeInsets.all(4.0),
                                           child: Container(
                                             decoration: BoxDecoration(
-                                              color: AppColors.white,
+                                              color: context.read<LocaleCubit>().isDark? AppColors.mirage : AppColors.white,
                                               shape: BoxShape.circle,
                                               border: Border.all(color: context.read<LocaleCubit>().isDark? AppColors.white:AppColors.mirage)
                                             ),

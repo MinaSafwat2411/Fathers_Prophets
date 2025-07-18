@@ -40,14 +40,14 @@ class CategoriesScreen extends StatelessWidget {
                 'items':cubit.categoriesEvents[index]
               }),
               child: SizedBox(
-                height: 160,
+                height: 150,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     SizedBox(
-                      width: 80,
-                      height: 80,
+                      width: 70,
+                      height: 70,
                       child: Card(
                         margin: EdgeInsets.zero,
                         color:

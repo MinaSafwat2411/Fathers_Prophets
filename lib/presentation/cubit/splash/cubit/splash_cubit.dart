@@ -39,6 +39,7 @@ class SplashCubit extends Cubit<SplashStates> {
   var chessEvents = <EventsModel>[];
   var prayEvents = <EventsModel>[];
   var praiseEvents = <EventsModel>[];
+  var mahrganEvents = <EventsModel>[];
   var classList = <ClassModel>[];
   var userData = UserModel();
 
@@ -66,6 +67,7 @@ class SplashCubit extends Cubit<SplashStates> {
       await CacheHelper.removeEvents('chess');
       await CacheHelper.removeEvents('pray');
       await CacheHelper.removeEvents('praise');
+      await CacheHelper.removeEvents('mahrgan');
       switch(userData.role){
         case 'admin':
           footballEvents = (await eventsUseCase.getEventsByName(FirebaseEndpoints.football));
@@ -80,6 +82,7 @@ class SplashCubit extends Cubit<SplashStates> {
           chessEvents = (await eventsUseCase.getEventsByName(FirebaseEndpoints.chess));
           prayEvents = (await eventsUseCase.getEventsByName(FirebaseEndpoints.pray));
           praiseEvents = (await eventsUseCase.getEventsByName(FirebaseEndpoints.praise));
+          mahrganEvents = (await eventsUseCase.getEventsByName(FirebaseEndpoints.mahrgan));
           break;
         case 'sports':
           footballEvents = (await eventsUseCase.getEventsByName(FirebaseEndpoints.football));
@@ -108,6 +111,9 @@ class SplashCubit extends Cubit<SplashStates> {
         case 'praise':
           praiseEvents = (await eventsUseCase.getEventsByName(FirebaseEndpoints.praise));
           break;
+        case 'mahrgan':
+          mahrganEvents = (await eventsUseCase.getEventsByName(FirebaseEndpoints.mahrgan));
+          break;
         default: break;
       }
       quizzesList = (await questionsUseCase.getAllQuizzes()??[]);
@@ -127,6 +133,7 @@ class SplashCubit extends Cubit<SplashStates> {
       if(chessEvents.isNotEmpty) await CacheHelper.saveEvents(chessEvents, 'chess');
       if(prayEvents.isNotEmpty) await CacheHelper.saveEvents(prayEvents, 'pray');
       if(praiseEvents.isNotEmpty) await CacheHelper.saveEvents(praiseEvents, 'praise');
+      if(mahrganEvents.isNotEmpty) await CacheHelper.saveEvents(mahrganEvents, 'mahrgan');
 
     }catch(e){
       rethrow;

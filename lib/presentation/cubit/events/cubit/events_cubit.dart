@@ -230,6 +230,13 @@ class EventsCubit extends Cubit<EventsStates> {
             events.add(event.copyWith(docId: id));
             await CacheHelper.saveEvents(events, 'pray');
           }
+          case EventEnum.MAHRGAN:{
+            event =event.copyWith(name:  "مهرجان");
+            String id = await eventsUseCase.addNewEventByName(event,FirebaseEndpoints.mahrgan);
+            var events = CacheHelper.getEvents('mahrgan');
+            events.add(event.copyWith(docId: id));
+            await CacheHelper.saveEvents(events, 'mahrgan');
+          }
       }
       emit(OnSuccess());
     } catch (e) {
@@ -382,10 +389,16 @@ class EventsCubit extends Cubit<EventsStates> {
           await CacheHelper.saveEvents(praise, 'praise');
           break;
         }
+        case 'mahrgan':{
+          await eventsUseCase.addEventAttendance(selectedMembers.map((e) => e.name??"").toList(), event,FirebaseEndpoints.mahrgan);
+          var mahrgan = CacheHelper.getEvents('mahrgan');
+          var index = mahrgan.indexWhere((element) => element.docId == event);
+          mahrgan[index] = this.event;
+          await CacheHelper.saveEvents(mahrgan, 'mahrgan');
+        }
         default: break;
       }
     }catch(e){
-      print(e.toString());
       emit(OnError(e.toString()));
     }
     emit(OnSuccess());

@@ -37,11 +37,12 @@ class LayoutCubit extends Cubit<LayoutStates> {
   var chessEvents = <EventsModel>[];
   var prayEvents = <EventsModel>[];
   var praiseEvents = <EventsModel>[];
+  var mahrganEvents = <EventsModel>[];
   TextEditingController searchController = TextEditingController();
   List<EventsModel> comingEvents = <EventsModel>[];
   List<EventsModel> filteredEvents = <EventsModel>[];
   List<EventsModel> allEvents = <EventsModel>[];
-  List<String> categories = ["bible", "melodies", "pray", "praise", "doctrine", "football", "pingPong", "volleyball", "coptic", "choir", "ritual", "chess"];
+  List<String> categories = ["bible", "melodies", "pray", "praise", "doctrine","mahrgan", "football", "pingPong", "volleyball", "coptic", "choir", "ritual", "chess"];
   List<List<EventsModel>> categoriesEvents =<List<EventsModel>>[];
   final searchFocusNode = FocusNode();
 
@@ -123,6 +124,7 @@ class LayoutCubit extends Cubit<LayoutStates> {
     allEvents.clear();
     quizzes.clear();
     quizzesSearch.clear();
+    mahrganEvents.clear();
     quizzes = CacheHelper.getQuizzes();
     categoriesEvents.clear();
     footballEvents = CacheHelper.getEvents('football');
@@ -149,11 +151,13 @@ class LayoutCubit extends Cubit<LayoutStates> {
     comingEvents.addAll(prayEvents.where((element) => element.dateTime!.isAfter(DateTime.now().subtract(Duration(days: 1)))).toList());
     praiseEvents = CacheHelper.getEvents('praise');
     comingEvents.addAll(praiseEvents.where((element) => element.dateTime!.isAfter(DateTime.now().subtract(Duration(days: 1)))).toList());
-    filteredEvents.addAll(footballEvents+bibleEvents+pingPongEvents+volleyballEvents+copticEvents+choirEvents+melodiesEvents+ritualEvents+doctrineEvents+chessEvents+prayEvents+praiseEvents);
+    mahrganEvents = CacheHelper.getEvents('mahrgan');
+    comingEvents.addAll(mahrganEvents.where((element) => element.dateTime!.isAfter(DateTime.now().subtract(Duration(days: 1)))).toList());
+    filteredEvents.addAll(footballEvents+bibleEvents+pingPongEvents+volleyballEvents+copticEvents+choirEvents+melodiesEvents+ritualEvents+doctrineEvents+chessEvents+prayEvents+praiseEvents+mahrganEvents);
     filteredEvents.sort((a, b) => (b.dateTime?? DateTime.now()).compareTo(a.dateTime?? DateTime.now()));
     comingEvents.sort((a, b) => (b.dateTime?? DateTime.now()).compareTo(a.dateTime?? DateTime.now()));
     allEvents = filteredEvents;
-    categoriesEvents.addAll([bibleEvents, melodiesEvents, prayEvents, praiseEvents, doctrineEvents, footballEvents, pingPongEvents, volleyballEvents, copticEvents, choirEvents, ritualEvents, chessEvents]);
+    categoriesEvents.addAll([bibleEvents, melodiesEvents, prayEvents, praiseEvents, doctrineEvents,mahrganEvents, footballEvents, pingPongEvents, volleyballEvents, copticEvents, choirEvents, ritualEvents, chessEvents]);
     sortQuizzes();
     quizzesSearch = quizzes;
     emit(SuccessState());

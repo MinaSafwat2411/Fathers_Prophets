@@ -142,6 +142,10 @@ class AddEventScreen extends StatelessWidget {
                             value: EventEnum.PRAISE,
                             label: localize.translate("praise"),
                           ),
+                          DropdownMenuEntry<EventEnum>(
+                            value: EventEnum.MAHRGAN,
+                            label: localize.translate("mahrgan"),
+                          ),
                         ],
                         onSelected: (value) {
                           cubit.onSelectEvent(value);
