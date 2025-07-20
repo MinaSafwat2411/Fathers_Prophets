@@ -125,6 +125,7 @@ class ChatBotScreen extends StatelessWidget {
                   blurRadius: 6,
                 ),
               ],
+
             ),
             child: Row(
               children: [
