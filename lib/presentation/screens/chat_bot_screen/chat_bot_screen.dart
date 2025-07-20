@@ -15,101 +15,141 @@ class ChatBotScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var cubit = BlocProvider.of<ChatbotCubit>(context);
+    final cubit = context.read<ChatbotCubit>();
     final localize = AppLocalizations.of(context);
-    var textTheme = Theme.of(context).textTheme;
+    final textTheme = Theme.of(context).textTheme;
+    final isDark = context.read<LocaleCubit>().isDark;
+
     return BlocConsumer<ChatbotCubit, ChatbotStates>(
-        builder: (context, state) => Scaffold(
-            appBar: AppBar(
-                title: Text(localize.translate('chatbot'),style: textTheme.titleLarge,),
-                leading: IconButton(
-                  icon: const Icon(Icons.arrow_back_ios_new_outlined),
-                  onPressed: () {
-                    context.pop();
-                  },
+      listener: (context, state) {},
+      builder: (context, state) => Scaffold(
+        appBar: AppBar(
+          title: Text(localize.translate('chatbot'), style: textTheme.titleLarge),
+          centerTitle: true,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios_new_outlined),
+            onPressed: () => context.pop(),
+          ),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.cleaning_services_outlined),
+              onPressed: () => cubit.onClearChat(),
+            )
+          ],
+        ),
+        body: cubit.messages.isNotEmpty
+            ? ListView.separated(
+          padding: const EdgeInsets.only(bottom: 100),
+          itemCount: cubit.messages.length,
+          separatorBuilder: (_, __) => const SizedBox(height: 4),
+          itemBuilder: (context, index) {
+            final msg = cubit.messages[index];
+            final isMe = msg.sender;
+
+            return Align(
+              alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
+              child: Column(
+                crossAxisAlignment:
+                isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 12),
+                    padding: const EdgeInsets.all(12),
+                    constraints: BoxConstraints(
+                      maxWidth: MediaQuery.of(context).size.width * 0.75,
+                    ),
+                    decoration: BoxDecoration(
+                      color: isMe ? AppColors.gray : AppColors.riverBed,
+                      borderRadius: BorderRadius.only(
+                        topLeft: const Radius.circular(16),
+                        topRight: const Radius.circular(16),
+                        bottomLeft: Radius.circular(isMe ? 16 : 0),
+                        bottomRight: Radius.circular(isMe ? 0 : 16),
+                      ),
+                    ),
+                    child: Text(
+                      msg.message,
+                      style: textTheme.bodyMedium?.copyWith(
+                        color: AppColors.white,
+                      ),
+                    ),
+                  ),
+                  if (state is OnLoadingMassage &&
+                      index == cubit.messages.length - 1)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8, left: 12, right: 12),
+                      child: Align(
+                        alignment: isMe
+                            ? Alignment.centerRight
+                            : Alignment.centerLeft,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 8, horizontal: 16),
+                          decoration: BoxDecoration(
+                            color: AppColors.riverBed,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: LoadingAnimationWidget.waveDots(
+                            color: AppColors.mirage,
+                            size: 35,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            );
+          },
+        )
+            : Center(
+          child: Image.asset(
+            isDark
+                ? "assets/images/logo_dark.png"
+                : "assets/images/logo_light.png",
+            width: 150,
+            height: 150,
+            fit: BoxFit.contain,
+          ),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        floatingActionButton: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              color: isDark ? AppColors.mirage : AppColors.white,
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: const [
+                BoxShadow(
+                  color: Colors.black12,
+                  blurRadius: 6,
                 ),
-              centerTitle: true,
-              actions: [
+              ],
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: CustomBigTextField(
+                    controller: cubit.textController,
+                    border: 24,
+                    isDark: isDark,
+                    observe: false,
+                    label: localize.translate('send'),
+                  ),
+                ),
                 IconButton(
-                  icon: const Icon(Icons.cleaning_services_outlined),
+                  icon: const Icon(Icons.send),
                   onPressed: () {
-                    cubit.onClearChat();
+                    if (cubit.textController.text.trim().isNotEmpty) {
+                      cubit.onSendMessage();
+                    }
                   },
                 )
               ],
             ),
-            body: cubit.messages.isNotEmpty ? ListView.separated(
-                itemBuilder: (context, index) => Padding(
-                  padding: EdgeInsets.only(top: 8,left: 8,right: 8,bottom: index == cubit.messages.length-1 ? 100 : 8),
-                  child: Column(
-                    crossAxisAlignment: cubit.messages[index].sender ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          color: cubit.messages[index].sender ? AppColors.gray:AppColors.riverBed,
-                          borderRadius: BorderRadius.all(Radius.circular(20))
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Text(cubit.messages[index].message,style: textTheme.bodyLarge?.copyWith(
-                            color: AppColors.white
-                          )),
-                        ),
-                      ),
-                      SizedBox(height: 8,),
-                      if(state is OnLoadingMassage && index == cubit.messages.length-1)Container(
-                        alignment: context.read<LocaleCubit>().lang=='ar' ? Alignment.centerRight : Alignment.centerLeft,
-                        decoration: BoxDecoration(
-                            color: AppColors.riverBed,
-                            borderRadius: BorderRadius.all(Radius.circular(20))
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0,horizontal: 16),
-                          child: LoadingAnimationWidget.waveDots(
-                              color: AppColors.mirage, size: 35,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                separatorBuilder: (context, index) => SizedBox(height: 0,),
-                itemCount: cubit.messages.length
-            ):Center(
-              child: Image.asset(
-                context.read<LocaleCubit>().isDark ? "assets/images/logo_dark.png" : "assets/images/logo_light.png",
-                width: 150,
-                height: 150,
-                fit: BoxFit.fill,
-              ),
-            ),
-          floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-          floatingActionButton: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
-              decoration: BoxDecoration(
-                  color: context.read<LocaleCubit>().isDark ? AppColors.mirage:AppColors.white,
-                  borderRadius: BorderRadius.all(Radius.circular(24))
-              ),
-              child: CustomBigTextField(
-                  border: 24,
-                  controller: cubit.textController,
-                  isDark: context.read<LocaleCubit>().isDark,
-                  observe: false,
-                suffix: IconButton(
-                  icon: const Icon(Icons.send),
-                  onPressed: () {
-                    cubit.onSendMessage();
-                  },
-                ),
-                label: localize.translate('send'),
-              ),
-            ),
           ),
         ),
-        listener: (context, state) {
-
-        },
+      ),
     );
   }
 }
