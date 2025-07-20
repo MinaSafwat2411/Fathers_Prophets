@@ -2,6 +2,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
+import 'cache_helper.dart';
+
 class NotificationService {
   static final FlutterLocalNotificationsPlugin _localNotifications =
   FlutterLocalNotificationsPlugin();
@@ -30,6 +32,7 @@ class NotificationService {
 
     try {
       String? token = await messaging.getToken();
+      await CacheHelper.saveData(key: 'fcmToken', value: token);
       debugPrint("✅ FCM Token: $token");
     } catch (e) {
       debugPrint("❌ Error getting FCM token: $e");

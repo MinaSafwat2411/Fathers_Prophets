@@ -1,5 +1,4 @@
 class FirebaseEndpoints {
-  static const String splashDocId = 'CCCOhS5vkq0g2J1YZq7o';
   static const String splash = "Splash";
   static const String attendance = "Attendance";
   static const String members = "Members";
@@ -13,7 +12,7 @@ class FirebaseEndpoints {
   static const String eventAttendance = "EventAttendance";
   static const String quizzesScore = "QuizzesScore";
   static const String classId = "class";
-  static const String version = "1.0.16";
+  static const String version = "1.0.17";
   static const String adminPin = "AdminPin";
   static const String football = "Football";
   static const String volleyball = "Volleyball";

@@ -1,3 +1,4 @@
+import 'package:fathers_prophets/data/models/classes/class_user_model.dart';
 import 'package:fathers_prophets/data/models/quizzes/quizzes_model.dart';
 import 'package:fathers_prophets/data/models/users/users_model.dart';
 import 'package:fathers_prophets/presentation/screens/add_attendance_screen/add_attendance_screen.dart';
@@ -8,6 +9,8 @@ import 'package:fathers_prophets/presentation/screens/add_quizzes_screen/add_qui
 import 'package:fathers_prophets/presentation/screens/attendance_details_screen/attendance_details_screen.dart';
 import 'package:fathers_prophets/presentation/screens/categories_screen/categories_screen.dart';
 import 'package:fathers_prophets/presentation/screens/chat_bot_screen/chat_bot_screen.dart';
+import 'package:fathers_prophets/presentation/screens/chat_screen/chat_screen.dart';
+import 'package:fathers_prophets/presentation/screens/chat_servant_screen/chat_user_screen.dart';
 import 'package:fathers_prophets/presentation/screens/dashboard_screen/dashboard_screen.dart';
 import 'package:fathers_prophets/presentation/screens/event_attendance_details_screen/event_attendance_details_screen.dart';
 import 'package:fathers_prophets/presentation/screens/event_details/event_details.dart';
@@ -64,7 +67,8 @@ enum AppRoutes {
   pin,
   eventAttendanceDetails,
   categories,
-  chatBot
+  chatBot,
+  chat
 }
 
 final GoRouter router = GoRouter(
@@ -273,6 +277,12 @@ final GoRouter router = GoRouter(
       name: AppRoutes.chatBot.name,
       builder: (context, state) => const ChatBotScreen(),
     ),
+    GoRoute(
+      path: AppRoutePaths.chat,
+      name: AppRoutes.chat.name,
+      builder: (context, state) => ChatUserScreen(
+          receiverUserData:state.extra as ClassUserModel
+      )),
   ],
 );
 
@@ -310,4 +320,5 @@ abstract class AppRoutePaths {
   static const String eventAttendanceDetails = '/event_attendance_details';
   static const String categories = '/categories';
   static const String chatBot = '/chat_bot';
+  static const String chat = '/chat';
 }

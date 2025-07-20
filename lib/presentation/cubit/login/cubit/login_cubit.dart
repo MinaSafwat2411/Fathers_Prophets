@@ -87,6 +87,9 @@ class LoginCubit extends Cubit<LoginStates>  {
               }
               await CacheHelper.saveClasses(classList);
             }
+            await usersUseCase.updateUser(userData.copyWith(
+              fcmToken: CacheHelper.getData(key: "fcmToken"),
+            ));
             await getAllFirebaseDate();
             Future.delayed(Duration(seconds: 1),() => emit(LoginSuccessState()),);
           }else{
@@ -164,9 +167,6 @@ class LoginCubit extends Cubit<LoginStates>  {
         default: break;
       }
       quizzesList = (await questionsUseCase.getAllQuizzes()??[]);
-      await usersUseCase.updateUser(userData.copyWith(
-          isAnyUpdate: false
-      ));
       if(quizzesList.isNotEmpty) await CacheHelper.saveQuizzes(quizzesList);
       if(bibleEvents.isNotEmpty) await CacheHelper.saveEvents(bibleEvents, 'bible');
       if(footballEvents.isNotEmpty) await CacheHelper.saveEvents(footballEvents, 'football');

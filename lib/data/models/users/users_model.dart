@@ -16,6 +16,7 @@ class UserModel {
   final bool? isAdmin;
   final String? role;
   final bool? isReviewed;
+  final String? fcmToken;
   bool? canPreview = false;
   bool? checked;
 
@@ -38,7 +39,8 @@ class UserModel {
     this.checked,
     this.isReviewed,
     this.canPreview,
-    this.role
+    this.role,
+    this.fcmToken
 });
   factory UserModel.fromJson(Map<String, dynamic> json,String uid) {
     return UserModel(
@@ -63,6 +65,7 @@ class UserModel {
       isReviewed: json['isReviewed']??false,
       canPreview: json['isAdmin']??false,
       role: json['role']??'',
+      fcmToken: json['fcmToken']??'',
     );
   }
   Map<String, dynamic> toJson() {
@@ -82,6 +85,7 @@ class UserModel {
       'uid':uid,
       "isReviewed": isReviewed,
       "role": role,
+      "fcmToken": fcmToken
     };
   }
   UserModel copyWith({
@@ -99,7 +103,6 @@ class UserModel {
     String? uid,
     bool? isAdmin,
     String? date,
-    bool? isAnyUpdate,
     bool? checked,
     DateTime? birthdayDate,
     bool? isTeacher,
@@ -107,6 +110,7 @@ class UserModel {
     int? index,
     bool? canPreview,
     String? role,
+    String? fcmToken
   }){
     return UserModel(
       // address: address??this.address,
@@ -127,6 +131,7 @@ class UserModel {
       isReviewed: isReviewed??this.isReviewed,
       canPreview: canPreview??this.canPreview,
       role: role??this.role,
+      fcmToken:  fcmToken ?? this.fcmToken
     );
   }
 

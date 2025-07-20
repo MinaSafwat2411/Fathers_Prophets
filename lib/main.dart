@@ -1,6 +1,7 @@
 import 'package:fathers_prophets/presentation/cubit/add_attendance/cubit/add_attendance_cubit.dart';
 import 'package:fathers_prophets/presentation/cubit/add_member/cubit/add_member_cubit.dart';
 import 'package:fathers_prophets/presentation/cubit/attendance/cubit/attendance_cubit.dart';
+import 'package:fathers_prophets/presentation/cubit/chat/cubit/chat_cubit.dart';
 import 'package:fathers_prophets/presentation/cubit/chatbot/cubit/chatbot_cubit.dart';
 import 'package:fathers_prophets/presentation/cubit/comment/cubit/comment_cubit.dart';
 import 'package:fathers_prophets/presentation/cubit/dashboard/cubit/dashboard_cubit.dart';
@@ -28,6 +29,7 @@ import 'core/localization/app_localizations.dart';
 import 'core/utils/app_themes.dart';
 import 'data/services/bloc_observer.dart';
 import 'data/services/cache_helper.dart';
+import 'data/services/firebase_notification_service.dart';
 import 'data/services/notification_services.dart';
 import 'data/firebase/firebase_options.dart';
 
@@ -39,6 +41,7 @@ void main() async {
   await CacheHelper.init();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await NotificationService.init();
+  await FirebaseNotificationService.init();
   if (kDebugMode) Bloc.observer = MyBlocObserver();
   bool isDark = await CacheHelper.getData(key: 'isDark') ?? false;
   String lang = await CacheHelper.getData(key: 'lang') ?? 'ar';
@@ -76,7 +79,8 @@ class MyApp extends StatelessWidget {
           BlocProvider(create: (context) => ReviewUserCubit()..getData(),),
           BlocProvider(create: (context) => PinCubit(),),
           BlocProvider(create: (context) => QuizTableCubit()..getAllQuizzesScore(),),
-          BlocProvider(create: (context) => ChatbotCubit())
+          BlocProvider(create: (context) => ChatbotCubit()),
+          BlocProvider(create: (context) => ChatCubit()..getUserData()..getClasses()..listenToMyChats())
         ],
         child: BlocConsumer<LocaleCubit, LocaleStates>(
           builder: (context, state) => MaterialApp.router(

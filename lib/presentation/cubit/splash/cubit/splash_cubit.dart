@@ -117,9 +117,6 @@ class SplashCubit extends Cubit<SplashStates> {
         default: break;
       }
       quizzesList = (await questionsUseCase.getAllQuizzes()??[]);
-      await usersUseCase.updateUser(userData.copyWith(
-          isAnyUpdate: false
-      ));
       if(quizzesList.isNotEmpty) await CacheHelper.saveQuizzes(quizzesList);
       if(bibleEvents.isNotEmpty) await CacheHelper.saveEvents(bibleEvents, 'bible');
       if(footballEvents.isNotEmpty) await CacheHelper.saveEvents(footballEvents, 'football');
@@ -162,6 +159,9 @@ class SplashCubit extends Cubit<SplashStates> {
                 }
                 await CacheHelper.saveClasses(classList);
               }
+              await usersUseCase.updateUser(userData.copyWith(
+                fcmToken: CacheHelper.getData(key: "fcmToken"),
+              ));
               await getAllFirebaseDate();
               emit(OnNavigateToHomeScreen());
             } else {
