@@ -58,12 +58,12 @@ class CategoriesItem extends StatelessWidget {
         ),
         SizedBox(height: 8,),
         SizedBox(
-          height: 160,
+          height: MediaQuery.of(context).size.height*0.2,
           child: ListView.separated(
             shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
+            physics: BouncingScrollPhysics(),
             scrollDirection: Axis.horizontal,
-            itemCount: 5,
+            itemCount: cubit.categories.length,
             itemBuilder: (context, index) => GestureDetector(
               onTap: () => context.pushNamed(AppRoutes.eventDetails.name, extra: {
                 'title':cubit.categories[index],
@@ -74,8 +74,8 @@ class CategoriesItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   SizedBox(
-                    width: 70,
-                    height: 70,
+                    width: MediaQuery.of(context).size.width * 0.17,
+                    height: MediaQuery.of(context).size.height*0.08,
                     child: Card(
                       margin: EdgeInsets.zero,
                       color:
@@ -97,7 +97,7 @@ class CategoriesItem extends StatelessWidget {
                   ),
                   SizedBox(height: 4),
                   SizedBox(
-                    width: 70,
+                    width: MediaQuery.of(context).size.width * 0.17,
                     child: Text(
                       localize.translate(cubit.categories[index]),
                       style: textTheme.bodySmall?.copyWith(fontSize: 10),

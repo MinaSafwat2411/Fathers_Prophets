@@ -4,8 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/localization/app_localizations.dart';
+import '../../../core/utils/app_colors.dart';
 import '../../../core/widgets/event_shimmer_item.dart';
-import '../../../data/models/events/events_model.dart';
 import '../../cubit/layout/cubit/layout_cubit.dart';
 import '../../cubit/local/cubit/local_cubit.dart';
 import '../../routes.dart';
@@ -51,6 +51,10 @@ class HomeScreenItem extends StatelessWidget {
                     }
                   },
                   child: Card(
+                    color:
+                    context.read<LocaleCubit>().isDark
+                        ? AppColors.riverBed
+                        : AppColors.slateGray,
                     margin: EdgeInsets.symmetric(vertical: 4),
                     shape: CircleBorder(),
                     child: ClipOval(
