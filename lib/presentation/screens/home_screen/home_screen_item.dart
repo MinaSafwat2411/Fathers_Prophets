@@ -30,7 +30,7 @@ class HomeScreenItem extends StatelessWidget {
           textAlign: TextAlign.center,
         ),
         if (cubit.comingEvents.isNotEmpty)SizedBox(
-          height:MediaQuery.of(context).size.height*0.15,
+          height:MediaQuery.of(context).size.height*0.13,
           child: ListView.separated(
             physics: BouncingScrollPhysics(),
             shrinkWrap: true,
@@ -61,8 +61,8 @@ class HomeScreenItem extends StatelessWidget {
                       margin: EdgeInsets.zero,
                       child: cubit.comingEvents[index].image != ''
                           ? CachedNetworkImage(
-                        width: MediaQuery.of(context).size.width*0.2,
-                        height: MediaQuery.of(context).size.height*0.09,
+                        width: MediaQuery.of(context).size.width*0.18,
+                        height: MediaQuery.of(context).size.height*0.08,
                         fit: BoxFit.fill,
                         imageUrl:
                         cubit.comingEvents[index].image ?? '',
@@ -86,8 +86,8 @@ class HomeScreenItem extends StatelessWidget {
                         context.read<LocaleCubit>().isDark
                             ? 'assets/images/ic_${cubit.comingEvents[index].nameEn?.toLowerCase()}_dark.png'
                             : 'assets/images/ic_${cubit.comingEvents[index].nameEn?.toLowerCase()}_light.png',
-                        width: MediaQuery.of(context).size.width*0.2,
-                        height: MediaQuery.of(context).size.height*0.09,
+                        width: MediaQuery.of(context).size.width*0.18,
+                        height: MediaQuery.of(context).size.height*0.08,
                         fit: BoxFit.fill,
                       ),
                     ),
