@@ -62,7 +62,7 @@ class HomeScreenItem extends StatelessWidget {
                       child: cubit.comingEvents[index].image != ''
                           ? CachedNetworkImage(
                         width: MediaQuery.of(context).size.width*0.2,
-                        height: MediaQuery.of(context).size.height*0.1,
+                        height: MediaQuery.of(context).size.height*0.09,
                         fit: BoxFit.fill,
                         imageUrl:
                         cubit.comingEvents[index].image ?? '',
@@ -87,7 +87,7 @@ class HomeScreenItem extends StatelessWidget {
                             ? 'assets/images/ic_${cubit.comingEvents[index].nameEn?.toLowerCase()}_dark.png'
                             : 'assets/images/ic_${cubit.comingEvents[index].nameEn?.toLowerCase()}_light.png',
                         width: MediaQuery.of(context).size.width*0.2,
-                        height: MediaQuery.of(context).size.height*0.1,
+                        height: MediaQuery.of(context).size.height*0.09,
                         fit: BoxFit.fill,
                       ),
                     ),
