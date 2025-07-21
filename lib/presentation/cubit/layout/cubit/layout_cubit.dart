@@ -79,7 +79,8 @@ class LayoutCubit extends Cubit<LayoutStates> {
   }
 
 
-  void getAllAttendance(String lang) async {
+  void getAllAttendance() async {
+    var lang = CacheHelper.getData(key: 'lang');
     try {
       emit(LoadingState());
       if(userData.isAdmin??false){

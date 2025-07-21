@@ -9,11 +9,14 @@ import '../../../core/utils/app_colors.dart';
 import '../../routes.dart';
 
 class QuizzesScreen extends StatelessWidget {
-  const QuizzesScreen({super.key, required this.quizzes, required this.quizzesDone});
+  const QuizzesScreen({
+    super.key,
+    required this.quizzes,
+    required this.quizzesDone,
+  });
 
   final List<QuizzesModel> quizzes;
   final List<String> quizzesDone;
-
 
   @override
   Widget build(BuildContext context) {
@@ -25,21 +28,26 @@ class QuizzesScreen extends StatelessWidget {
         children: [
           ListView.separated(
             physics: NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemBuilder: (context, index) {
+            shrinkWrap: true,
+            itemBuilder: (context, index) {
               bool isChecked = quizzesDone.contains(quizzes[index].docId);
-                return Column(
-                  children: [
-                    GestureDetector(
-                      onTap: () async{
-                        if(!isChecked) {
-                          var  quiz = await context.pushNamed(AppRoutes.quizDetails.name,extra: quizzes[index]);
-                          if(quiz as bool){
-                            cubit.afterUpdateQuizzes(quizzes[index].docId??"");
-                          }
+              return Column(
+                children: [
+                  GestureDetector(
+                    onTap: () async {
+                      if (!isChecked) {
+                        var quiz = await context.pushNamed(
+                          AppRoutes.quizDetails.name,
+                          extra: {
+                            'quizzes': quizzes[index],
+                          },
+                        );
+                        if (quiz as bool) {
+                          cubit.afterUpdateQuizzes(quizzes[index].docId ?? "");
                         }
-                      },
-                      child: Card(
+                      }
+                    },
+                    child: Card(
                       child: SizedBox(
                         height: 60,
                         width: double.infinity,
@@ -49,9 +57,11 @@ class QuizzesScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8.0,
+                              ),
                               child: Text(
-                               "${localize.translate("quiz_no")} ${quizzes[index].number}",
+                                "${localize.translate("quiz_no")} ${quizzes[index].number}",
                               ),
                             ),
                             Checkbox(
@@ -62,14 +72,14 @@ class QuizzesScreen extends StatelessWidget {
                           ],
                         ),
                       ),
-                                    ),
                     ),
-                    if(index == quizzes.length-1)SizedBox(height: 30,)
-                  ],
-                );
-              },
-              separatorBuilder: (context, index) => SizedBox(height: 5,),
-              itemCount: quizzes.length
+                  ),
+                  if (index == quizzes.length - 1) SizedBox(height: 30),
+                ],
+              );
+            },
+            separatorBuilder: (context, index) => SizedBox(height: 5),
+            itemCount: quizzes.length,
           ),
         ],
       ),

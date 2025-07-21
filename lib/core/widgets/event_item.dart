@@ -1,4 +1,6 @@
+import 'package:fathers_prophets/presentation/cubit/layout/cubit/layout_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../data/models/events/events_model.dart';
 import '../../presentation/routes.dart';
@@ -16,12 +18,16 @@ class EventItem extends StatelessWidget {
   Widget build(BuildContext context) {
     var textTheme = Theme.of(context).textTheme;
     final localize = AppLocalizations.of(context);
+    var cubit = context.read<LayoutCubit>();
     return  Expanded(
       child: GestureDetector(
-        onTap: () => context.pushNamed(AppRoutes.eventDetails.name, extra: {
+        onTap: () async{
+          await context.pushNamed(AppRoutes.eventDetails.name, extra: {
           'title':title,
           'items':events
-        }),
+        });
+          cubit.getAllData();
+        },
         child: Card(
           color: isDark?AppColors.riverBed:AppColors.slateGray,
           child: Column(

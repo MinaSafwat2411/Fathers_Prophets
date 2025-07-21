@@ -1,6 +1,10 @@
 import 'package:fathers_prophets/data/models/classes/class_user_model.dart';
 import 'package:fathers_prophets/data/models/quizzes/quizzes_model.dart';
 import 'package:fathers_prophets/data/models/users/users_model.dart';
+import 'package:fathers_prophets/presentation/cubit/layout/cubit/layout_cubit.dart';
+import 'package:fathers_prophets/presentation/cubit/onboarding/cubit/onboarding_cubit.dart';
+import 'package:fathers_prophets/presentation/cubit/profile/cubit/profile_cubit.dart';
+import 'package:fathers_prophets/presentation/cubit/splash/cubit/splash_cubit.dart';
 import 'package:fathers_prophets/presentation/screens/add_attendance_screen/add_attendance_screen.dart';
 import 'package:fathers_prophets/presentation/screens/add_event_attendance/add_event_attendance.dart';
 import 'package:fathers_prophets/presentation/screens/add_event_screen/add_event_screen.dart';
@@ -30,9 +34,24 @@ import 'package:fathers_prophets/presentation/screens/setting_screen/setting_scr
 import 'package:fathers_prophets/presentation/screens/splash_screen/splash_screen.dart';
 import 'package:fathers_prophets/presentation/screens/user_details_screen/user_details_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../data/models/attendance/attendance_model.dart';
 import '../data/models/events/events_model.dart';
+import 'cubit/add_attendance/cubit/add_attendance_cubit.dart';
+import 'cubit/add_member/cubit/add_member_cubit.dart';
+import 'cubit/attendance/cubit/attendance_cubit.dart';
+import 'cubit/chatbot/cubit/chatbot_cubit.dart';
+import 'cubit/comment/cubit/comment_cubit.dart';
+import 'cubit/dashboard/cubit/dashboard_cubit.dart';
+import 'cubit/events/cubit/events_cubit.dart';
+import 'cubit/forgot_password/cubit/forgot_password_cubit.dart';
+import 'cubit/login/cubit/login_cubit.dart';
+import 'cubit/pin/cubit/pin_cubit.dart';
+import 'cubit/quiz_table/cubit/quiz_table_cubit.dart';
+import 'cubit/quizzes/cubit/quizzes_cubit.dart';
+import 'cubit/register/cubit/register_cubit.dart';
+import 'cubit/review_user/cubit/review_user_cubit.dart';
 
 enum AppRoutes {
   login,
@@ -68,31 +87,40 @@ enum AppRoutes {
   eventAttendanceDetails,
   categories,
   chatBot,
-  chat
+  chat,
 }
 
+final _rootNavigatorKey = GlobalKey<NavigatorState>();
+
 final GoRouter router = GoRouter(
-  initialLocation: AppRoutePaths.splash, // Define initial route
+  initialLocation: AppRoutePaths.splash,
   routes: [
     GoRoute(
       path: AppRoutePaths.login,
       name: AppRoutes.login.name,
-      builder: (context, state) => const LoginScreen(),
+      builder:
+          (context, state) => BlocProvider(
+            create: (context) => LoginCubit(),
+            child: const LoginScreen(),
+          ),
     ),
     GoRoute(
       path: AppRoutePaths.splash,
       name: AppRoutes.splash.name,
-      builder: (context, state) => const SplashScreen(),
-    ),
-    GoRoute(
-      path: AppRoutePaths.layout,
-      name: AppRoutes.layout.name,
-      builder: (context, state) => const LayoutScreen(),
+      builder:
+          (context, state) => BlocProvider(
+            create: (context) => SplashCubit()..onNavigate(),
+            child: const SplashScreen(),
+          ),
     ),
     GoRoute(
       path: AppRoutePaths.onboarding,
       name: AppRoutes.onboarding.name,
-      builder: (context, state) => const OnboardingScreen(),
+      builder:
+          (context, state) => BlocProvider(
+            create: (context) => OnboardingCubit(),
+            child: const OnboardingScreen(),
+          ),
     ),
     GoRoute(
       path: AppRoutePaths.search,
@@ -102,7 +130,11 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: AppRoutePaths.profile,
       name: AppRoutes.profile.name,
-      builder: (context, state) => const ProfileScreen(),
+      builder:
+          (context, state) => BlocProvider(
+            create: (context) => ProfileCubit()..getUserData(),
+            child: const ProfileScreen(),
+          ),
     ),
     GoRoute(
       path: AppRoutePaths.notifications,
@@ -132,12 +164,20 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: AppRoutePaths.register,
       name: AppRoutes.register.name,
-      builder: (context, state) => const RegisterScreen(),
+      builder:
+          (context, state) => BlocProvider(
+            create: (context) => RegisterCubit(),
+            child: const RegisterScreen(),
+          ),
     ),
     GoRoute(
       path: AppRoutePaths.forgotPassword,
       name: AppRoutes.forgotPassword.name,
-      builder: (context, state) => const ForgotPasswordScreen(),
+      builder:
+          (context, state) => BlocProvider(
+            create: (context) => ForgotPasswordCubit(),
+            child: const ForgotPasswordScreen(),
+          ),
     ),
     GoRoute(
       path: AppRoutePaths.resetPassword,
@@ -153,29 +193,55 @@ final GoRouter router = GoRouter(
       path: AppRoutePaths.attendanceDetails,
       name: AppRoutes.attendanceDetails.name,
       builder:
-          (context, state) => AttendanceDetailsScreen(
-            attendance: state.extra as AttendanceModel,
+          (context, state) => BlocProvider(
+            create: (context) => AttendanceCubit(),
+            child: AttendanceDetailsScreen(
+              attendance: state.extra as AttendanceModel,
+            ),
           ),
     ),
     GoRoute(
       path: AppRoutePaths.addAttendance,
       name: AppRoutes.addAttendance.name,
-      builder: (context, state) => const AddAttendanceScreen(),
+      builder:
+          (context, state) => BlocProvider(
+            create: (context) => AddAttendanceCubit()..getUserData(),
+            child: const AddAttendanceScreen(),
+          ),
     ),
     GoRoute(
       path: AppRoutePaths.quizDetails,
       name: AppRoutes.quizDetails.name,
-      builder: (context, state) => QuizzesDetailsScreen(quizzes: state.extra as QuizzesModel,query: state.uri.queryParameters,),
+      builder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>;
+        final quiz = extra['quizzes'] as QuizzesModel;
+        final query = state.uri.queryParameters;
+        final quizzesCubit = extra['cubit'] as QuizzesCubit?;
+
+        return BlocProvider<QuizzesCubit>(
+          create: (_) => quizzesCubit ?? QuizzesCubit(),
+          lazy: quizzesCubit == null,
+          child: QuizzesDetailsScreen(quizzes: quiz, query: query),
+        );
+      },
     ),
     GoRoute(
       path: AppRoutePaths.addQuiz,
       name: AppRoutes.addQuiz.name,
-      builder: (context, state) => const AddQuizScreen(),
+      builder:
+          (context, state) => BlocProvider(
+            create: (context) => QuizzesCubit(),
+            child: const AddQuizScreen(),
+          ),
     ),
     GoRoute(
       path: AppRoutePaths.addEvent,
       name: AppRoutes.addEvent.name,
-      builder: (context, state) => const AddEventScreen(),
+      builder:
+          (context, state) => BlocProvider(
+            create: (context) => EventsCubit()..getAllMembers(),
+            child: const AddEventScreen(),
+          ),
     ),
     GoRoute(
       path: AppRoutePaths.eventDetails,
@@ -185,49 +251,47 @@ final GoRouter router = GoRouter(
         return EventDetails(
           events: extra['items'] as List<EventsModel>,
           title: extra['title'] as String,
-      );
-      },
-    ),
-    GoRoute(
-      path: AppRoutePaths.addEventAttendance,
-      name: AppRoutes.addEventAttendance.name,
-      builder: (context, state) {
-        final extra = state.extra as Map<String, dynamic>;
-        return AddEventAttendance(
-          event: extra['item'] as EventsModel,
-          title: extra['title'] as String,
-      );
+        );
       },
     ),
     GoRoute(
       path: AppRoutePaths.selectMember,
       name: AppRoutes.selectMember.name,
-      builder: (context, state) => const SelectMemberScreen(),
+      builder: (context, state) {
+        return state.extra as Widget;
+      },
     ),
     GoRoute(
       path: AppRoutePaths.dashBoard,
       name: AppRoutes.dashBoard.name,
-      builder: (context, state) => const DashboardScreen(),
+      builder:
+          (context, state) => BlocProvider(
+            create: (context) => DashboardCubit()..getAllData(),
+            child: const DashboardScreen(),
+          ),
     ),
     GoRoute(
       path: AppRoutePaths.userDetails,
       name: AppRoutes.userDetails.name,
       builder: (context, state) {
         final extra = state.extra as Map<String, dynamic>;
-        return UserDetailsScreen(
-          uid: extra['uid'] as String,
-          football: extra['football'] as int,
-          volleyball: extra['volleyball'] as int,
-          pingPong: extra['pingPong'] as int,
-          chess: extra['chess'] as int,
-          melodies: extra['melodies'] as int,
-          choir: extra['choir'] as int,
-          ritual: extra['ritual'] as int,
-          coptic: extra['coptic'] as int,
-          doctrine: extra['doctrine'] as int,
-          bible: extra['bible'] as int,
-          pray: extra['pray'] as int,
-          praise: extra['praise'] as int,
+        return BlocProvider(
+          create: (context) => CommentCubit(),
+          child: UserDetailsScreen(
+            uid: extra['uid'] as String,
+            football: extra['football'] as int,
+            volleyball: extra['volleyball'] as int,
+            pingPong: extra['pingPong'] as int,
+            chess: extra['chess'] as int,
+            melodies: extra['melodies'] as int,
+            choir: extra['choir'] as int,
+            ritual: extra['ritual'] as int,
+            coptic: extra['coptic'] as int,
+            doctrine: extra['doctrine'] as int,
+            bible: extra['bible'] as int,
+            pray: extra['pray'] as int,
+            praise: extra['praise'] as int,
+          ),
         );
       },
     ),
@@ -239,50 +303,112 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: AppRoutePaths.quizzesScoreTable,
       name: AppRoutes.quizzesScoreTable.name,
-      builder: (context, state) =>const QuizzesScoreTableScreen(),
+      builder:
+          (context, state) => BlocProvider(
+            create: (context) => QuizTableCubit()..getAllQuizzesScore(),
+            child: const QuizzesScoreTableScreen(),
+          ),
     ),
     GoRoute(
       path: AppRoutePaths.addMember,
       name: AppRoutes.addMember.name,
-      builder: (context, state) => const AddMemberScreen(),
+      builder:
+          (context, state) => BlocProvider(
+            create: (context) => AddMemberCubit()..getData(),
+            child: const AddMemberScreen(),
+          ),
     ),
     GoRoute(
       path: AppRoutePaths.reviewUser,
       name: AppRoutes.reviewUser.name,
-      builder: (context, state) => ReviewUserScreen(
-        user: state.extra as UserModel,
-      ),
+      builder:
+          (context, state) => BlocProvider(
+            create: (context) => ReviewUserCubit()..getData(),
+            child: ReviewUserScreen(user: state.extra as UserModel),
+          ),
     ),
     GoRoute(
       path: AppRoutePaths.pin,
       name: AppRoutes.pin.name,
-      builder: (context, state) => PinScreen(
-        nextScreen: state.extra as String,
-      ),
+      builder:
+          (context, state) => BlocProvider(
+            create: (context) => PinCubit(),
+            child: PinScreen(nextScreen: state.extra as String),
+          ),
     ),
     GoRoute(
       path: AppRoutePaths.eventAttendanceDetails,
       name: AppRoutes.eventAttendanceDetails.name,
-      builder: (context, state) => EventAttendanceDetailsScreen(
-        members: state.extra as List<String>,
-      )
+      builder:
+          (context, state) => EventAttendanceDetailsScreen(
+            members: state.extra as List<String>,
+          ),
     ),
     GoRoute(
-      path: AppRoutePaths.categories,
-      name: AppRoutes.categories.name,
-      builder: (context, state) => const CategoriesScreen(),
+      path: AppRoutePaths.addEventAttendance,
+      name: AppRoutes.addEventAttendance.name,
+      pageBuilder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>;
+        return MaterialPage(
+          key: state.pageKey,
+          child: BlocProvider(
+            create: (context) => EventsCubit()..getAllMembers(),
+            child: AddEventAttendance(
+              event: extra['item'] as EventsModel,
+              title: extra['title'] as String,
+            ),
+          ),
+        );
+      },
+    ),
+    ShellRoute(
+      navigatorKey: _rootNavigatorKey,
+      builder: (context, state, child) {
+        return BlocProvider(
+          create:
+              (_) =>
+                  LayoutCubit()
+                    ..getUserData()
+                    ..getAllData()
+                    ..getAllAttendance(),
+          child: child,
+        );
+      },
+      routes: [
+        GoRoute(
+          path: AppRoutePaths.layout,
+          name: AppRoutes.layout.name,
+          pageBuilder:
+              (context, state) =>
+                  MaterialPage(key: state.pageKey, child: const LayoutScreen()),
+        ),
+        GoRoute(
+          path: AppRoutePaths.categories,
+          name: AppRoutes.categories.name,
+          pageBuilder:
+              (context, state) => MaterialPage(
+                key: state.pageKey,
+                child: const CategoriesScreen(),
+              ),
+        ),
+      ],
     ),
     GoRoute(
       path: AppRoutePaths.chatBot,
       name: AppRoutes.chatBot.name,
-      builder: (context, state) => const ChatBotScreen(),
+      builder:
+          (context, state) => BlocProvider(
+            create: (context) => ChatbotCubit(),
+            child: const ChatBotScreen(),
+          ),
     ),
     GoRoute(
       path: AppRoutePaths.chat,
       name: AppRoutes.chat.name,
-      builder: (context, state) => ChatUserScreen(
-          receiverUserData:state.extra as ClassUserModel
-      )),
+      builder:
+          (context, state) =>
+              ChatUserScreen(receiverUserData: state.extra as ClassUserModel),
+    ),
   ],
 );
 

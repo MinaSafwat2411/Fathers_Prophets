@@ -43,7 +43,7 @@ class SplashScreen extends StatelessWidget {
                     padding: const EdgeInsets.all(16.0),
                     child: CustomButton(
                       onPressed: () {
-                        cubit.onNavigate(context.read<LocaleCubit>().isDark, CacheHelper.getData(key: 'uid') ?? '',CacheHelper.getData(key: 'isOpened') ?? false );
+                        cubit.onNavigate();
                       },
                       height: 56,
                       isDark: context.read<LocaleCubit>().isDark,

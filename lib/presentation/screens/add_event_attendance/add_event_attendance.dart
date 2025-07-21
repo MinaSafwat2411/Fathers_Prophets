@@ -13,8 +13,8 @@ import '../../../core/widgets/event_shimmer_item.dart';
 import '../../../data/models/events/event_attendance_model.dart';
 import '../../cubit/events/cubit/events_cubit.dart';
 import '../../cubit/events/states/events_states.dart';
-import '../../cubit/layout/cubit/layout_cubit.dart';
 import '../../cubit/local/cubit/local_cubit.dart';
+import '../select_member_screen/select_member_screen.dart';
 
 class AddEventAttendance extends StatelessWidget {
   const AddEventAttendance({
@@ -72,7 +72,7 @@ class AddEventAttendance extends StatelessWidget {
                       icon: Icon(Icons.arrow_back_ios_new_outlined),
                     ),
                     actions: [
-                      if (context.read<LayoutCubit>().userData.isAdmin ?? false)
+                      if (cubit.userData.isAdmin ?? false)
                         IconButton(
                           onPressed: () {
                             cubit.event.attendance?.sort(
@@ -135,7 +135,7 @@ class AddEventAttendance extends StatelessWidget {
                                       ),
                             ),
                           ),
-                          if (context.read<LayoutCubit>().userData.isAdmin ??
+                          if (cubit.userData.isAdmin ??
                               false)
                             Padding(
                               padding: const EdgeInsets.all(8.0),
@@ -143,6 +143,10 @@ class AddEventAttendance extends StatelessWidget {
                                 onPressed: () async {
                                   var list = await context.pushNamed(
                                     AppRoutes.selectMember.name,
+                                    extra: BlocProvider.value(
+                                      value: context.read<EventsCubit>(),
+                                      child: const SelectMemberScreen(),
+                                    ),
                                   );
                                   if (list == null) {
                                     return;
@@ -187,7 +191,7 @@ class AddEventAttendance extends StatelessWidget {
                   floatingActionButtonLocation:
                       FloatingActionButtonLocation.centerFloat,
                   floatingActionButton:
-                      (context.read<LayoutCubit>().userData.isAdmin ?? false)
+                      (cubit.userData.isAdmin ?? false)
                           ? Padding(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 8.0,

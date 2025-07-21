@@ -137,7 +137,10 @@ class SplashCubit extends Cubit<SplashStates> {
     }
   }
 
-  void onNavigate(isDark, uid, isOpened) async {
+  void onNavigate() async {
+    var isDark = CacheHelper.getData(key: "isDark");
+    var uid = CacheHelper.getData(key: "uid");
+    var isOpened = CacheHelper.getData(key: "isOpened");
     if (isOpened) {
       if (uid == '') {
         Future.delayed(const Duration(seconds: 3), () {

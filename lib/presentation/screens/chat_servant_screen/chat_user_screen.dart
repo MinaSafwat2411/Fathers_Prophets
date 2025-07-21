@@ -20,6 +20,7 @@ class ChatUserScreen extends StatelessWidget {
     final localize = AppLocalizations.of(context);
     final isDark = context.read<LocaleCubit>().isDark;
     final textTheme = Theme.of(context).textTheme;
+    final iconTheme = Theme.of(context).iconTheme;
 
     return BlocConsumer<ChatCubit, ChatStates>(
       listener: (context, state) {},

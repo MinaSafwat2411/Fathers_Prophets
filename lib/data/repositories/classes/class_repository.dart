@@ -23,7 +23,9 @@ class ClassRepository {
       final userMap = {
         'name': member.name,
         'uid': member.uid,
+        'isTeacher': member.isTeacher ?? false,
       };
+
       if (member.isTeacher ?? false) {
         servants.add(userMap);
       } else {
@@ -31,11 +33,28 @@ class ClassRepository {
       }
     }
 
-    await FirebaseFirestore.instance.collection(FirebaseEndpoints.classes).doc(classModel.docId).set({
-      'members': FieldValue.arrayUnion(members),
-      'servants': FieldValue.arrayUnion(servants),
+    for (var member in classModel.servants ?? []) {
+      final userMap = {
+        'name': member.name,
+        'uid': member.uid,
+        'isTeacher': member.isTeacher ?? false,
+      };
+
+      if (member.isTeacher ?? false) {
+        servants.add(userMap);
+      } else {
+        members.add(userMap);
+      }
+    }
+
+    await FirebaseFirestore.instance
+        .collection(FirebaseEndpoints.classes)
+        .doc(classModel.docId)
+        .set({
+      'members': members,
+      'servants': servants,
       'name': classModel.name,
-      'docId': classModel.docId
+      'docId': classModel.docId,
     }, SetOptions(merge: true));
   }
   Future<void> removeMember(ClassModel classModel, ClassUserModel member) async {

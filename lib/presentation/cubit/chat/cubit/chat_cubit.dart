@@ -81,8 +81,6 @@ class ChatCubit extends Cubit<ChatStates> {
 
   Future<void> clearChat(String senderUid, String receiverUid) async {
     final roomId = generateRoomId(senderUid, receiverUid);
-    await dbUserChatRooms.child(receiverUid).remove();
-    await dbUserChatRooms.child(senderUid).remove();
     await dbChatRooms.child(roomId).remove();
   }
 
@@ -171,4 +169,5 @@ class ChatCubit extends Cubit<ChatStates> {
     final sorted = [uid1, uid2]..sort();
     return '${sorted[0]}_${sorted[1]}';
   }
+  
 }

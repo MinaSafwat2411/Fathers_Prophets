@@ -35,10 +35,13 @@ class CategoriesScreen extends StatelessWidget {
             shrinkWrap: true,
             itemCount: cubit.categories.length,
             itemBuilder: (context, index) => GestureDetector(
-              onTap: () => context.pushNamed(AppRoutes.eventDetails.name, extra: {
+              onTap: () async {
+                 await context.pushNamed(AppRoutes.eventDetails.name, extra: {
                 'title':cubit.categories[index],
                 'items':cubit.categoriesEvents[index]
-              }),
+              });
+                 cubit.getAllData();
+              },
               child: SizedBox(
                 height: 150,
                 child: Column(

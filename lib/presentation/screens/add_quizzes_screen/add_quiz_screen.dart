@@ -486,9 +486,12 @@ class AddQuizScreen extends StatelessWidget {
             case OnReview():
               var isAdd = await context.pushNamed(
                 AppRoutes.quizDetails.name,
-                extra: cubit.quiz,
-                queryParameters: {'mode': 'add'},
+                extra: {
+                  'quizzes': cubit.quiz,
+                  'cubit': context.read<QuizzesCubit>(), // Reuse
+                },
               );
+
 
               if (!context.mounted) return;
 

@@ -80,7 +80,7 @@ class ChatScreen extends StatelessWidget {
                         !lastChat.isRead &&
                         lastChat.senderUid != cubit.userData.uid;
 
-                    return GestureDetector(
+                    return cubit.userData.uid!= servant.uid ?GestureDetector(
                       onTap: () {
                         context.pushNamed(
                           AppRoutes.chat.name,
@@ -134,9 +134,9 @@ class ChatScreen extends StatelessWidget {
                           ),
                         ),
                       ),
-                    );
+                    ):SizedBox();
                   },
-                  separatorBuilder: (context, index) =>SizedBox(height: 16,), itemCount: cubit.servants.length)
+                  separatorBuilder: (context, index) =>SizedBox(height: cubit.userData.uid!= cubit.servants[index].uid ?16:0,), itemCount: cubit.servants.length)
             ],
           ),
       listener: (context, state) {

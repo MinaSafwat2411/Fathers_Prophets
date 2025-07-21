@@ -36,7 +36,7 @@ class ReviewUserCubit extends Cubit<ReviewUserStates>{
       await usersUseCase.updateUser(user);
       if(user.isTeacher??false){
         for(var i = 0; i<classes.length;i++){
-          if(classes[i].docId==classId){
+          if(classes[i].docId==user.classId){
             classes[i].members?.removeWhere((element) => element.uid==user.uid);
             classes[i].servants?.add(ClassUserModel(
                 isTeacher: user.isTeacher,
@@ -49,7 +49,7 @@ class ReviewUserCubit extends Cubit<ReviewUserStates>{
         }
       }else{
         for(var i = 0; i<classes.length;i++){
-          if(classes[i].docId==classId){
+          if(classes[i].docId==user.classId){
             classes[i].servants?.removeWhere((element) => element.uid==user.uid);
             classes[i].members?.add(ClassUserModel(
                 isTeacher: user.isTeacher,
