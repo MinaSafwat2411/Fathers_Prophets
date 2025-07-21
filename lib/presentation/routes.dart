@@ -13,7 +13,6 @@ import 'package:fathers_prophets/presentation/screens/add_quizzes_screen/add_qui
 import 'package:fathers_prophets/presentation/screens/attendance_details_screen/attendance_details_screen.dart';
 import 'package:fathers_prophets/presentation/screens/categories_screen/categories_screen.dart';
 import 'package:fathers_prophets/presentation/screens/chat_bot_screen/chat_bot_screen.dart';
-import 'package:fathers_prophets/presentation/screens/chat_screen/chat_screen.dart';
 import 'package:fathers_prophets/presentation/screens/chat_servant_screen/chat_user_screen.dart';
 import 'package:fathers_prophets/presentation/screens/dashboard_screen/dashboard_screen.dart';
 import 'package:fathers_prophets/presentation/screens/event_attendance_details_screen/event_attendance_details_screen.dart';
@@ -29,7 +28,6 @@ import 'package:fathers_prophets/presentation/screens/quizzes_score_table_screen
 import 'package:fathers_prophets/presentation/screens/register_screen/register_screen.dart';
 import 'package:fathers_prophets/presentation/screens/review_screen/review_screen.dart';
 import 'package:fathers_prophets/presentation/screens/review_user_screen/review_user_screen.dart';
-import 'package:fathers_prophets/presentation/screens/select_member_screen/select_member_screen.dart';
 import 'package:fathers_prophets/presentation/screens/setting_screen/setting_screen.dart';
 import 'package:fathers_prophets/presentation/screens/splash_screen/splash_screen.dart';
 import 'package:fathers_prophets/presentation/screens/user_details_screen/user_details_screen.dart';
@@ -279,18 +277,6 @@ final GoRouter router = GoRouter(
           create: (context) => CommentCubit(),
           child: UserDetailsScreen(
             uid: extra['uid'] as String,
-            football: extra['football'] as int,
-            volleyball: extra['volleyball'] as int,
-            pingPong: extra['pingPong'] as int,
-            chess: extra['chess'] as int,
-            melodies: extra['melodies'] as int,
-            choir: extra['choir'] as int,
-            ritual: extra['ritual'] as int,
-            coptic: extra['coptic'] as int,
-            doctrine: extra['doctrine'] as int,
-            bible: extra['bible'] as int,
-            pray: extra['pray'] as int,
-            praise: extra['praise'] as int,
           ),
         );
       },

@@ -35,7 +35,7 @@ class CustomDrawer extends StatelessWidget {
                   const SizedBox(
                     height: 40,
                   ),
-                  cubit.userData.profile == ''?ClipOval(
+                  cubit.userData.profile == ''||cubit.userData.profile == null?ClipOval(
                     child: Image.asset(
                             context.read<LocaleCubit>().isDark? 'assets/images/logo_dark.png': 'assets/images/logo_light.png',
                             fit: BoxFit.fill,

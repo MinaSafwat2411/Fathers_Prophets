@@ -1,6 +1,4 @@
 import 'package:fathers_prophets/data/models/attendance/attendance_model.dart';
-import 'package:fathers_prophets/data/models/classes/class_model.dart';
-import 'package:fathers_prophets/data/models/classes/class_user_model.dart';
 import 'package:fathers_prophets/data/models/quizzes/quizzes_model.dart';
 import 'package:fathers_prophets/data/models/users/users_model.dart';
 import 'package:fathers_prophets/data/repositories/attendance/attendance_repository.dart';

@@ -118,7 +118,7 @@ class SettingScreen extends StatelessWidget {
       ),
       listener: (context, state) {
         if (state is DarkChanged) {
-          runApp(MyApp(isDark: cubit.isDark,lang: cubit.lang,uid: cubit.uid,isOpened: cubit.isOpened));
+          runApp(MyApp(isDark: cubit.isDark,lang: cubit.lang));
         }
       },
       buildWhen: (previous, current) => current is! LocaleInitial,

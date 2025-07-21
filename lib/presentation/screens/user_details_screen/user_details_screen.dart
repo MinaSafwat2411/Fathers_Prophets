@@ -20,36 +20,9 @@ import '../../routes.dart';
 
 
 class UserDetailsScreen extends StatelessWidget {
-  const UserDetailsScreen({
-    super.key,
-    required this.uid,
-    required this.football,
-    required this.volleyball,
-    required this.pingPong,
-    required this.chess,
-    required this.melodies,
-    required this.choir,
-    required this.ritual,
-    required this.coptic,
-    required this.doctrine,
-    required this.bible,
-    required this.pray,
-    required this.praise,
-  });
+  const UserDetailsScreen({super.key,required this.uid});
 
   final String uid;
-  final int football;
-  final int volleyball;
-  final int pingPong;
-  final int chess;
-  final int melodies;
-  final int choir;
-  final int ritual;
-  final int coptic;
-  final int doctrine;
-  final int bible;
-  final int pray;
-  final int praise;
 
   @override
   Widget build(BuildContext context) {
@@ -107,7 +80,7 @@ class UserDetailsScreen extends StatelessWidget {
                 Column(
                   children: [
                     const SizedBox(height: 20),
-                    cubit.user.profile == ''?ClipOval(
+                    cubit.user.profile == ''||cubit.user.profile == null?ClipOval(
                         child: Image.asset(
                           context.read<LocaleCubit>().isDark? 'assets/images/logo_dark.png': 'assets/images/logo_light.png',
                           fit: BoxFit.fill,
@@ -148,6 +121,8 @@ class UserDetailsScreen extends StatelessWidget {
                               Text(
                                 "UID : ${cubit.user.uid ?? ""}",
                                 style: textTheme.titleMedium,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                               )
                             ],
                           ),
@@ -171,73 +146,79 @@ class UserDetailsScreen extends StatelessWidget {
                         UserItem(
                           title: 'football',
                           length: cubit.attendance.football?.length??0,
-                          total: football,
+                          total: cubit.football,
                         ),
                         SizedBox(height: 8,),
                         UserItem(
                           title: 'volleyball',
                           length: cubit.attendance.volleyball?.length??0,
-                          total: volleyball,
+                          total: cubit.volleyball,
                         ),
                         SizedBox(height: 8,),
                         UserItem(
                           title: 'pingpong',
                           length: cubit.attendance.pingPong?.length??0,
-                          total: pingPong,
+                          total: cubit.pingPong,
                         ),
                         SizedBox(height: 8,),
                         UserItem(
                           title: 'chess',
                           length: cubit.attendance.chess?.length??0,
-                          total: chess,
+                          total: cubit.chess,
                         ),
                         SizedBox(height: 8,),
                         UserItem(
                           title: 'melodies',
                           length: cubit.attendance.melodies?.length??0,
-                          total: melodies,
+                          total: cubit.melodies,
                         ),
                         SizedBox(height: 8,),
                         UserItem(
                           title: 'choir',
                           length: cubit.attendance.choir?.length??0,
-                          total: choir,
+                          total: cubit.choir,
                         ),
                         SizedBox(height: 8,),
                         UserItem(
                           title: 'ritual',
                           length: cubit.attendance.ritual?.length??0,
-                          total: ritual,
+                          total: cubit.ritual,
                         ),
                         SizedBox(height: 8,),
                         UserItem(
                           title: 'coptic',
                           length: cubit.attendance.coptic?.length??0,
-                          total: coptic,
+                          total: cubit.coptic,
                         ),
                         SizedBox(height: 8,),
                         UserItem(
                           title: 'doctrine',
                           length: cubit.attendance.doctrine?.length??0,
-                          total: doctrine,
+                          total: cubit.doctrine,
                         ),
                         SizedBox(height: 8,),
                         UserItem(
                           title: 'bible',
                           length: cubit.attendance.bible?.length??0,
-                          total: bible,
+                          total: cubit.bible,
                         ),
                         SizedBox(height: 8,),
                         UserItem(
                           title: 'pray',
                           length: cubit.attendance.pray?.length??0,
-                          total: pray,
+                          total: cubit.pray,
                         ),
                         SizedBox(height: 8,),
                         UserItem(
                           title: 'praise',
                           length: cubit.attendance.praise?.length??0,
-                          total: praise,
+                          total: cubit.praise,
+                        ),
+                        SizedBox(height: 8,),
+                        UserItem(
+                          title: 'mahrgan',
+                          length: cubit.attendance.praise?.length??0,
+                          total: cubit.mahrgan,
                         ),
                         SizedBox(height: 8,),
                      ]

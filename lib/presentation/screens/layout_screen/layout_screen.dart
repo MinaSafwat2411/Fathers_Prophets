@@ -52,7 +52,7 @@ class LayoutScreen extends StatelessWidget {
                     cubit.scaffoldKey.currentState!.openDrawer();
                   },
                   icon: ClipOval(
-                    child: cubit.userData.profile == '' ?Image.asset(
+                    child: cubit.userData.profile == '' ||cubit.userData.profile == null?Image.asset(
                       context.read<LocaleCubit>().isDark
                           ? "assets/images/logo_dark.png"
                           : "assets/images/logo_light.png",

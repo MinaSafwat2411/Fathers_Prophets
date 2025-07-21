@@ -73,19 +73,8 @@ class DashboardScreen extends StatelessWidget {
                         child: ListView(
                           children: [
                             for(var item in (cubit.selectedClass.members??<ClassUserModel>[])) TextButton(onPressed: ()async {
-                              var res= await context.pushNamed(AppRoutes.userDetails.name, extra: {'uid':item.uid,
-                                'football':context.read<LayoutCubit>().footballEvents.length,
-                                'volleyball':context.read<LayoutCubit>().volleyballEvents.length,
-                                'pingPong':context.read<LayoutCubit>().pingPongEvents.length,
-                                'chess':context.read<LayoutCubit>().chessEvents.length,
-                                'melodies':context.read<LayoutCubit>().melodiesEvents.length,
-                                'choir':context.read<LayoutCubit>().choirEvents.length,
-                                'ritual':context.read<LayoutCubit>().ritualEvents.length,
-                                'coptic':context.read<LayoutCubit>().copticEvents.length,
-                                'doctrine':context.read<LayoutCubit>().doctrineEvents.length,
-                                'bible':context.read<LayoutCubit>().bibleEvents.length,
-                                'pray':context.read<LayoutCubit>().prayEvents.length,
-                                'praise':context.read<LayoutCubit>().praiseEvents.length,
+                              var res= await context.pushNamed(AppRoutes.userDetails.name, extra: {
+                                'uid':item.uid,
                               });
                               if(res != null){
                                 cubit.getAllData();
@@ -126,19 +115,8 @@ class DashboardScreen extends StatelessWidget {
                       child: ListView(
                           children: [
                             for(var item in cubit.unReviewedMembers) TextButton(onPressed: ()async {
-                              var res = await context.pushNamed(AppRoutes.userDetails.name, extra: {'uid':item.uid,
-                                'football':context.read<LayoutCubit>().footballEvents.length,
-                                'volleyball':context.read<LayoutCubit>().volleyballEvents.length,
-                                'pingPong':context.read<LayoutCubit>().pingPongEvents.length,
-                                'chess':context.read<LayoutCubit>().chessEvents.length,
-                                'melodies':context.read<LayoutCubit>().melodiesEvents.length,
-                                'choir':context.read<LayoutCubit>().choirEvents.length,
-                                'ritual':context.read<LayoutCubit>().ritualEvents.length,
-                                'coptic':context.read<LayoutCubit>().copticEvents.length,
-                                'doctrine':context.read<LayoutCubit>().doctrineEvents.length,
-                                'bible':context.read<LayoutCubit>().bibleEvents.length,
-                                'pray':context.read<LayoutCubit>().prayEvents.length,
-                                'praise':context.read<LayoutCubit>().praiseEvents.length,
+                              var res = await context.pushNamed(AppRoutes.userDetails.name, extra: {
+                                'uid':item.uid,
                               });
                               if(res != null){
                                 cubit.getAllData();

@@ -40,7 +40,12 @@ class ProfileScreen extends StatelessWidget {
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    cubit.user.profile != ""?ClipOval(
+                    cubit.user.profile == ""||cubit.user.profile == null?Image.asset(
+                      context.read<LocaleCubit>().isDark? 'assets/images/logo_dark.png': 'assets/images/logo_light.png',
+                      fit: BoxFit.fill,
+                      width: 100,
+                      height: 100,
+                    ):ClipOval(
                       child: CachedNetworkImage(
                         width: 100,
                         height: 100,
@@ -48,11 +53,6 @@ class ProfileScreen extends StatelessWidget {
                         placeholder: (context, url) => ProfileLoadingImageScreen(isDark: context.read<LocaleCubit>().isDark,),
                         errorWidget: (context, url, error) => ProfileLoadingImageScreen(isDark: context.read<LocaleCubit>().isDark,),
                       ),
-                    ):Image.asset(
-                      context.read<LocaleCubit>().isDark? 'assets/images/logo_dark.png': 'assets/images/logo_light.png',
-                      fit: BoxFit.fill,
-                      width: 100,
-                      height: 100,
                     ),
                   ],
                 ),

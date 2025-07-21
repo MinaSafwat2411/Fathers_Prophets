@@ -1,5 +1,4 @@
 import 'package:fathers_prophets/presentation/cubit/chat/cubit/chat_cubit.dart';
-import 'package:fathers_prophets/presentation/cubit/chatbot/cubit/chatbot_cubit.dart';
 import 'package:fathers_prophets/presentation/cubit/local/cubit/local_cubit.dart';
 import 'package:fathers_prophets/presentation/cubit/local/states/local_states.dart';
 import 'package:fathers_prophets/presentation/routes.dart';
@@ -30,15 +29,13 @@ void main() async {
   String lang = await CacheHelper.getData(key: 'lang') ?? 'ar';
   String uid = await CacheHelper.getData(key: 'uid') ?? '';
   bool isOpened = CacheHelper.getData(key: 'isOpened') ?? false;
-  runApp(MyApp(isDark: isDark, lang: lang, uid: uid, isOpened: isOpened));
+  runApp(MyApp(isDark: isDark, lang: lang));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key,required this.isDark,required this.lang,required this.uid,required this.isOpened});
+  const MyApp({super.key,required this.isDark,required this.lang});
   final bool isDark;
   final String lang;
-  final String uid;
-  final bool isOpened;
 
   @override
   Widget build(BuildContext context) {

@@ -19,6 +19,19 @@ class CommentCubit extends Cubit<CommentStates> {
 
   static CommentCubit get(context) => BlocProvider.of(context);
   TextEditingController commentController = TextEditingController();
+  int football=0;
+  int volleyball=0;
+  int pingPong=0;
+  int chess=0;
+  int melodies=0;
+  int choir=0;
+  int ritual=0;
+  int coptic=0;
+  int doctrine=0;
+  int bible=0;
+  int pray=0;
+  int praise=0;
+  int mahrgan=0;
 
   final EventAttendanceUseCase eventsAttendanceUseCase = EventAttendanceUseCase(EventAttendanceRepository());
 
@@ -33,6 +46,19 @@ class CommentCubit extends Cubit<CommentStates> {
   void getUserData(String uid)async{
     emit(OnLoading());
     try{
+      football = CacheHelper.getEvents('football').length;
+      volleyball = CacheHelper.getEvents('volleyball').length;
+      pingPong = CacheHelper.getEvents('pingpong').length;
+      chess = CacheHelper.getEvents('chess').length;
+      melodies = CacheHelper.getEvents('melodies').length;
+      choir = CacheHelper.getEvents('choir').length;
+      ritual = CacheHelper.getEvents('ritual').length;
+      coptic = CacheHelper.getEvents('coptic').length;
+      doctrine = CacheHelper.getEvents('doctrine').length;
+      bible = CacheHelper.getEvents('bible').length;
+      pray = CacheHelper.getEvents('pray').length;
+      praise = CacheHelper.getEvents('praise').length;
+      mahrgan = CacheHelper.getEvents('mahrgan').length;
       user = (await usersUseCase.getUserData(uid)??UserModel());
       getAttendance(uid);
       listenToComments(uid);
