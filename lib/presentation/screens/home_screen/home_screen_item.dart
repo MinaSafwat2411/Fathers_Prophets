@@ -21,6 +21,8 @@ class HomeScreenItem extends StatelessWidget {
     final localize = AppLocalizations.of(context);
     var cubit = LayoutCubit.get(context);
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         if (cubit.comingEvents.isNotEmpty)Text(
           localize.translate('coming_events'),
@@ -28,7 +30,7 @@ class HomeScreenItem extends StatelessWidget {
           textAlign: TextAlign.center,
         ),
         if (cubit.comingEvents.isNotEmpty)SizedBox(
-          height: 160,
+          height:MediaQuery.of(context).size.height*0.15,
           child: ListView.separated(
             physics: BouncingScrollPhysics(),
             shrinkWrap: true,
@@ -36,9 +38,8 @@ class HomeScreenItem extends StatelessWidget {
             itemBuilder:
                 (context, index) => Column(
               children: [
-                MaterialButton(
-                  height: 100,
-                  onPressed: () async {
+                GestureDetector(
+                  onTap: () async {
                     var result = await context.pushNamed(
                       AppRoutes.addEventAttendance.name,
                       extra: {
@@ -50,19 +51,18 @@ class HomeScreenItem extends StatelessWidget {
                       cubit.getAllData();
                     }
                   },
-                  child: Card(
-                    color:
-                    context.read<LocaleCubit>().isDark
-                        ? AppColors.riverBed
-                        : AppColors.slateGray,
-                    margin: EdgeInsets.symmetric(vertical: 4),
-                    shape: CircleBorder(),
-                    child: ClipOval(
-                      child:
-                      cubit.comingEvents[index].image != ''
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Card(
+                      color:
+                      context.read<LocaleCubit>().isDark
+                          ? AppColors.riverBed
+                          : AppColors.slateGray,
+                      margin: EdgeInsets.zero,
+                      child: cubit.comingEvents[index].image != ''
                           ? CachedNetworkImage(
-                        width: 100,
-                        height: 100,
+                        width: MediaQuery.of(context).size.width*0.2,
+                        height: MediaQuery.of(context).size.height*0.1,
                         fit: BoxFit.fill,
                         imageUrl:
                         cubit.comingEvents[index].image ?? '',
@@ -84,10 +84,10 @@ class HomeScreenItem extends StatelessWidget {
                       )
                           : Image.asset(
                         context.read<LocaleCubit>().isDark
-                            ? 'assets/images/logo_dark.png'
-                            : 'assets/images/logo_light.png',
-                        width: 100,
-                        height: 100,
+                            ? 'assets/images/ic_${cubit.comingEvents[index].nameEn?.toLowerCase()}_dark.png'
+                            : 'assets/images/ic_${cubit.comingEvents[index].nameEn?.toLowerCase()}_light.png',
+                        width: MediaQuery.of(context).size.width*0.2,
+                        height: MediaQuery.of(context).size.height*0.1,
                         fit: BoxFit.fill,
                       ),
                     ),
