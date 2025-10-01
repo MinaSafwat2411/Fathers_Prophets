@@ -14,10 +14,10 @@ jobs:
       # Checkout repo
       - uses: actions/checkout@v4
 
-      # Setup Flutter
+      # Setup Flutter (use a version with Dart 3.7.x)
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.22.0"
+          flutter-version: "3.24.0"
 
       # Get dependencies
       - run: flutter pub get
