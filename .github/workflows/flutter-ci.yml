@@ -1,0 +1,50 @@
+name: Flutter Build
+
+on:
+  push:
+    branches:
+      - main   # or master
+  pull_request:
+
+jobs:
+  build:
+    runs-on: macos-latest   # macOS so iOS build works
+
+    steps:
+      # Checkout repo
+      - uses: actions/checkout@v3
+
+      # Setup Flutter
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.22.0"
+
+      # Get dependencies
+      - run: flutter pub get
+
+      # Build Android APK
+      - run: flutter build apk --release
+
+      # Build Android App Bundle (AAB)
+      - run: flutter build appbundle --release
+
+      # Build iOS IPA (unsigned)
+      - run: flutter build ipa --release --no-codesign
+
+      # Upload APK as artifact
+      - uses: actions/upload-artifact@v3
+        with:
+          name: android-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+
+      # Upload AAB as artifact
+      - uses: actions/upload-artifact@v3
+        with:
+          name: android-aab
+          path: build/app/outputs/bundle/release/app-release.aab
+
+      # Upload IPA as artifact
+      - uses: actions/upload-artifact@v3
+        with:
+          name: ios-ipa
+          path: build/ios/ipa/*.ipa

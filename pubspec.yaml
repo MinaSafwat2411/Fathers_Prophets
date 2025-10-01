@@ -41,7 +41,7 @@ dependencies:
   flutter_bloc: ^9.0.0
   bloc: ^9.0.0
   shared_preferences: ^2.5.2
-  intl: ^0.19.0
+  intl: ^0.20.2
   conditional_builder_null_safety: ^0.0.6
   hexcolor: ^3.0.1
   smooth_page_indicator: ^1.2.0+3
