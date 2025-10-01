@@ -3,7 +3,7 @@ name: Flutter Build
 on:
   push:
     branches:
-      - master   # or main
+      - master
   pull_request:
 
 jobs:
