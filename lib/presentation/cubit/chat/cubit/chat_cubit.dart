@@ -10,7 +10,7 @@ import '../../../../data/models/chat/chat_model.dart';
 import '../../../../data/models/chat/chat_preview_model.dart';
 import '../../../../data/models/classes/class_model.dart';
 import '../../../../data/models/classes/class_user_model.dart';
-import '../../../../data/services/firebase_notification_service.dart';
+import '../../../../data/services/notification/firebase_notification_service.dart';
 
 class ChatCubit extends Cubit<ChatStates> {
   ChatCubit() : super(ChatInitial());

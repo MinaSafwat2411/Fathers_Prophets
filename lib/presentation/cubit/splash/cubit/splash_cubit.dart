@@ -15,7 +15,7 @@ import '../../../../data/models/users/users_model.dart';
 import '../../../../data/repositories/classes/class_repository.dart';
 import '../../../../data/repositories/splash/splash_repository.dart';
 import '../../../../data/services/cache_helper.dart';
-import '../../../../data/services/google_drive_service.dart';
+import '../../../../data/services/google_drive/google_drive_service.dart';
 import '../../../../domain/usecases/splash/splash_use_case.dart';
 import '../../../../domain/usecases/users/users_use_case.dart';
 import '../states/splash_states.dart';

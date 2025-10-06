@@ -12,8 +12,8 @@ import 'core/utils/app_themes.dart';
 import 'data/firebase/firebase_options.dart';
 import 'data/services/bloc_observer.dart';
 import 'data/services/cache_helper.dart';
-import 'data/services/firebase_notification_service.dart';
-import 'data/services/notification_services.dart';
+import 'data/services/notification/firebase_notification_service.dart';
+import 'data/services/notification/notification_services.dart';
 
 
 

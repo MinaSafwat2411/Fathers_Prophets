@@ -10,7 +10,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../data/repositories/users/users_repository.dart';
-import '../../../../data/services/google_drive_service.dart';
+import '../../../../data/services/google_drive/google_drive_service.dart';
 
 class AddMemberCubit extends Cubit<AddMemberStates>{
   AddMemberCubit() : super(InitialState());

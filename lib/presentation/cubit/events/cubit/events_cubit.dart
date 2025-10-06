@@ -17,7 +17,7 @@ import '../../../../core/constants/firebase_endpoints.dart';
 import '../../../../data/models/events/event_attendance_model.dart';
 import '../../../../data/repositories/events/events_repository.dart';
 import '../../../../data/repositories/users/users_repository.dart';
-import '../../../../data/services/google_drive_service.dart';
+import '../../../../data/services/google_drive/google_drive_service.dart';
 import '../../../../domain/usecases/eventattendance/event_attendance_use_case.dart';
 import '../../../../domain/usecases/events/events_use_case.dart';
 import '../states/events_states.dart';

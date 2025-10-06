@@ -14,7 +14,7 @@ import '../../../../data/repositories/quizzes/quizzes_repository.dart';
 import '../../../../data/repositories/splash/splash_repository.dart';
 import '../../../../data/repositories/users/users_repository.dart';
 import '../../../../data/services/cache_helper.dart';
-import '../../../../data/services/google_drive_service.dart';
+import '../../../../data/services/google_drive/google_drive_service.dart';
 import '../../../../domain/usecases/auth/auth_use_case.dart';
 import '../../../../domain/usecases/classes/classes_use_case.dart';
 import '../../../../domain/usecases/quizzes/quizzes_use_case.dart';
