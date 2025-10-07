@@ -1,11 +1,13 @@
+import 'package:fathers_prophets/data/services/cache/i_cache_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../data/services/cache_helper.dart';
+import '../../../../data/services/cache/cache_helper.dart';
 import '../states/onboarding_states.dart';
 
 class OnboardingCubit extends Cubit<OnboardingStates> {
-  OnboardingCubit() : super(OnboardingInitialState());
+  OnboardingCubit(this.cacheHelper) : super(OnboardingInitialState());
 
+  final ICacheHelper cacheHelper;
   static OnboardingCubit get(context) => BlocProvider.of(context);
 
   final PageController pageController = PageController();
@@ -57,7 +59,7 @@ class OnboardingCubit extends Cubit<OnboardingStates> {
   }
 
   void onSkip() {
-    CacheHelper.saveData(key: 'isOpened', value: true);
+    cacheHelper.saveData(key: 'isOpened', value: true);
     emit(OnboardingOnNavigatePage());
   }
 

@@ -1,29 +1,25 @@
 import 'package:fathers_prophets/data/models/classes/class_model.dart';
 import 'package:fathers_prophets/data/models/classes/class_user_model.dart';
 import 'package:fathers_prophets/data/models/users/users_model.dart';
-import 'package:fathers_prophets/data/repositories/classes/class_repository.dart';
-import 'package:fathers_prophets/data/services/cache_helper.dart';
-import 'package:fathers_prophets/domain/usecases/classes/classes_use_case.dart';
-import 'package:fathers_prophets/domain/usecases/users/users_use_case.dart';
 import 'package:fathers_prophets/presentation/cubit/add_member/states/add_member_states.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../data/repositories/users/users_repository.dart';
-import '../../../../data/services/google_drive/google_drive_service.dart';
+import '../../../../data/services/cache/i_cache_helper.dart';
+import '../../../../domain/usecases/classes/i_classes_use_case.dart';
+import '../../../../domain/usecases/users/i_users_use_case.dart';
 
 class AddMemberCubit extends Cubit<AddMemberStates>{
-  AddMemberCubit() : super(InitialState());
-
+  AddMemberCubit(this.usersUseCase,this.classesUseCase,this.cacheHelper) : super(InitialState());
   static AddMemberCubit get(context) => BlocProvider.of(context);
 
   var member = UserModel();
   List<ClassModel> classes= <ClassModel>[];
   ClassModel selectedClass = ClassModel();
   TextEditingController nameController = TextEditingController();
-  UsersUseCase usersUseCase = UsersUseCase(UserRepository());
-  ClassesUseCase classesUseCase = ClassesUseCase(ClassRepository());
-  final GoogleDriveUploader uploader = GoogleDriveUploader();
+  final IUsersUseCase usersUseCase;
+  final IClassesUseCase classesUseCase;
+  final ICacheHelper cacheHelper;
 
   void addMember()async{
     emit(OnLoading());
@@ -31,7 +27,7 @@ class AddMemberCubit extends Cubit<AddMemberStates>{
       member = member.copyWith(name: nameController.text,classId: selectedClass.docId,isReviewed: true);
       var result = await usersUseCase.addNewMemberByDocId(member);
       member = member.copyWith(uid: result ??"");
-      var classes = CacheHelper.getClasses();
+      var classes = cacheHelper.getClasses();
       for(var i = 0; i<classes.length;i++){
         if(classes[i].docId==selectedClass.docId){
           classes[i].members?.add(ClassUserModel(
@@ -44,7 +40,7 @@ class AddMemberCubit extends Cubit<AddMemberStates>{
           break;
         }
       }
-      await CacheHelper.saveClasses(classes);
+      await cacheHelper.saveClasses(classes);
       nameController.clear();
       emit(OnSuccess());
     }catch(e){
@@ -53,7 +49,7 @@ class AddMemberCubit extends Cubit<AddMemberStates>{
   }
 
   void  getData(){
-    classes = CacheHelper.getClasses();
+    classes = cacheHelper.getClasses();
     emit(OnGetData());
   }
   void onSelectClass(ClassModel item){

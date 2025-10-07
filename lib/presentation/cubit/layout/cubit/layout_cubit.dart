@@ -2,19 +2,26 @@ import 'package:fathers_prophets/data/models/attendance/attendance_model.dart';
 import 'package:fathers_prophets/data/models/quizzes/quizzes_model.dart';
 import 'package:fathers_prophets/data/models/users/users_model.dart';
 import 'package:fathers_prophets/data/repositories/attendance/attendance_repository.dart';
+import 'package:fathers_prophets/data/services/cache/i_cache_helper.dart';
 import 'package:fathers_prophets/domain/usecases/attendance/attendance_use_case.dart';
+import 'package:fathers_prophets/domain/usecases/auth/i_auth_use_case.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+
 import '../../../../data/models/events/events_model.dart';
 import '../../../../data/repositories/quizzes_score/quizzes_score_repository.dart';
-import '../../../../data/services/cache_helper.dart';
+import '../../../../domain/usecases/attendance/i_attendance_use_case.dart';
+import '../../../../domain/usecases/quizzes_score/i_quizzes_score_use_case.dart';
 import '../../../../domain/usecases/quizzes_score/quizzes_score_use_case.dart';
 import '../states/layout_states.dart';
 
 class LayoutCubit extends Cubit<LayoutStates> {
-  LayoutCubit() : super(InitialState());
-
+  LayoutCubit(this.authUseCase,this.attendanceUseCase, this.quizzesScoreUseCase, this.cacheHelper) : super(InitialState());
+  final ICacheHelper cacheHelper;
+  final IAuthUseCase authUseCase;
+  final IAttendanceUseCase attendanceUseCase;
+  final IQuizzesScoreUseCase quizzesScoreUseCase;
   static LayoutCubit get(context) => BlocProvider.of(context);
   var scaffoldKey = GlobalKey<ScaffoldState>();
   var pageController = PageController();
@@ -48,8 +55,6 @@ class LayoutCubit extends Cubit<LayoutStates> {
   final searchFocusNode = FocusNode();
 
 
-  final attendanceUseCase = AttendanceUseCase(AttendanceRepository());
-  final QuizzesScoreUseCase quizzesScoreUseCase = QuizzesScoreUseCase(QuizzesScoreRepository());
 
 
   void onScreenChanged(int index) {
@@ -78,7 +83,7 @@ class LayoutCubit extends Cubit<LayoutStates> {
 
 
   void getAllAttendance() async {
-    var lang = CacheHelper.getData(key: 'lang');
+    var lang = cacheHelper.getData(key: 'lang');
     try {
       emit(LoadingState());
       if(userData.isAdmin??false){
@@ -127,33 +132,33 @@ class LayoutCubit extends Cubit<LayoutStates> {
     quizzes.clear();
     quizzesSearch.clear();
     mahrganEvents.clear();
-    quizzes = CacheHelper.getQuizzes();
+    quizzes = cacheHelper.getQuizzes();
     categoriesEvents.clear();
-    footballEvents = CacheHelper.getEvents('football');
+    footballEvents = cacheHelper.getEvents('football');
     comingEvents.addAll(footballEvents.where((element) => element.dateTime!.isAfter(DateTime.now().subtract(Duration(days: 1)))).toList());
-    bibleEvents = CacheHelper.getEvents('bible');
+    bibleEvents = cacheHelper.getEvents('bible');
     comingEvents.addAll(bibleEvents.where((element) => element.dateTime!.isAfter(DateTime.now().subtract(Duration(days: 1)))).toList());
-    pingPongEvents = CacheHelper.getEvents('pingPong');
+    pingPongEvents = cacheHelper.getEvents('pingPong');
     comingEvents.addAll(pingPongEvents.where((element) => element.dateTime!.isAfter(DateTime.now().subtract(Duration(days: 1)))).toList());
-    volleyballEvents = CacheHelper.getEvents('volleyball');
+    volleyballEvents = cacheHelper.getEvents('volleyball');
     comingEvents.addAll(volleyballEvents.where((element) => element.dateTime!.isAfter(DateTime.now().subtract(Duration(days: 1)))).toList());
-    copticEvents = CacheHelper.getEvents('coptic');
+    copticEvents = cacheHelper.getEvents('coptic');
     comingEvents.addAll(copticEvents.where((element) => element.dateTime!.isAfter(DateTime.now().subtract(Duration(days: 1)))).toList());
-    choirEvents = CacheHelper.getEvents('choir');
+    choirEvents = cacheHelper.getEvents('choir');
     comingEvents.addAll(choirEvents.where((element) => element.dateTime!.isAfter(DateTime.now().subtract(Duration(days: 1)))).toList());
-    melodiesEvents = CacheHelper.getEvents('melodies');
+    melodiesEvents = cacheHelper.getEvents('melodies');
     comingEvents.addAll(melodiesEvents.where((element) => element.dateTime!.isAfter(DateTime.now().subtract(Duration(days: 1)))).toList());
-    ritualEvents = CacheHelper.getEvents('ritual');
+    ritualEvents = cacheHelper.getEvents('ritual');
     comingEvents.addAll(ritualEvents.where((element) => element.dateTime!.isAfter(DateTime.now().subtract(Duration(days: 1)))).toList());
-    doctrineEvents = CacheHelper.getEvents('doctrine');
+    doctrineEvents = cacheHelper.getEvents('doctrine');
     comingEvents.addAll(doctrineEvents.where((element) => element.dateTime!.isAfter(DateTime.now().subtract(Duration(days: 1)))).toList());
-    chessEvents = CacheHelper.getEvents('chess');
+    chessEvents = cacheHelper.getEvents('chess');
     comingEvents.addAll(chessEvents.where((element) => element.dateTime!.isAfter(DateTime.now().subtract(Duration(days: 1)))).toList());
-    prayEvents = CacheHelper.getEvents('pray');
+    prayEvents = cacheHelper.getEvents('pray');
     comingEvents.addAll(prayEvents.where((element) => element.dateTime!.isAfter(DateTime.now().subtract(Duration(days: 1)))).toList());
-    praiseEvents = CacheHelper.getEvents('praise');
+    praiseEvents = cacheHelper.getEvents('praise');
     comingEvents.addAll(praiseEvents.where((element) => element.dateTime!.isAfter(DateTime.now().subtract(Duration(days: 1)))).toList());
-    mahrganEvents = CacheHelper.getEvents('mahrgan');
+    mahrganEvents = cacheHelper.getEvents('mahrgan');
     comingEvents.addAll(mahrganEvents.where((element) => element.dateTime!.isAfter(DateTime.now().subtract(Duration(days: 1)))).toList());
     filteredEvents.addAll(footballEvents+bibleEvents+pingPongEvents+volleyballEvents+copticEvents+choirEvents+melodiesEvents+ritualEvents+doctrineEvents+chessEvents+prayEvents+praiseEvents+mahrganEvents);
     filteredEvents.sort((a, b) => (b.dateTime?? DateTime.now()).compareTo(a.dateTime?? DateTime.now()));
@@ -179,7 +184,7 @@ class LayoutCubit extends Cubit<LayoutStates> {
 
   void getUserData()async{
     emit(LoadingState());
-    userData = CacheHelper.getUserData();
+    userData = cacheHelper.getUserData();
     quizzesDone = await quizzesScoreUseCase.getQuizzesScoreById(userData.uid??'').then((value) => value?.quizzes??[]);
     emit(SuccessState());
   }
@@ -235,7 +240,7 @@ class LayoutCubit extends Cubit<LayoutStates> {
       isAdmin: !(userData.isAdmin??false),
       isTeacher: !(userData.isTeacher??false)
     );
-    await CacheHelper.saveUserData(userData);
+    await cacheHelper.saveUserData(userData);
     emit(CanPreviewState());
   }
 

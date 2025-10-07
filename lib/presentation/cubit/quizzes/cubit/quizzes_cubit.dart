@@ -1,6 +1,6 @@
 import 'package:fathers_prophets/data/models/quizzes/quizzes_model.dart';
 import 'package:fathers_prophets/data/models/users/users_model.dart';
-import 'package:fathers_prophets/data/services/cache_helper.dart';
+import 'package:fathers_prophets/data/services/cache/i_cache_helper.dart';
 import 'package:fathers_prophets/domain/usecases/quizzes/quizzes_use_case.dart';
 import 'package:fathers_prophets/presentation/cubit/quizzes/states/quizzes_states.dart';
 import 'package:fathers_prophets/presentation/screens/add_quizzes_screen/day_enum.dart';
@@ -18,15 +18,16 @@ import '../../../../domain/usecases/quizzes_score/quizzes_score_use_case.dart';
 import '../../../../domain/usecases/users/users_use_case.dart';
 
 class QuizzesCubit extends Cubit<QuizzesStates> {
-  QuizzesCubit() : super(InitialState());
+  QuizzesCubit(this.cacheHelper) : super(InitialState());
 
   static QuizzesCubit get(context) => BlocProvider.of(context);
 
+  final ICacheHelper cacheHelper;
   var userData = UserModel();
   var memberList = <UserModel>[];
   var adminList = <UserModel>[];
   var quizAnswers = QuizAnswers();
-  var quiz = QuizzesModel(
+  late var quiz = QuizzesModel(
     friday: QuizModel(questions: [],shahid: ""),
     monday: QuizModel(questions: [],shahid: ""),
     saturday: QuizModel(questions: [],shahid: ""),
@@ -34,7 +35,7 @@ class QuizzesCubit extends Cubit<QuizzesStates> {
     thursday: QuizModel(questions: [],shahid: ""),
     tuesday: QuizModel(questions: [],shahid: ""),
     wednesday: QuizModel(questions: [],shahid: ""),
-    number: CacheHelper.getQuizzes().length+1,
+    number: cacheHelper.getQuizzes().length+1,
   );
   var selectedDate = "";
   TextEditingController controller = TextEditingController();
@@ -80,9 +81,9 @@ class QuizzesCubit extends Cubit<QuizzesStates> {
 
   void createQuizAnswers(String docId, QuizzesModel quiz) {
     score = 0;
-    userData = CacheHelper.getUserData();
+    userData = cacheHelper.getUserData();
     this.quiz = quiz;
-    var cache = CacheHelper.getQuizAnswers(docId);
+    var cache = cacheHelper.getQuizAnswers(docId);
     if (cache != null) {
       quizAnswers = cache;
       emit(OnResume());
@@ -205,7 +206,7 @@ class QuizzesCubit extends Cubit<QuizzesStates> {
   }
 
   void onSaveAnswers() async {
-    await CacheHelper.saveQuizAnswers(quizAnswers);
+    await cacheHelper.saveQuizAnswers(quizAnswers);
     emit(OnGetBack());
   }
 
@@ -255,10 +256,10 @@ class QuizzesCubit extends Cubit<QuizzesStates> {
   void onAddQuiz()async{
     try{
       var docId = await quizzesUseCase.addNewQuiz(quiz);
-      var quizzes = CacheHelper.getQuizzes();
+      var quizzes = cacheHelper.getQuizzes();
       quiz= quiz.copyWith(docId: docId);
       quizzes.add(quiz);
-      await CacheHelper.saveQuizzes(quizzes);
+      await cacheHelper.saveQuizzes(quizzes);
       emit(OnClose());
     }catch(e) {
       emit(OnError(e.toString()));
@@ -503,7 +504,7 @@ class QuizzesCubit extends Cubit<QuizzesStates> {
       thursday: QuizModel(questions: [],shahid: ""),
       tuesday: QuizModel(questions: [],shahid: ""),
       wednesday: QuizModel(questions: [],shahid: ""),
-      number: CacheHelper.getQuizzes().length+1,
+      number: cacheHelper.getQuizzes().length+1,
     );
     selectedDate = "";
     noOfQuestions = 5;

@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fathers_prophets/core/constants/firebase_endpoints.dart';
 import 'package:fathers_prophets/data/models/users/users_model.dart';
-import 'package:fathers_prophets/data/services/cache_helper.dart';
 import 'package:fathers_prophets/presentation/cubit/chat/states/chat_states.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -10,10 +9,12 @@ import '../../../../data/models/chat/chat_model.dart';
 import '../../../../data/models/chat/chat_preview_model.dart';
 import '../../../../data/models/classes/class_model.dart';
 import '../../../../data/models/classes/class_user_model.dart';
-import '../../../../data/services/notification/firebase_notification_service.dart';
+import '../../../../data/services/firebase_notification_service.dart';
+import '../../../../data/services/cache/i_cache_helper.dart';
 
 class ChatCubit extends Cubit<ChatStates> {
-  ChatCubit() : super(ChatInitial());
+  ChatCubit(this.cacheHelper) : super(ChatInitial());
+  final ICacheHelper cacheHelper;
 
   static ChatCubit get(context) => BlocProvider.of(context);
   final dbUserChatRooms = FirebaseDatabase.instance.ref('userChatRooms');
@@ -34,11 +35,11 @@ class ChatCubit extends Cubit<ChatStates> {
   String fcmToken = '';
 
   void getUserData() {
-    userData = CacheHelper.getUserData();
+    userData = cacheHelper.getUserData();
   }
 
   void getClasses() {
-    classes = CacheHelper.getClasses();
+    classes = cacheHelper.getClasses();
     for (var item in classes) {
       servants.addAll(item.servants ?? []);
     }

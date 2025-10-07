@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:fathers_prophets/data/models/classes/class_model.dart';
-import 'package:fathers_prophets/data/services/cache_helper.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,12 +9,16 @@ import '../../../../data/models/eventattendance/event_attendance_model.dart';
 import '../../../../data/models/users/users_model.dart';
 import '../../../../data/repositories/eventattendance/event_attendance_repository.dart';
 import '../../../../data/repositories/users/users_repository.dart';
+import '../../../../data/services/cache/i_cache_helper.dart';
 import '../../../../domain/usecases/eventattendance/event_attendance_use_case.dart';
+import '../../../../domain/usecases/eventattendance/i_event_attendance_use_case.dart';
+import '../../../../domain/usecases/users/i_users_use_case.dart';
 import '../../../../domain/usecases/users/users_use_case.dart';
 import '../states/comment_states.dart';
 
 class CommentCubit extends Cubit<CommentStates> {
-  CommentCubit() : super(CommentInitial());
+  CommentCubit(this.eventsAttendanceUseCase,this.usersUseCase, this.cacheHelper) : super(CommentInitial());
+  final ICacheHelper cacheHelper;
 
   static CommentCubit get(context) => BlocProvider.of(context);
   TextEditingController commentController = TextEditingController();
@@ -33,32 +36,32 @@ class CommentCubit extends Cubit<CommentStates> {
   int praise=0;
   int mahrgan=0;
 
-  final EventAttendanceUseCase eventsAttendanceUseCase = EventAttendanceUseCase(EventAttendanceRepository());
+  final IEventAttendanceUseCase eventsAttendanceUseCase;
+  final IUsersUseCase usersUseCase;
 
   final _db = FirebaseDatabase.instance.ref();
   StreamSubscription<DatabaseEvent>? commentSub;
   List<ClassModel> classes = <ClassModel>[];
-  EventAttendanceModel attendance= EventAttendanceModel();
   List<CommentModel> comments = <CommentModel>[];
-  UsersUseCase usersUseCase = UsersUseCase(UserRepository());
+  EventAttendanceModel attendance= EventAttendanceModel();
   var user = UserModel();
 
   void getUserData(String uid)async{
     emit(OnLoading());
     try{
-      football = CacheHelper.getEvents('football').length;
-      volleyball = CacheHelper.getEvents('volleyball').length;
-      pingPong = CacheHelper.getEvents('pingpong').length;
-      chess = CacheHelper.getEvents('chess').length;
-      melodies = CacheHelper.getEvents('melodies').length;
-      choir = CacheHelper.getEvents('choir').length;
-      ritual = CacheHelper.getEvents('ritual').length;
-      coptic = CacheHelper.getEvents('coptic').length;
-      doctrine = CacheHelper.getEvents('doctrine').length;
-      bible = CacheHelper.getEvents('bible').length;
-      pray = CacheHelper.getEvents('pray').length;
-      praise = CacheHelper.getEvents('praise').length;
-      mahrgan = CacheHelper.getEvents('mahrgan').length;
+      football = cacheHelper.getEvents('football').length;
+      volleyball = cacheHelper.getEvents('volleyball').length;
+      pingPong = cacheHelper.getEvents('pingpong').length;
+      chess = cacheHelper.getEvents('chess').length;
+      melodies = cacheHelper.getEvents('melodies').length;
+      choir = cacheHelper.getEvents('choir').length;
+      ritual = cacheHelper.getEvents('ritual').length;
+      coptic = cacheHelper.getEvents('coptic').length;
+      doctrine = cacheHelper.getEvents('doctrine').length;
+      bible = cacheHelper.getEvents('bible').length;
+      pray = cacheHelper.getEvents('pray').length;
+      praise = cacheHelper.getEvents('praise').length;
+      mahrgan = cacheHelper.getEvents('mahrgan').length;
       user = (await usersUseCase.getUserData(uid)??UserModel());
       getAttendance(uid);
       listenToComments(uid);
@@ -69,7 +72,7 @@ class CommentCubit extends Cubit<CommentStates> {
     emit(OnSuccess());
   }
   void listenToComments(String userId) {
-    classes = CacheHelper.getClasses();
+    classes = cacheHelper.getClasses();
     emit(CommentLoading());
     commentSub = _db.child("comments").onValue.listen((event) {
       final data = event.snapshot.value;

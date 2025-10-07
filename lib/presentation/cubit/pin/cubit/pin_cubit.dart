@@ -7,11 +7,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../data/models/admin_pin/admin_pin_model.dart';
 import '../../../../data/repositories/admin_pin/admin_pin_repository.dart';
 import '../../../../domain/usecases/admin_pin/admin_pin_use_case.dart';
+import '../../../../domain/usecases/admin_pin/i_admin_pin_use_case.dart';
 
 class PinCubit extends Cubit<PinStates>{
-  PinCubit() : super(InitialState());
+  PinCubit(this.useCase) : super(InitialState());
   static PinCubit get(context) => BlocProvider.of(context);
-  AdminPinUseCase useCase = AdminPinUseCase(AdminPinRepository());
+  final IAdminPinUseCase useCase;
   String pin = '';
   void onSubmit() async {
     emit(OnLoading());

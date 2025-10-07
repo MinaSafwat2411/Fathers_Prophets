@@ -1,12 +1,12 @@
+import 'package:fathers_prophets/data/services/cache/i_cache_helper.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../data/services/cache_helper.dart';
 import '../states/local_states.dart';
 
 class LocaleCubit extends Cubit<LocaleStates> {
-  LocaleCubit() : super(const LocaleInitial(Locale('ar')));
-
+  LocaleCubit(this.cacheHelper) : super(const LocaleInitial(Locale('ar')));
+  final ICacheHelper cacheHelper;
   static LocaleCubit get(context) => BlocProvider.of(context);
   var isDark = false;
   var lang= '';
@@ -24,7 +24,7 @@ class LocaleCubit extends Cubit<LocaleStates> {
     try {
       emit(LocaleLoading(Locale(lang)));
       await Future.delayed(const Duration(milliseconds: 500)); // Simulate delay
-      await CacheHelper.saveData(key: 'lang', value: languageCode);
+      await cacheHelper.saveData(key: 'lang', value: languageCode);
       lang=languageCode;
       emit(LocaleUpdated(Locale(languageCode)));
     } catch (e) {
@@ -33,7 +33,7 @@ class LocaleCubit extends Cubit<LocaleStates> {
   }
   void changeTheme(bool isDark){
     this.isDark = isDark;
-    CacheHelper.saveData(key: 'isDark', value: isDark);
+    cacheHelper.saveData(key: 'isDark', value: isDark);
     emit(DarkChanged(Locale(lang)));
   }
 }

@@ -1,5 +1,6 @@
 import 'package:fathers_prophets/data/models/classes/class_model.dart';
-import 'package:fathers_prophets/data/services/cache_helper.dart';
+import 'package:fathers_prophets/data/services/cache/cache_helper.dart';
+import 'package:fathers_prophets/data/services/cache/i_cache_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -8,11 +9,13 @@ import '../../../../data/models/users/users_model.dart';
 import '../../../../data/repositories/classes/class_repository.dart';
 import '../../../../data/repositories/users/users_repository.dart';
 import '../../../../domain/usecases/classes/classes_use_case.dart';
+import '../../../../domain/usecases/classes/i_classes_use_case.dart';
+import '../../../../domain/usecases/users/i_users_use_case.dart';
 import '../../../../domain/usecases/users/users_use_case.dart';
 import '../states/review_user_states.dart';
 
 class ReviewUserCubit extends Cubit<ReviewUserStates>{
-  ReviewUserCubit() : super(InitialState());
+  ReviewUserCubit(this.usersUseCase,this.classesUseCase,this.cacheHelper) : super(InitialState());
 
   static ReviewUserCubit get(context) => BlocProvider.of(context);
   var user = UserModel();
@@ -21,12 +24,13 @@ class ReviewUserCubit extends Cubit<ReviewUserStates>{
   List<ClassModel> classes = <ClassModel>[];
   TextEditingController nameController = TextEditingController();
   TextEditingController role = TextEditingController();
-  UsersUseCase usersUseCase = UsersUseCase(UserRepository());
-  ClassesUseCase classesUseCase = ClassesUseCase(ClassRepository());
+  final IUsersUseCase usersUseCase;
+  final IClassesUseCase classesUseCase;
+  final ICacheHelper cacheHelper;
 
 
   void getData(){
-    classes = CacheHelper.getClasses();
+    classes = cacheHelper.getClasses();
     emit(OnGetData());
   }
   void onReviewUser()async{
@@ -61,7 +65,7 @@ class ReviewUserCubit extends Cubit<ReviewUserStates>{
           }
         }
       }
-      await CacheHelper.saveClasses(classes);
+      await cacheHelper.saveClasses(classes);
       emit(OnSuccessState());
     }catch(e) {
       emit(OnErrorState(e.toString()));
@@ -111,7 +115,7 @@ class ReviewUserCubit extends Cubit<ReviewUserStates>{
           break;
         }
       }
-      await CacheHelper.saveClasses(classes);
+      await cacheHelper.saveClasses(classes);
       emit(OnDeleteUser());
     }catch(e){
       emit(OnErrorState(e.toString()));

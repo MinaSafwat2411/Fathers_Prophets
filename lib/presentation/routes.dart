@@ -1,6 +1,8 @@
 import 'package:fathers_prophets/data/models/classes/class_user_model.dart';
 import 'package:fathers_prophets/data/models/quizzes/quizzes_model.dart';
 import 'package:fathers_prophets/data/models/users/users_model.dart';
+import 'package:fathers_prophets/di/injectable_config.dart';
+import 'package:fathers_prophets/domain/usecases/admin_pin/i_admin_pin_use_case.dart';
 import 'package:fathers_prophets/presentation/cubit/layout/cubit/layout_cubit.dart';
 import 'package:fathers_prophets/presentation/cubit/onboarding/cubit/onboarding_cubit.dart';
 import 'package:fathers_prophets/presentation/cubit/profile/cubit/profile_cubit.dart';
@@ -36,6 +38,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../data/models/attendance/attendance_model.dart';
 import '../data/models/events/events_model.dart';
+import '../data/services/cache/i_cache_helper.dart';
+import '../data/services/drive/i_google_drive_service.dart';
+import '../domain/usecases/attendance/i_attendance_use_case.dart';
+import '../domain/usecases/auth/i_auth_use_case.dart';
+import '../domain/usecases/classes/i_classes_use_case.dart';
+import '../domain/usecases/eventattendance/i_event_attendance_use_case.dart';
+import '../domain/usecases/events/i_events_use_case.dart';
+import '../domain/usecases/quizzes/i_quizzes_use_case.dart';
+import '../domain/usecases/quizzes_score/i_quizzes_score_use_case.dart';
+import '../domain/usecases/splash/i_splash_use_case.dart';
+import '../domain/usecases/users/i_users_use_case.dart';
 import 'cubit/add_attendance/cubit/add_attendance_cubit.dart';
 import 'cubit/add_member/cubit/add_member_cubit.dart';
 import 'cubit/attendance/cubit/attendance_cubit.dart';
@@ -98,7 +111,17 @@ final GoRouter router = GoRouter(
       name: AppRoutes.login.name,
       builder:
           (context, state) => BlocProvider(
-            create: (context) => LoginCubit(),
+            create:
+                (context) => LoginCubit(
+                  getIt<IAuthUseCase>(),
+                  getIt<IUsersUseCase>(),
+                  getIt<IClassesUseCase>(),
+                  getIt<IQuizzesUseCase>(),
+                  getIt<IEventsUseCase>(),
+                  getIt<ISplashUseCase>(),
+                  getIt<IGoogleDriveUploader>(),
+                  getIt<ICacheHelper>(),
+                ),
             child: const LoginScreen(),
           ),
     ),
@@ -107,7 +130,15 @@ final GoRouter router = GoRouter(
       name: AppRoutes.splash.name,
       builder:
           (context, state) => BlocProvider(
-            create: (context) => SplashCubit()..onNavigate(),
+            create: (context) => SplashCubit(
+              getIt<IClassesUseCase>(),
+              getIt<ISplashUseCase>(),
+              getIt<IUsersUseCase>(),
+              getIt<IEventsUseCase>(),
+              getIt<IQuizzesUseCase>(),
+              getIt<ICacheHelper>(),
+              getIt<IGoogleDriveUploader>(),
+            )..onNavigate(),
             child: const SplashScreen(),
           ),
     ),
@@ -116,7 +147,9 @@ final GoRouter router = GoRouter(
       name: AppRoutes.onboarding.name,
       builder:
           (context, state) => BlocProvider(
-            create: (context) => OnboardingCubit(),
+            create: (context) => OnboardingCubit(
+              getIt<ICacheHelper>(),
+            ),
             child: const OnboardingScreen(),
           ),
     ),
@@ -130,7 +163,10 @@ final GoRouter router = GoRouter(
       name: AppRoutes.profile.name,
       builder:
           (context, state) => BlocProvider(
-            create: (context) => ProfileCubit()..getUserData(),
+            create: (context) => ProfileCubit(
+              getIt<ICacheHelper>(),
+              getIt<IAuthUseCase>(),
+            )..getUserData(),
             child: const ProfileScreen(),
           ),
     ),
@@ -164,7 +200,12 @@ final GoRouter router = GoRouter(
       name: AppRoutes.register.name,
       builder:
           (context, state) => BlocProvider(
-            create: (context) => RegisterCubit(),
+            create: (context) => RegisterCubit(
+              getIt<IQuizzesScoreUseCase>(),
+              getIt<IAuthUseCase>(),
+              getIt<IUsersUseCase>(),
+              getIt<IEventAttendanceUseCase>(),
+            ),
             child: const RegisterScreen(),
           ),
     ),
@@ -173,7 +214,9 @@ final GoRouter router = GoRouter(
       name: AppRoutes.forgotPassword.name,
       builder:
           (context, state) => BlocProvider(
-            create: (context) => ForgotPasswordCubit(),
+            create: (context) => ForgotPasswordCubit(
+              getIt<IAuthUseCase>(),
+            ),
             child: const ForgotPasswordScreen(),
           ),
     ),
@@ -192,7 +235,9 @@ final GoRouter router = GoRouter(
       name: AppRoutes.attendanceDetails.name,
       builder:
           (context, state) => BlocProvider(
-            create: (context) => AttendanceCubit(),
+            create: (context) => AttendanceCubit(
+              getIt<IAttendanceUseCase>(),
+            ),
             child: AttendanceDetailsScreen(
               attendance: state.extra as AttendanceModel,
             ),
@@ -203,7 +248,9 @@ final GoRouter router = GoRouter(
       name: AppRoutes.addAttendance.name,
       builder:
           (context, state) => BlocProvider(
-            create: (context) => AddAttendanceCubit()..getUserData(),
+            create: (context) => AddAttendanceCubit(
+              getIt<ICacheHelper>(),
+            )..getUserData(),
             child: const AddAttendanceScreen(),
           ),
     ),
@@ -217,7 +264,9 @@ final GoRouter router = GoRouter(
         final quizzesCubit = extra['cubit'] as QuizzesCubit?;
 
         return BlocProvider<QuizzesCubit>(
-          create: (_) => quizzesCubit ?? QuizzesCubit(),
+          create: (_) => quizzesCubit ?? QuizzesCubit(
+            getIt<ICacheHelper>(),
+          ),
           lazy: quizzesCubit == null,
           child: QuizzesDetailsScreen(quizzes: quiz, query: query),
         );
@@ -228,7 +277,9 @@ final GoRouter router = GoRouter(
       name: AppRoutes.addQuiz.name,
       builder:
           (context, state) => BlocProvider(
-            create: (context) => QuizzesCubit(),
+            create: (context) => QuizzesCubit(
+              getIt<ICacheHelper>(),
+            ),
             child: const AddQuizScreen(),
           ),
     ),
@@ -237,7 +288,13 @@ final GoRouter router = GoRouter(
       name: AppRoutes.addEvent.name,
       builder:
           (context, state) => BlocProvider(
-            create: (context) => EventsCubit()..getAllMembers(),
+            create: (context) => EventsCubit(
+              getIt<IEventsUseCase>(),
+              getIt<IEventAttendanceUseCase>(),
+              getIt<IUsersUseCase>(),
+              getIt<IGoogleDriveUploader>(),
+              getIt<ICacheHelper>(),
+            )..getAllMembers(),
             child: const AddEventScreen(),
           ),
     ),
@@ -264,7 +321,10 @@ final GoRouter router = GoRouter(
       name: AppRoutes.dashBoard.name,
       builder:
           (context, state) => BlocProvider(
-            create: (context) => DashboardCubit()..getAllData(),
+            create: (context) => DashboardCubit(
+              getIt<IUsersUseCase>(),
+              getIt<ICacheHelper>(),
+            )..getAllData(),
             child: const DashboardScreen(),
           ),
     ),
@@ -274,24 +334,31 @@ final GoRouter router = GoRouter(
       builder: (context, state) {
         final extra = state.extra as Map<String, dynamic>;
         return BlocProvider(
-          create: (context) => CommentCubit(),
-          child: UserDetailsScreen(
-            uid: extra['uid'] as String,
+          create: (context) => CommentCubit(
+            getIt<IEventAttendanceUseCase>(),
+            getIt<IUsersUseCase>(),
+            getIt<ICacheHelper>(),
           ),
+          child: UserDetailsScreen(uid: extra['uid'] as String),
         );
       },
     ),
     GoRoute(
       path: AppRoutePaths.review,
       name: AppRoutes.review.name,
-      builder: (context, state) => const ReviewScreen(),
+      builder: (context, state) => ReviewScreen(
+            uid: getIt<ICacheHelper>().getData(key: 'uid')
+      ),
     ),
     GoRoute(
       path: AppRoutePaths.quizzesScoreTable,
       name: AppRoutes.quizzesScoreTable.name,
       builder:
           (context, state) => BlocProvider(
-            create: (context) => QuizTableCubit()..getAllQuizzesScore(),
+            create: (context) => QuizTableCubit(
+              getIt<IQuizzesScoreUseCase>(),
+              getIt<ICacheHelper>(),
+            )..getAllQuizzesScore(),
             child: const QuizzesScoreTableScreen(),
           ),
     ),
@@ -300,7 +367,12 @@ final GoRouter router = GoRouter(
       name: AppRoutes.addMember.name,
       builder:
           (context, state) => BlocProvider(
-            create: (context) => AddMemberCubit()..getData(),
+            create:
+                (context) => AddMemberCubit(
+                  getIt<IUsersUseCase>(),
+                  getIt<IClassesUseCase>(),
+                  getIt<ICacheHelper>(),
+                )..getData(),
             child: const AddMemberScreen(),
           ),
     ),
@@ -309,7 +381,11 @@ final GoRouter router = GoRouter(
       name: AppRoutes.reviewUser.name,
       builder:
           (context, state) => BlocProvider(
-            create: (context) => ReviewUserCubit()..getData(),
+            create: (context) => ReviewUserCubit(
+              getIt<IUsersUseCase>(),
+              getIt<IClassesUseCase>(),
+              getIt<ICacheHelper>(),
+            )..getData(),
             child: ReviewUserScreen(user: state.extra as UserModel),
           ),
     ),
@@ -318,7 +394,9 @@ final GoRouter router = GoRouter(
       name: AppRoutes.pin.name,
       builder:
           (context, state) => BlocProvider(
-            create: (context) => PinCubit(),
+            create: (context) => PinCubit(
+              getIt<IAdminPinUseCase>(),
+            ),
             child: PinScreen(nextScreen: state.extra as String),
           ),
     ),
@@ -338,7 +416,13 @@ final GoRouter router = GoRouter(
         return MaterialPage(
           key: state.pageKey,
           child: BlocProvider(
-            create: (context) => EventsCubit()..getAllMembers(),
+            create: (context) => EventsCubit(
+              getIt<IEventsUseCase>(),
+              getIt<IEventAttendanceUseCase>(),
+              getIt<IUsersUseCase>(),
+              getIt<IGoogleDriveUploader>(),
+              getIt<ICacheHelper>(),
+            )..getAllMembers(),
             child: AddEventAttendance(
               event: extra['item'] as EventsModel,
               title: extra['title'] as String,
@@ -353,7 +437,12 @@ final GoRouter router = GoRouter(
         return BlocProvider(
           create:
               (_) =>
-                  LayoutCubit()
+                  LayoutCubit(
+                    getIt<IAuthUseCase>(),
+                    getIt<IAttendanceUseCase>(),
+                    getIt<IQuizzesScoreUseCase>(),
+                    getIt<ICacheHelper>(),
+                  )
                     ..getUserData()
                     ..getAllData()
                     ..getAllAttendance(),

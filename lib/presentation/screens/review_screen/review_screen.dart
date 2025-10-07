@@ -1,6 +1,6 @@
 import 'package:fathers_prophets/core/utils/app_colors.dart';
 import 'package:fathers_prophets/core/widgets/custom_button.dart';
-import 'package:fathers_prophets/data/services/cache_helper.dart';
+import 'package:fathers_prophets/data/services/cache/cache_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -10,7 +10,9 @@ import '../../cubit/local/cubit/local_cubit.dart';
 import '../../routes.dart';
 
 class ReviewScreen extends StatelessWidget {
-  const ReviewScreen({super.key});
+  const ReviewScreen({super.key,required this.uid});
+
+  final String uid;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +36,7 @@ class ReviewScreen extends StatelessWidget {
               SizedBox(height: 8),
               Text(localize.translate('go_to_your_teacher'),style: textTheme.titleMedium,),
               SizedBox(height: 8),
-              Text(CacheHelper.getUserData().uid??"",style: textTheme.titleMedium,),
+              Text(uid??"",style: textTheme.titleMedium,),
               SizedBox(height: 20),
               CustomButton(
                   onPressed: () => context.goNamed(AppRoutes.login.name),

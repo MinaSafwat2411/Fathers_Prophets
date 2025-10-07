@@ -10,13 +10,13 @@ import '../../../../data/models/attendance/attendance_model.dart';
 import '../../../../data/models/users/users_model.dart';
 import '../../../../data/repositories/attendance/attendance_repository.dart';
 import '../../../../data/repositories/users/users_repository.dart';
-import '../../../../data/services/cache_helper.dart';
+import '../../../../data/services/cache/i_cache_helper.dart';
 import '../../../../domain/usecases/attendance/attendance_use_case.dart';
 import '../../local/cubit/local_cubit.dart';
 
 class AddAttendanceCubit extends Cubit<AddAttendanceStates> {
-  AddAttendanceCubit() : super(InitialState());
-
+  AddAttendanceCubit(this.cacheHelper) : super(InitialState());
+  final ICacheHelper cacheHelper;
   static AddAttendanceCubit get(context) => BlocProvider.of(context);
 
   var isUpdate = true;
@@ -92,13 +92,13 @@ class AddAttendanceCubit extends Cubit<AddAttendanceStates> {
   }
 
   void getMembers() {
-    var classes =  CacheHelper.getClasses();
+    var classes =  cacheHelper.getClasses();
     classModel = classes.firstWhere((element) => servant.classId==element.docId,);
     emit(OnGetMembers());
   }
 
   void getUserData() {
-    servant = CacheHelper.getUserData();
+    servant = cacheHelper.getUserData();
     emit(OnGetServants());
   }
 

@@ -8,7 +8,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/constants/firebase_endpoints.dart';
 import '../../../core/localization/app_localizations.dart';
 import '../../../core/widgets/custom_snackbar.dart';
-import '../../../data/services/cache_helper.dart';
+import '../../../data/services/cache/cache_helper.dart';
 import '../../cubit/local/cubit/local_cubit.dart';
 import '../../cubit/splash/cubit/splash_cubit.dart';
 import '../../cubit/splash/states/splash_states.dart';

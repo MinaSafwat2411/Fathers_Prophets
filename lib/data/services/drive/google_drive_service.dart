@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis/drive/v3.dart' as drive;
@@ -6,10 +7,11 @@ import 'package:http/http.dart' as http;
 import 'package:http/io_client.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:injectable/injectable.dart';
+
 import 'i_google_drive_service.dart';
 
 @LazySingleton(as: IGoogleDriveUploader)
-class GoogleDriveUploader implements IGoogleDriveUploader {
+class GoogleDriveUploader  implements IGoogleDriveUploader{
   final GoogleSignIn _googleSignIn = GoogleSignIn(
     scopes: [drive.DriveApi.driveFileScope],
   );
@@ -29,6 +31,7 @@ class GoogleDriveUploader implements IGoogleDriveUploader {
 
     final driveApi = drive.DriveApi(authClient);
     final media = drive.Media(file.openRead(), file.lengthSync());
+
     final driveFile = drive.File()..name = fileName;
 
     final uploadedFile =
@@ -46,15 +49,12 @@ class GoogleDriveUploader implements IGoogleDriveUploader {
   Future<String?> uploadImage({required bool fromCamera}) async {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(
-      source: fromCamera ? ImageSource.camera : ImageSource.gallery,
-    );
+        source: fromCamera ? ImageSource.camera : ImageSource.gallery);
     if (pickedFile == null) return null;
 
     final file = File(pickedFile.path);
     return await uploadFileToDrive(
-      file,
-      'image_${DateTime.now().millisecondsSinceEpoch}.jpg',
-    );
+        file, 'image_${DateTime.now().millisecondsSinceEpoch}.jpg');
   }
 
   @override
@@ -65,9 +65,7 @@ class GoogleDriveUploader implements IGoogleDriveUploader {
 
     final file = File(pickedFile.path);
     return await uploadFileToDrive(
-      file,
-      'video_${DateTime.now().millisecondsSinceEpoch}.mp4',
-    );
+        file, 'video_${DateTime.now().millisecondsSinceEpoch}.mp4');
   }
 
   @override
@@ -77,9 +75,7 @@ class GoogleDriveUploader implements IGoogleDriveUploader {
 
     final file = File(result.files.single.path!);
     return await uploadFileToDrive(
-      file,
-      'audio_${DateTime.now().millisecondsSinceEpoch}.mp3',
-    );
+        file, 'audio_${DateTime.now().millisecondsSinceEpoch}.mp3');
   }
 
   @override
@@ -92,9 +88,7 @@ class GoogleDriveUploader implements IGoogleDriveUploader {
 
     final file = File(result.files.single.path!);
     return await uploadFileToDrive(
-      file,
-      'text_${DateTime.now().millisecondsSinceEpoch}.txt',
-    );
+        file, 'text_${DateTime.now().millisecondsSinceEpoch}.txt');
   }
 
   @override
@@ -107,9 +101,7 @@ class GoogleDriveUploader implements IGoogleDriveUploader {
 
     final file = File(result.files.single.path!);
     return await uploadFileToDrive(
-      file,
-      'pdf_${DateTime.now().millisecondsSinceEpoch}.pdf',
-    );
+        file, 'pdf_${DateTime.now().millisecondsSinceEpoch}.pdf');
   }
 
   @override
@@ -140,3 +132,5 @@ class GoogleAuthClient extends http.BaseClient {
     _client.close();
   }
 }
+
+

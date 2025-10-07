@@ -1,20 +1,26 @@
 
+import 'package:fathers_prophets/data/repositories/auth/i_auth_repository.dart';
+import 'package:fathers_prophets/data/services/cache/i_cache_helper.dart';
+import 'package:fathers_prophets/di/injectable_config.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:injectable/injectable.dart';
 
 import '../../models/auth/auth_model.dart';
-import '../../services/cache_helper.dart';
 
 
-class AuthRepository {
+@LazySingleton(as: IAuthRepository)
+class AuthRepository implements IAuthRepository{
   final firebaseAuth = FirebaseAuth.instance;
-
+  final ICacheHelper cacheHelper = getIt<ICacheHelper>();
+  AuthRepository();
+  @override
   Future<String?> login(AuthModel login) async {
     try {
       final response = await firebaseAuth.signInWithEmailAndPassword(
         email: login.email,
         password: login.password,
       );
-      await CacheHelper.saveData(key: 'uid', value:  response.user?.uid);
+      await cacheHelper.saveData(key: 'uid', value:  response.user?.uid);
       return response.user?.uid;
     } on FirebaseAuthException catch (e) {
       throw extractFirebaseAuthError(e);
@@ -23,6 +29,7 @@ class AuthRepository {
     }
   }
 
+  @override
   Future<void> logout() async {
     try {
       await firebaseAuth.signOut();
@@ -31,6 +38,7 @@ class AuthRepository {
     }
   }
 
+  @override
   Future<String> register(AuthModel login) async {
     try {
       final response = await firebaseAuth.createUserWithEmailAndPassword(
@@ -45,6 +53,7 @@ class AuthRepository {
     }
   }
 
+  @override
   Future<bool> isLoggedIn() async {
     try {
       final currentUser = firebaseAuth.currentUser;
@@ -56,6 +65,7 @@ class AuthRepository {
     }
   }
 
+  @override
   Future<String> getCurrentUserId() async {
     try {
       final currentUser = firebaseAuth.currentUser;
@@ -67,6 +77,7 @@ class AuthRepository {
     }
   }
 
+  @override
   Future<String> getCurrentUserEmail() async {
     try {
       final currentUser = firebaseAuth.currentUser;
@@ -78,6 +89,7 @@ class AuthRepository {
     }
   }
 
+  @override
   Future<void> updatePassword(String newPassword) async {
     try {
       final currentUser = firebaseAuth.currentUser;
@@ -91,6 +103,7 @@ class AuthRepository {
     }
   }
 
+  @override
   Future<void> updateEmail(String newEmail) async {
     try {
       final currentUser = firebaseAuth.currentUser;
@@ -105,6 +118,7 @@ class AuthRepository {
     }
   }
 
+  @override
   Future<void> sendPasswordResetEmail(String email) async {
     try {
       await firebaseAuth.sendPasswordResetEmail(email: email);

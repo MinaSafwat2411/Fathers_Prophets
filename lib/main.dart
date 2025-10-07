@@ -1,3 +1,5 @@
+import 'package:fathers_prophets/data/services/cache/i_cache_helper.dart';
+import 'package:fathers_prophets/di/injectable_config.dart';
 import 'package:fathers_prophets/presentation/cubit/chat/cubit/chat_cubit.dart';
 import 'package:fathers_prophets/presentation/cubit/local/cubit/local_cubit.dart';
 import 'package:fathers_prophets/presentation/cubit/local/states/local_states.dart';
@@ -11,24 +13,26 @@ import 'core/localization/app_localizations.dart';
 import 'core/utils/app_themes.dart';
 import 'data/firebase/firebase_options.dart';
 import 'data/services/bloc_observer.dart';
-import 'data/services/cache_helper.dart';
-import 'data/services/notification/firebase_notification_service.dart';
-import 'data/services/notification/notification_services.dart';
+import 'data/services/cache/cache_helper.dart';
+import 'data/services/firebase_notification_service.dart';
+import 'data/services/notification_services.dart';
 
 
 
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await configureDependencies();
+  final ICacheHelper cacheHelper = getIt<ICacheHelper>();
   await CacheHelper.init();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await NotificationService.init();
   await FirebaseNotificationService.init();
   if (kDebugMode) Bloc.observer = MyBlocObserver();
-  bool isDark = await CacheHelper.getData(key: 'isDark') ?? false;
-  String lang = await CacheHelper.getData(key: 'lang') ?? 'ar';
-  String uid = await CacheHelper.getData(key: 'uid') ?? '';
-  bool isOpened = CacheHelper.getData(key: 'isOpened') ?? false;
+  bool isDark = await cacheHelper.getData(key: 'isDark') ?? false;
+  String lang = await cacheHelper.getData(key: 'lang') ?? 'ar';
+  String uid = await cacheHelper.getData(key: 'uid') ?? '';
+  bool isOpened = cacheHelper.getData(key: 'isOpened') ?? false;
   runApp(MyApp(isDark: isDark, lang: lang));
 }
 
@@ -41,8 +45,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
         providers: [
-          BlocProvider(create: (context) => LocaleCubit()..loadSavedLocale(lang,isDark)),
-          BlocProvider(create: (context) => ChatCubit()..getUserData()..getClasses()..listenToMyChats())
+          BlocProvider(create: (context) => LocaleCubit(
+            getIt<ICacheHelper>()
+          )..loadSavedLocale(lang,isDark)),
+          BlocProvider(create: (context) => ChatCubit(
+            getIt<ICacheHelper>()
+          )..getUserData()..getClasses()..listenToMyChats())
         ],
         child: BlocConsumer<LocaleCubit, LocaleStates>(
           builder: (context, state) => MaterialApp.router(

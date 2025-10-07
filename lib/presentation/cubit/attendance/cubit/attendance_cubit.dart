@@ -1,17 +1,17 @@
 import 'package:fathers_prophets/presentation/cubit/attendance/states/attendance_states.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../../../data/models/attendance/attendance_model.dart';
 import '../../../../data/models/users/users_model.dart';
-import '../../../../data/repositories/attendance/attendance_repository.dart';
-import '../../../../domain/usecases/attendance/attendance_use_case.dart';
+import '../../../../domain/usecases/attendance/i_attendance_use_case.dart';
 
 class AttendanceCubit extends Cubit<AttendanceStates> {
-  AttendanceCubit() : super(InitialState());
+  AttendanceCubit(this.useCase) : super(InitialState());
 
   var isUpdate = true;
   var attendance = AttendanceModel();
   var servant = UserModel();
-  var useCase = AttendanceUseCase(AttendanceRepository());
+  final IAttendanceUseCase useCase;
   List<UserModel> members = <UserModel>[];
   DateTime? selectedDate;
 

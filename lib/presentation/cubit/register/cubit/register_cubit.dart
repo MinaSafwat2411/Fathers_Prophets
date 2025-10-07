@@ -1,20 +1,17 @@
 import 'package:fathers_prophets/data/models/auth/auth_model.dart';
 import 'package:fathers_prophets/data/models/quizzes_score/quizzes_score_model.dart';
 import 'package:fathers_prophets/data/models/users/users_model.dart';
-import 'package:fathers_prophets/data/repositories/users/users_repository.dart';
-import 'package:fathers_prophets/domain/usecases/auth/auth_use_case.dart';
-import 'package:fathers_prophets/domain/usecases/users/users_use_case.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../data/repositories/auth/auth_repository.dart';
-import '../../../../data/repositories/eventattendance/event_attendance_repository.dart';
-import '../../../../data/repositories/quizzes_score/quizzes_score_repository.dart';
-import '../../../../domain/usecases/eventattendance/event_attendance_use_case.dart';
-import '../../../../domain/usecases/quizzes_score/quizzes_score_use_case.dart';
+
+import '../../../../domain/usecases/auth/i_auth_use_case.dart';
+import '../../../../domain/usecases/eventattendance/i_event_attendance_use_case.dart';
+import '../../../../domain/usecases/quizzes_score/i_quizzes_score_use_case.dart';
+import '../../../../domain/usecases/users/i_users_use_case.dart';
 import '../states/register_states.dart';
 
 class RegisterCubit extends Cubit<RegisterStates>{
-  RegisterCubit() : super(InitialState());
+  RegisterCubit(this.quizzesScoreUseCase,this.authUseCase,this.usersUseCase,this.eventsAttendanceUseCase) : super(InitialState());
 
   static RegisterCubit get(context) => BlocProvider.of(context);
   var user = UserModel();
@@ -32,10 +29,10 @@ class RegisterCubit extends Cubit<RegisterStates>{
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
-  AuthUseCase authUseCase = AuthUseCase(AuthRepository());
-  UsersUseCase usersUseCase = UsersUseCase(UserRepository());
-  final QuizzesScoreUseCase quizzesScoreUseCase = QuizzesScoreUseCase(QuizzesScoreRepository());
-  final EventAttendanceUseCase eventsAttendanceUseCase = EventAttendanceUseCase(EventAttendanceRepository());
+  final IAuthUseCase authUseCase;
+  final IUsersUseCase usersUseCase;
+  final IQuizzesScoreUseCase quizzesScoreUseCase;
+  final IEventAttendanceUseCase eventsAttendanceUseCase;
 
 
 

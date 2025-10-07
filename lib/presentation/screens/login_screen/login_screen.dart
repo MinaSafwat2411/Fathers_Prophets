@@ -18,7 +18,7 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var cubit = LoginCubit.get(context);
+    var cubit = context.read<LoginCubit>();
     final localize = AppLocalizations.of(context);
     var textTheme = Theme.of(context).textTheme;
     return BlocConsumer<LoginCubit, LoginStates>(
